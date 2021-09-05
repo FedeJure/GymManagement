@@ -3,7 +3,7 @@ import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
 import "./Home.css"
 import { Screens } from "../../modules/navigation/screens"
 import {Users} from "../users/Users"
-import {Products} from "../products/Products"
+import Products from "../products/Products"
 import {Reports} from "../reports/Reports"
 import { StoreState } from "../../store"
 import { navigateTo } from "../../modules/navigation/navigation.actions"
@@ -26,7 +26,7 @@ const Home = ({ screen, navigateToScreen }: { screen: string, navigateToScreen: 
         <Sidebar.Pushable as={Segment} className="homeScreen">
             <Sidebar
                 as={Menu}
-                animation='overlay'
+                animation='push'
                 icon='labeled'
                 inverted
                 vertical

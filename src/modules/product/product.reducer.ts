@@ -1,4 +1,4 @@
-interface Product {
+export interface Product {
     id: number,
     name: string,
     cost: number,
@@ -20,7 +20,7 @@ interface ProductAction {
 }
 
 const initialState: ProductState = {
-    products: [],
+    products: [{id: 0, name: "Clase de gimnasia 3 veces por semana", cost: 2400}],
     lastId: 1
 }
 
