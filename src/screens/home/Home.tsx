@@ -7,7 +7,7 @@ import Products from "../products/Products"
 import {Reports} from "../reports/Reports"
 import { StoreState } from "../../store"
 import { navigateTo } from "../../modules/navigation/navigation.actions"
-
+import React from 'react'
 
 const Home = ({ screen, navigateToScreen }: { screen: string, navigateToScreen: Function}) => {
     const getCurrentScreenElement = () => {
@@ -26,7 +26,6 @@ const Home = ({ screen, navigateToScreen }: { screen: string, navigateToScreen: 
         <Sidebar.Pushable as={Segment} className="homeScreen">
             <Sidebar
                 as={Menu}
-                animation='push'
                 icon='labeled'
                 inverted
                 vertical
