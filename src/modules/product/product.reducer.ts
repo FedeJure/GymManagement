@@ -14,7 +14,7 @@ export interface ProductState {
     lastId: number
 }
 
-interface ProductAction {
+export interface ProductAction {
     type: string,
     product: ProductPayload
 }
