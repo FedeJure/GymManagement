@@ -19,8 +19,13 @@ interface ProductAction {
     product: ProductPayload
 }
 
-export const product = (state: ProductState, action: ProductAction) : ProductState => {
+const initialState: ProductState = {
+    products: [],
+    lastId: 1
+}
 
+export const product = (state: ProductState, action: ProductAction) : ProductState => {
+    if (!state) return initialState
     switch (action.type) {
         case "ADD_PRODUCT":
             const newProduct: Product = {
