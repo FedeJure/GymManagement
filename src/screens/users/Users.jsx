@@ -4,7 +4,6 @@ import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
 import {CreateUserModal} from "../../components/createUserModal/CreateUserModal"
-import { user } from "../../modules/users/users.reducer"
 
 const Users = ({ users, createUser, removeUser, editUser }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);

@@ -14,7 +14,8 @@ export interface UserPayload {
     birthDate: Date,
     comment: string,
     brothers: number[],
-    productsSubscribed: number[]  
+    productsSubscribed: number[],
+    profilePicture: string 
 }
 
 
