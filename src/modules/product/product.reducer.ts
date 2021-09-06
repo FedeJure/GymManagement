@@ -15,7 +15,7 @@ export interface ProductState {
 }
 
 const initialState: ProductState = {
-    products: [{ id: 0, name: "Clase de gimnasia 3 veces por semana", cost: 2400 }],
+    products: [],
     lastId: 1
 }
 
