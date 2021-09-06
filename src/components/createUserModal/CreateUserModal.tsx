@@ -1,12 +1,12 @@
-import { useRef, useState } from "react"
-import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Input } from 'semantic-ui-react'
+import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react"
+import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image } from 'semantic-ui-react'
 import { UserPayload } from "../../modules/users/users.reducer"
 
 const defaultDate = new Date(0)
 
 export const CreateUserModal = ({ onClose, onSubmit, initialData }:
     { onClose: any, onSubmit: any, initialData: UserPayload }) => {
-
+    const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
@@ -20,7 +20,8 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                 comment: "",
                 contactPhone: "",
                 brothers: [],
-                productsSubscribed: []
+                productsSubscribed: [],
+                profilePicture: ""
             })
     const handleSubmit = () => {
         if (formData.name !== "" &&
@@ -35,6 +36,22 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
 
     const handleChange = (value: any, tag: string) => {
         setFormData({ ...formData, [tag]: value })
+    }
+
+    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const files = event.currentTarget.files
+        if (!files) return
+        const file = files[0]
+        if (!file) return
+        if (!allowedTypes.includes(file.type)) {
+            event.currentTarget.value = ""
+            return
+        }
+        const reader = new FileReader()
+        reader.addEventListener("load", function () {
+            setFormData({ ...formData, profilePicture: reader.result as string });
+        }, false);
+        reader.readAsDataURL(file)
     }
 
     return (
@@ -98,17 +115,19 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                             </Grid.Column>
                             <Grid.Column>
                                 <Segment placeholder>
-                                    <Header icon>
-                                        <Icon name="file image outline" />
-                                        Imagen de perfil
-                                    </Header>
+                                    {formData.profilePicture ? <Image fluid src={formData.profilePicture} /> :
+                                        <Header icon>
+                                            <Icon name="file image outline" />
+                                            Imagen de perfil
+                                        </Header>}
+                                    <Divider />
                                     <Button primary onClick={() => {
                                         var ref = fileRef.current
                                         if (ref !== null) {
                                             ref.click()
                                         }
                                     }}>Subir Imagen</Button>
-                                    <input ref={fileRef} type="file" hidden />
+                                    <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
                                 </Segment>
                             </Grid.Column>
                         </Grid.Row>
