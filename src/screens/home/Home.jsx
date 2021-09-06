@@ -1,15 +1,13 @@
 import { connect } from 'react-redux'
-import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
+import { Menu, Segment, Icon, Sidebar } from 'semantic-ui-react'
 import "./Home.css"
 import { Screens } from "../../modules/navigation/screens"
-import {Users} from "../users/Users"
+import { Users } from "../users/Users"
 import Products from "../products/Products"
-import {Reports} from "../reports/Reports"
-import { StoreState } from "../../store"
+import { Reports } from "../reports/Reports"
 import { navigateTo } from "../../modules/navigation/navigation.actions"
-import React from 'react'
 
-const Home = ({ screen, navigateToScreen }: { screen: string, navigateToScreen: Function}) => {
+const Home = ({ screen, navigateToScreen }) => {
     const getCurrentScreenElement = () => {
         switch (screen) {
             case Screens.Users:
@@ -48,20 +46,20 @@ const Home = ({ screen, navigateToScreen }: { screen: string, navigateToScreen: 
 
             <Sidebar.Pusher>
                 <Segment basic>
-                   {getCurrentScreenElement()}
+                    {getCurrentScreenElement()}
                 </Segment>
             </Sidebar.Pusher>
         </Sidebar.Pushable>
     )
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state) => {
     return {
         screen: state.navigation.currentScreen
     }
 }
 
-const mapDispatchToProps = (dispatch: Function) => {
-    return {navigateToScreen: (screen: Screens) => dispatch(navigateTo(screen))}
+const mapDispatchToProps = (dispatch) => {
+    return { navigateToScreen: (screen) => dispatch(navigateTo(screen)) }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
