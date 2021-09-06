@@ -38,7 +38,7 @@ export const user = (state: UserState, action: any): UserState => {
         case "EDIT_USER":
             return {
                 ...state,
-                users: state.users.map(u => u.id === action.user.id ? action.user : u)
+                users: state.users.map(u => u.id === action.user.id ? {...u, data: action.user} : u)
             }
         case "REMOVE_USER":
             return {

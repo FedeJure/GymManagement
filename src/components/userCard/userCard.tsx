@@ -9,11 +9,11 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
     onInfo: MouseEventHandler }) => (
     <Card>
         <Card.Content>
-            <Image
+            {<Image
                 floated='right'
                 size='mini'
                 src={user.data.profilePicture}
-            />
+            />}
             <Card.Header textAlign="left">
                 <UserTypeLabel user={user.data}/>      
             </Card.Header>
