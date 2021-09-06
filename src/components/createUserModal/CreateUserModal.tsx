@@ -1,6 +1,7 @@
-import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useRef, useState } from "react"
 import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image } from 'semantic-ui-react'
-import { User, UserPayload } from "../../modules/users/users.reducer"
+import { User } from "../../modules/users/User"
+import { UserPayload } from "../../modules/users/UserPayload"
 
 const defaultDate = new Date(0)
 

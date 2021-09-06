@@ -1,4 +1,4 @@
-import { UserPayload } from "./users.reducer"
+import { UserPayload } from "./UserPayload"
 
 export const addUser = (user: UserPayload) => {
     return {

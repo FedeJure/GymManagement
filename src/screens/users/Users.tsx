@@ -5,9 +5,10 @@ import { ConfirmationModal } from "../../components/confirmationModal/Confirmati
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
 import {CreateUserModal} from "../../components/createUserModal/CreateUserModal"
 import {UserCard} from "../../components/userCard/userCard"
-import { User, UserPayload } from "../../modules/users/users.reducer"
 import { Dispatch } from "redux"
 import { StoreState } from "../../store"
+import { UserPayload } from "../../modules/users/UserPayload"
+import { User } from "../../modules/users/User"
 
 const Users = ({ users, createUser, removeUser, editUser }: {users: User[], createUser: Function, removeUser: Function, editUser: Function}) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);

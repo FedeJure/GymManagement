@@ -1,17 +1,5 @@
-export interface Product {
-    id: number,
-    data: ProductPayload
-}
-
-export interface ProductPayload {
-    name: string,
-    cost: number,
-}
-
-export interface ProductState {
-    products: Product[]
-    lastId: number
-}
+import { Product } from "./Product"
+import { ProductState } from "./ProductState"
 
 const initialState: ProductState = {
     products: [],

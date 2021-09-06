@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react"
 import { Card, Image, Button } from "semantic-ui-react"
-import { User } from "../../modules/users/users.reducer"
+import { User } from "../../modules/users/User"
 const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
     onEdit: MouseEventHandler, 
     onDelete: MouseEventHandler,
