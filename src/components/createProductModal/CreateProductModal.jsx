@@ -1,45 +1,47 @@
 import { useState } from "react"
 import { Button, Modal, Form } from 'semantic-ui-react'
 
-export const CreateProductModal = ({ open, onClose, onSubmit }) => {
-    const [formData, setFormData] = useState({ name: "", price: -1 })
+export const CreateProductModal = ({ onClose, onSubmit, initialData }) => {
+    const [formData, setFormData] = useState(initialData ? initialData : { name: "", cost: "" })
     const handleSubmit = () => {
-        if (formData.name != "" && formData.price != -1)
+        if (formData.name != "" && formData.cost != null)
             onSubmit(formData)
     }
 
     const handleChange = (value, tag) => {
         setFormData({ ...formData, [tag]: value })
     }
+
     return (
         <Modal
-            onClose={() => onClose()}
-            open={open}
+            onClose={onClose}
+            open
         >
-
-            <Modal.Header>Creación de producto</Modal.Header>
+            <Modal.Header>{initialData ? "Edición de producto" : "Creación de producto"}</Modal.Header>
             <Modal.Content image>
                 <Form onSubmit={handleSubmit}>
 
                     <Form.Field inline>
                         <label>Nombre</label>
                         <input placeholder='Nombre del producto'
+                            value={formData.name}
                             onChange={(v) => handleChange(v.currentTarget.value, "name")} />
                     </Form.Field>
                     <Form.Field inline>
                         <label>$</label>
                         <input placeholder='Valor' type="number"
-                            onChange={(v) => handleChange(v.currentTarget.value, "price")} />
+                            value={formData.cost}
+                            onChange={(v) => handleChange(v.currentTarget.value, "cost")} />
                     </Form.Field>
                     <button type="submit" hidden={true} />
                 </Form>
             </Modal.Content>
             <Modal.Actions>
-                <Button color='black' onClick={() => onClose()}>
+                <Button color='black' onClick={onClose}>
                     Cancelar
                 </Button>
                 <Button
-                    content="Crear"
+                    content={initialData ? "Editar" : "Crear"}
                     labelPosition='right'
                     icon='checkmark'
                     positive
