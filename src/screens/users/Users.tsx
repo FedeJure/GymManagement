@@ -15,7 +15,7 @@ const Users = ({ users, createUser, removeUser, editUser }: {users: User[], crea
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
+console.log(users)
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
         setCreationModalOpen(false)
@@ -54,8 +54,14 @@ const Users = ({ users, createUser, removeUser, editUser }: {users: User[], crea
             <Card.Group>
                 {users.map((user: User) => <UserCard key={user.id} 
                 user={user}
-                onDelete={() => {}}
-                onEdit={() => {}}
+                onDelete={() => {
+                    setSelectedUser(user)
+                    setDeleteModal(true)
+                }}
+                onEdit={() => {
+                    setSelectedUser(user)
+                    setEditModalOpen(true)
+                }}
                 onInfo={() => {}}/>)}
             </Card.Group>
 
