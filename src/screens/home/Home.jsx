@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { Menu, Segment, Icon, Sidebar } from 'semantic-ui-react'
 import "./Home.css"
 import { Screens } from "../../modules/navigation/screens"
-import { Users } from "../users/Users"
+import Users from "../users/Users"
 import Products from "../products/Products"
 import { Reports } from "../reports/Reports"
 import { navigateTo } from "../../modules/navigation/navigation.actions"
