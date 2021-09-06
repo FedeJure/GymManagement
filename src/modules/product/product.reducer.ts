@@ -1,5 +1,3 @@
-import { stat } from "fs"
-
 export interface Product {
     id: number,
     name: string,
@@ -34,17 +32,18 @@ export const product = (state: ProductState, action: any): ProductState => {
                 products: [...state.products, newProduct],
                 lastId: newProduct.id + 1
             }
-            break;
-
         case "REMOVE_PRODUCT":
             return {
                 ...state,
                 products: state.products.filter(p => p.id !== action.productId)
             }
-            break;
+        case "EDIT_PRODUCT":
+            return {
+                ...state,
+                products: state.products.map(p => p.id === action.product.id ? action.product : p)
+            }
 
         default:
             return state
-            break;
     }
 }

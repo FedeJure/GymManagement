@@ -3,13 +3,14 @@ import { connect } from "react-redux"
 import { ProductCard } from "../../components/productCard/ProductCard"
 import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
-import { addProduct, removeProduct } from "../../modules/product/product.actions"
+import { addProduct, editProduct, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 
-const Products = ({ products, createProduct, removeProduct }) => {
+const Products = ({ products, createProduct, removeProduct, editProduct }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
 
     const handleCreation = (creationData) => {
@@ -20,15 +21,25 @@ const Products = ({ products, createProduct, removeProduct }) => {
         removeProduct(productId)
         setDeleteModal(false)
     }
+
+    const handleEdit = (editData) => {
+        setEditModalOpen(false)
+        editProduct(selectedProduct.id, editData)
+    }
+
     return <div>
-        <ConfirmationModal
+       {deleteModal && <ConfirmationModal
             open={deleteModal}
             onCancel={() => setDeleteModal(false)}
-            onAccept={() => handleDelete(selectedProductId)}
-            message="Confirma eliminación de este producto? Esta acción no puede deshacerse." />
-        <CreateProductModal open={creationModalOpen}
+            onAccept={() => handleDelete(selectedProduct.id)}
+            message="Confirma eliminación de este producto? Esta acción no puede deshacerse." />}
+        {creationModalOpen && <CreateProductModal
             onClose={() => setCreationModalOpen(false)}
-            onSubmit={handleCreation} />
+            onSubmit={handleCreation} />}
+        {editModalOpen &&<CreateProductModal
+            onClose={() => setEditModalOpen(false)}
+            onSubmit={handleEdit}
+            initialData={selectedProduct}/>}
         <Segment >
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
@@ -41,8 +52,12 @@ const Products = ({ products, createProduct, removeProduct }) => {
                     id={id}
                     key={id}
                     onDelete={() => {
-                        setSelectedProductId(id)
+                        setSelectedProduct({cost, name, id})
                         setDeleteModal(true)
+                    }}
+                    onEdit={() => {
+                        setSelectedProduct({cost, name, id})
+                        setEditModalOpen(true)
                     }} />)}
             </Card.Group>
 
@@ -60,7 +75,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         createProduct: (data) => dispatch(addProduct(data)),
-        removeProduct: (productId) => dispatch(removeProduct(productId))
+        removeProduct: (productId) => dispatch(removeProduct(productId)),
+        editProduct: (productId, data) => dispatch(editProduct(productId, data))
     }
 }
 
