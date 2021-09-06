@@ -1,4 +1,6 @@
+import {UserType} from "./UserType"
 export interface UserPayload {
+    type: UserType,
     name: string,
     lastname: string,
     contactEmail: string,
