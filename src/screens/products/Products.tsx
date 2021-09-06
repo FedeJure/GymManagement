@@ -5,24 +5,29 @@ import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
 import { addProduct, editProduct, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
+import { Product, ProductPayload } from "../../modules/product/product.reducer"
+import { StoreState } from "../../store"
+import { Dispatch } from "redux"
 
-const Products = ({ products, createProduct, removeProduct, editProduct }) => {
+const Products = ({ products, createProduct, removeProduct, editProduct }:
+    { products: Product[], createProduct: Function, removeProduct: Function, editProduct:Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
 
-    const handleCreation = (creationData) => {
+    const handleCreation = (creationData: ProductPayload) => {
         createProduct(creationData)
         setCreationModalOpen(false)
     }
-    const handleDelete = (productId) => {
+    const handleDelete = (productId: number) => {
         removeProduct(productId)
         setDeleteModal(false)
     }
 
-    const handleEdit = (editData) => {
+    const handleEdit = (editData: ProductPayload) => {
+        if (!selectedProduct) return
         setEditModalOpen(false)
         editProduct(selectedProduct.id, editData)
     }
@@ -31,7 +36,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct }) => {
        {deleteModal && <ConfirmationModal
             open={deleteModal}
             onCancel={() => setDeleteModal(false)}
-            onAccept={() => handleDelete(selectedProduct.id)}
+            onAccept={() => selectedProduct && handleDelete(selectedProduct.id)}
             message="Confirma eliminación de este producto? Esta acción no puede deshacerse." />}
         {creationModalOpen && <CreateProductModal
             onClose={() => setCreationModalOpen(false)}
@@ -39,7 +44,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct }) => {
         {editModalOpen &&<CreateProductModal
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
-            initialData={selectedProduct}/>}
+            initialData={selectedProduct?.data}/>}
         <Segment >
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
@@ -47,16 +52,15 @@ const Products = ({ products, createProduct, removeProduct, editProduct }) => {
             </Header>
             <Divider />
             <Card.Group>
-                {products.map(({ cost, name, id }) => <ProductCard name={name}
-                    cost={cost}
-                    id={id}
-                    key={id}
+                {products.map((product) => <ProductCard 
+                    product={product}
+                    key={product.id}
                     onDelete={() => {
-                        setSelectedProduct({cost, name, id})
+                        setSelectedProduct(product)
                         setDeleteModal(true)
                     }}
                     onEdit={() => {
-                        setSelectedProduct({cost, name, id})
+                        setSelectedProduct(product)
                         setEditModalOpen(true)
                     }} />)}
             </Card.Group>
@@ -66,17 +70,17 @@ const Products = ({ products, createProduct, removeProduct, editProduct }) => {
     </div>
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: StoreState) => {
     return {
         products: state.product.products
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        createProduct: (data) => dispatch(addProduct(data)),
-        removeProduct: (productId) => dispatch(removeProduct(productId)),
-        editProduct: (productId, data) => dispatch(editProduct(productId, data))
+        createProduct: (data: ProductPayload) => dispatch(addProduct(data)),
+        removeProduct: (productId: number) => dispatch(removeProduct(productId)),
+        editProduct: (productId: number, data: ProductPayload) => dispatch(editProduct(productId, data))
     }
 }
 
