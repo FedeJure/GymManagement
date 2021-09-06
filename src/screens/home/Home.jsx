@@ -28,11 +28,11 @@ const Home = ({ screen, navigateToScreen }) => {
                 inverted
                 vertical
                 visible
-                width='thin'
+                width="thin"
             >
                 <Menu.Item as='a' onClick={() => navigateToScreen(Screens.Users)}>
                     <Icon name='users' />
-                    Usuarios
+                    Personas
                 </Menu.Item>
                 <Menu.Item as='a' onClick={() => navigateToScreen(Screens.Products)}>
                     <Icon name='table' />
@@ -44,10 +44,10 @@ const Home = ({ screen, navigateToScreen }) => {
                 </Menu.Item>
             </Sidebar>
 
-            <Sidebar.Pusher>
-                <Segment basic>
+            <Sidebar.Pusher >
+                <div style={{ paddingRight: "150px", minHeight: "100%" }}>
                     {getCurrentScreenElement()}
-                </Segment>
+                </div>
             </Sidebar.Pusher>
         </Sidebar.Pushable>
     )
