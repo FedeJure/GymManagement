@@ -1,8 +1,24 @@
 import { User } from "./User"
 import { UserState } from "./UserState"
+import { UserType } from "./UserType"
 
 const initialState: UserState = {
-    users: [],
+    users: [{
+        id: 0,
+        data: {
+            name: "Federico",
+            lastname: "Jure",
+            birthDate: new Date(1995, 4, 10),
+            type: UserType.ADMIN,
+            productsSubscribed: [],
+            contactEmail: "fedejure@gmail.com",
+            contactPhone: "1123965448",
+            profilePicture: "",
+            brothers: [],
+            comment: "",
+            address: ""
+        }
+    }],
     lastId: 1,
 }
 
