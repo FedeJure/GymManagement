@@ -1,3 +1,5 @@
+import { stat } from "fs"
+
 export interface Product {
     id: number,
     name: string,
@@ -14,17 +16,12 @@ export interface ProductState {
     lastId: number
 }
 
-export interface ProductAction {
-    type: string,
-    product: ProductPayload
-}
-
 const initialState: ProductState = {
-    products: [{id: 0, name: "Clase de gimnasia 3 veces por semana", cost: 2400}],
+    products: [{ id: 0, name: "Clase de gimnasia 3 veces por semana", cost: 2400 }],
     lastId: 1
 }
 
-export const product = (state: ProductState, action: ProductAction) : ProductState => {
+export const product = (state: ProductState, action: any): ProductState => {
     if (!state) return initialState
     switch (action.type) {
         case "ADD_PRODUCT":
@@ -38,7 +35,14 @@ export const product = (state: ProductState, action: ProductAction) : ProductSta
                 lastId: newProduct.id + 1
             }
             break;
-    
+
+        case "REMOVE_PRODUCT":
+            return {
+                ...state,
+                products: state.products.filter(p => p.id !== action.productId)
+            }
+            break;
+
         default:
             return state
             break;

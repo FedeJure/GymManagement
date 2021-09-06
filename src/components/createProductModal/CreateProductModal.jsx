@@ -1,14 +1,14 @@
 import { useState } from "react"
 import { Button, Modal, Form } from 'semantic-ui-react'
 
-export const CreateProductModal = ({ open, onClose, onSubmit }: { open: boolean, onClose: Function, onSubmit: Function }) => {
+export const CreateProductModal = ({ open, onClose, onSubmit }) => {
     const [formData, setFormData] = useState({ name: "", price: -1 })
     const handleSubmit = () => {
         if (formData.name != "" && formData.price != -1)
             onSubmit(formData)
     }
 
-    const handleChange = (value: string, tag: string) => {
+    const handleChange = (value, tag) => {
         setFormData({ ...formData, [tag]: value })
     }
     return (

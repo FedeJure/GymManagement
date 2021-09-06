@@ -1,18 +1,17 @@
 import { useState } from "react"
 import { connect } from "react-redux"
-import { Product } from "../../modules/product/product.reducer"
-import { StoreState } from "../../store"
 import { ProductCard } from "../../components/productCard/ProductCard"
 import { Divider, Button } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
-import { addProduct } from "../../modules/product/product.actions"
+import { addProduct, removeProduct } from "../../modules/product/product.actions"
 
-const Products = ({ products, createProduct }: { products: Product[], createProduct:Function }) => {
+const Products = ({ products, createProduct, removeProduct }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
-    const handleCreation = (creationData: { name: string, price: string }) => {
+    const handleCreation = (creationData) => {
         createProduct(creationData)
         setCreationModalOpen(false)
     }
+    const handleDelete = (productId) => removeProduct(productId)
     return <div>
         <CreateProductModal open={creationModalOpen}
             onClose={() => setCreationModalOpen(false)}
@@ -22,18 +21,22 @@ const Products = ({ products, createProduct }: { products: Product[], createProd
         {products.map(({ cost, name, id }) => <ProductCard name={name}
             cost={cost}
             id={id}
-            key={id} />)}
+            key={id} 
+            onDelete={handleDelete}/>)}
     </div>
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state) => {
     return {
         products: state.product.products
     }
 }
 
-const mapDispatchToProps = (dispatch: Function) => {
-    return { createProduct: (data: {name: string, price: string}) => dispatch(addProduct(data)) }
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createProduct: (data) => dispatch(addProduct(data)),
+        removeProduct: (productId) => dispatch(removeProduct(productId))
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products)
