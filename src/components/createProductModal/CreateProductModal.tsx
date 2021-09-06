@@ -1,6 +1,6 @@
 import { MouseEventHandler, useState } from "react"
 import { Button, Modal, Form } from 'semantic-ui-react'
-import { ProductPayload } from "../../modules/product/product.reducer"
+import { ProductPayload } from "../../modules/product/ProductPayload"
 
 export const CreateProductModal = ({ onClose, onSubmit, initialData }:
     { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload }) => {

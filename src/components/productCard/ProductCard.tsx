@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react"
 import { Button, Card } from "semantic-ui-react"
-import { Product } from "../../modules/product/product.reducer"
+import { Product } from "../../modules/product/Product"
 
 export const ProductCard = ({ product, onDelete, onEdit }: {product: Product, 
     onDelete: MouseEventHandler, 

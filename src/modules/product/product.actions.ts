@@ -1,4 +1,4 @@
-import { ProductPayload } from "./product.reducer"
+import { ProductPayload } from "./ProductPayload"
 
 export const addProduct = (product: ProductPayload) => {
     return {

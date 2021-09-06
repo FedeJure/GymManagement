@@ -1,28 +1,5 @@
-
-
-export interface User {
-    id: number,
-    data: UserPayload
-}
-
-export interface UserPayload {
-    name: string,
-    lastname: string,
-    contactEmail: string,
-    contactPhone: string,
-    address: string,
-    birthDate: Date,
-    comment: string,
-    brothers: number[],
-    productsSubscribed: number[],
-    profilePicture: string 
-}
-
-
-export interface UserState {
-    users: User[],
-    lastId: number
-}
+import { User } from "./User"
+import { UserState } from "./UserState"
 
 const initialState: UserState = {
     users: [],
