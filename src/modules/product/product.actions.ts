@@ -1,11 +1,9 @@
+import { ProductPayload } from "./product.reducer"
 
-export const addProduct = (product: {name: string, cost: string}) => {
+export const addProduct = (product: ProductPayload) => {
     return {
         type: "ADD_PRODUCT",
-        product: {
-            name: product.name,
-            cost: parseFloat(product.cost)
-        }
+        product
     }
 }
 
@@ -16,7 +14,7 @@ export const removeProduct = (productId: number) => {
     }
 }
 
-export const editProduct = (productId:number, data: {name: string, cost: string}) => {
+export const editProduct = (productId:number, data: ProductPayload) => {
     return {
         type: "EDIT_PRODUCT",
         product: {

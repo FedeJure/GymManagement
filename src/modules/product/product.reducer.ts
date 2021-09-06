@@ -1,7 +1,6 @@
 export interface Product {
     id: number,
-    name: string,
-    cost: number,
+    data: ProductPayload
 }
 
 export interface ProductPayload {
@@ -25,7 +24,7 @@ export const product = (state: ProductState, action: any): ProductState => {
         case "ADD_PRODUCT":
             const newProduct: Product = {
                 id: state.lastId,
-                ...action.product
+                data: action.product
             }
             return {
                 ...state,

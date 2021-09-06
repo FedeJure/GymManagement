@@ -1,14 +1,16 @@
-import { useState } from "react"
+import { MouseEventHandler, useState } from "react"
 import { Button, Modal, Form } from 'semantic-ui-react'
+import { ProductPayload } from "../../modules/product/product.reducer"
 
-export const CreateProductModal = ({ onClose, onSubmit, initialData }) => {
-    const [formData, setFormData] = useState(initialData ? initialData : { name: "", cost: "" })
+export const CreateProductModal = ({ onClose, onSubmit, initialData }:
+    { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload }) => {
+    const [formData, setFormData] = useState<ProductPayload>(initialData ? initialData : { name: "", cost: 0 })
     const handleSubmit = () => {
         if (formData.name != "" && formData.cost != null)
             onSubmit(formData)
     }
 
-    const handleChange = (value, tag) => {
+    const handleChange = (value: any, tag: string) => {
         setFormData({ ...formData, [tag]: value })
     }
 

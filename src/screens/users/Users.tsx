@@ -51,7 +51,11 @@ const Users = ({ users, createUser, removeUser, editUser }: {users: User[], crea
             </Header>
             <Divider />
             <Card.Group>
-                {users.map((user: User) => <UserCard key={user.id} user={user}/>)}
+                {users.map((user: User) => <UserCard key={user.id} 
+                user={user}
+                onDelete={() => {}}
+                onEdit={() => {}}
+                onInfo={() => {}}/>)}
             </Card.Group>
 
         </Segment>
