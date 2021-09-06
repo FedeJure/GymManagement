@@ -4,23 +4,29 @@ import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
 import {CreateUserModal} from "../../components/createUserModal/CreateUserModal"
+import {UserCard} from "../../components/userCard/userCard"
+import { User, UserPayload } from "../../modules/users/users.reducer"
+import { Dispatch } from "redux"
+import { StoreState } from "../../store"
 
-const Users = ({ users, createUser, removeUser, editUser }) => {
+const Users = ({ users, createUser, removeUser, editUser }: {users: User[], createUser: Function, removeUser: Function, editUser: Function}) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-    const handleCreation = (creationData) => {
+    const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
         setCreationModalOpen(false)
     }
-    const handleDelete = (userId) => {
-        removeUser(userId)
+    const handleDelete = () => {
+        if (selectedUser == null) return
+        removeUser(selectedUser.id)
         setDeleteModal(false)
     }
 
-    const handleEdit = (editData) => {
+    const handleEdit = (editData: UserPayload) => {
+        if (selectedUser == null) return
         setEditModalOpen(false)
         editUser(selectedUser.id, editData)
     }
@@ -29,7 +35,7 @@ const Users = ({ users, createUser, removeUser, editUser }) => {
        {deleteModal && <ConfirmationModal
             open={deleteModal}
             onCancel={() => setDeleteModal(false)}
-            onAccept={() => handleDelete(selectedUser.id)}
+            onAccept={() => handleDelete()}
             message="Confirma eliminación de este usuario? Esta acción no puede deshacerse." />}
         {creationModalOpen && <CreateUserModal
             onClose={() => setCreationModalOpen(false)}
@@ -45,24 +51,24 @@ const Users = ({ users, createUser, removeUser, editUser }) => {
             </Header>
             <Divider />
             <Card.Group>
-                {users.map(({  }) => <></>)}
+                {users.map((user: User) => <UserCard key={user.id} user={user}/>)}
             </Card.Group>
 
         </Segment>
     </div>
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: StoreState) => {
     return {
         users: state.user.users
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        createUser: (data) => dispatch(addUser(data)),
-        removeUser: (userId) => dispatch(removeUser(userId)),
-        editUser: (userId, data) => dispatch(editUser(userId, data))
+        createUser: (data: UserPayload) => dispatch(addUser(data)),
+        removeUser: (userId: number) => dispatch(removeUser(userId)),
+        editUser: (userId: number, data: UserPayload) => dispatch(editUser(userId, data))
     }
 }
 
