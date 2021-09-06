@@ -1,16 +1,16 @@
 import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react"
 import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image } from 'semantic-ui-react'
-import { UserPayload } from "../../modules/users/users.reducer"
+import { User, UserPayload } from "../../modules/users/users.reducer"
 
 const defaultDate = new Date(0)
 
 export const CreateUserModal = ({ onClose, onSubmit, initialData }:
-    { onClose: any, onSubmit: any, initialData: UserPayload }) => {
+    { onClose: any, onSubmit: any, initialData?: User | null }) => {
     const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
-            initialData :
+            initialData.data :
             {
                 name: "",
                 lastname: "",
