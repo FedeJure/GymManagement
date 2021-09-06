@@ -1,7 +1,8 @@
 import { ChangeEvent, useRef, useState } from "react"
-import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image } from 'semantic-ui-react'
+import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image, Dropdown } from 'semantic-ui-react'
 import { User } from "../../modules/users/User"
 import { UserPayload } from "../../modules/users/UserPayload"
+import { UserType } from "../../modules/users/UserType"
 
 const defaultDate = new Date(0)
 
@@ -22,7 +23,8 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                 contactPhone: "",
                 brothers: [],
                 productsSubscribed: [],
-                profilePicture: ""
+                profilePicture: "",
+                type: UserType.STUDENT
             })
     const handleSubmit = () => {
         if (formData.name !== "" &&
@@ -68,6 +70,22 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                         <Grid.Row>
                             <Grid.Column verticalAlign='middle'>
                                 <Form onSubmit={handleSubmit}>
+                                    <Form.Field>
+                                        <label>Tipo</label>
+                                        <Dropdown fluid selection options={[{
+                                            key: UserType.STUDENT,
+                                            text: "Alumno",
+                                            value: UserType.STUDENT,
+                                        },{
+                                            key: UserType.TRAINER,
+                                            text: "Profesor",
+                                            value: UserType.TRAINER,
+                                        },{
+                                            key: UserType.ADMIN,
+                                            text: "Administrador",
+                                            value: UserType.ADMIN,
+                                        }]} />
+                                    </Form.Field>
                                     <Form.Field>
                                         <label>Nombre</label>
                                         <input placeholder=''

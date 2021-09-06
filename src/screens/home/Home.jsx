@@ -30,15 +30,21 @@ const Home = ({ screen, navigateToScreen }) => {
                 visible
                 width="thin"
             >
-                <Menu.Item as='a' onClick={() => navigateToScreen(Screens.Users)}>
+                <Menu.Item as='a'
+                    onClick={() => navigateToScreen(Screens.Users)}
+                    active={screen === Screens.Users}>
                     <Icon name='users' />
                     Personas
                 </Menu.Item>
-                <Menu.Item as='a' onClick={() => navigateToScreen(Screens.Products)}>
+                <Menu.Item as='a'
+                    onClick={() => navigateToScreen(Screens.Products)}
+                    active={screen === Screens.Products}>
                     <Icon name='table' />
                     Productos
                 </Menu.Item>
-                <Menu.Item as='a' onClick={() => navigateToScreen(Screens.Reports)}>
+                <Menu.Item as='a'
+                    onClick={() => navigateToScreen(Screens.Reports)}
+                    active={screen === Screens.Reports}>
                     <Icon name='dashboard' />
                     Reportes
                 </Menu.Item>
