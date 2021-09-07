@@ -1,12 +1,19 @@
 import { MouseEventHandler, useState } from "react"
-import { Button, Modal, Form } from 'semantic-ui-react'
+import { Button, Modal, Form, Dropdown } from 'semantic-ui-react'
+import { PayType } from "../../modules/product/PayType"
 import { ProductPayload } from "../../modules/product/ProductPayload"
 
 export const CreateProductModal = ({ onClose, onSubmit, initialData }:
     { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload }) => {
-    const [formData, setFormData] = useState<ProductPayload>(initialData ? initialData : { name: "", cost: 0 })
+    const [formData, setFormData] = useState<ProductPayload>(initialData
+        ? initialData
+        : {
+            name: "",
+            price: 0,
+            payType: PayType.MONTHLY
+        })
     const handleSubmit = () => {
-        if (formData.name != "" && formData.cost != null)
+        if (formData.name != "" && formData.price != null)
             onSubmit(formData)
     }
 
@@ -32,9 +39,26 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
                     <Form.Field inline>
                         <label>$</label>
                         <input placeholder='Valor' type="number"
-                            value={formData.cost}
-                            onChange={(v) => handleChange(v.currentTarget.value, "cost")} />
+                            value={formData.price}
+                            onChange={(v) => handleChange(v.currentTarget.value, "price")} />
                     </Form.Field>
+                    <Form.Field>
+                        <label>Tipo de cobro</label>
+                        <Dropdown fluid selection
+                            value={formData.payType}
+                            options={[{
+                                key: PayType.MONTHLY,
+                                text: "Mensual",
+                                value: PayType.MONTHLY,
+                                onClick: () => handleChange(PayType.MONTHLY, "payType")
+                            }, {
+                                key: PayType.PER_CLAS,
+                                text: "Por Clase",
+                                value: PayType.PER_CLAS,
+                                onClick: () => handleChange(PayType.PER_CLAS, "payType")
+                            }]} />
+                    </Form.Field>
+
                     <button type="submit" hidden={true} />
                 </Form>
             </Modal.Content>

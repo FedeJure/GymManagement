@@ -14,13 +14,15 @@ export const removeProduct = (productId: number) => {
     }
 }
 
-export const editProduct = (productId:number, data: ProductPayload) => {
+export const editProduct = (productId: number, data: ProductPayload) => {
     return {
         type: "EDIT_PRODUCT",
         product: {
             id: productId,
-            name: data.name,
-            cost: data.cost
+            data: {
+                name: data.name,
+                price: data.price
+            }
         }
     }
 }
