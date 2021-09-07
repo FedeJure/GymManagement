@@ -8,8 +8,8 @@ import { ProductCard } from "../productCard/ProductCard"
 
 const defaultDate = new Date(0)
 
-export const CreateUserModal = ({ products, onClose, onSubmit, initialData }:
-    { products: Product[], onClose: any, onSubmit: any, initialData?: User | null }) => {
+export const CreateUserModal = ({ products, users, onClose, onSubmit, initialData }:
+    { products: Product[], users: User[], onClose: any, onSubmit: any, initialData?: User | null }) => {
     const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
     const [formData, setFormData] = useState<UserPayload>(
@@ -26,7 +26,8 @@ export const CreateUserModal = ({ products, onClose, onSubmit, initialData }:
                 brothers: [],
                 productsSubscribed: [],
                 profilePicture: "",
-                type: UserType.STUDENT
+                type: UserType.STUDENT,
+                dni: ""
             })
     const handleSubmit = () => {
         if (formData.name !== "" &&
@@ -98,6 +99,12 @@ export const CreateUserModal = ({ products, onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(v.currentTarget.value, "lastname")} />
                                     </Form.Field>
                                     <Form.Field >
+                                        <label>Documento (DNI)</label>
+                                        <input placeholder=''
+                                            value={formData.dni}
+                                            onChange={(v) => handleChange(v.currentTarget.value, "dni")} />
+                                    </Form.Field>
+                                    <Form.Field >
                                         <label>Fecha de nacimiento</label>
                                         <input placeholder=''
                                             type="date"
@@ -148,7 +155,19 @@ export const CreateUserModal = ({ products, onClose, onSubmit, initialData }:
                                     <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
                                 </Segment>
                                 <Form.Field>
-                                    <label>Tipo</label>
+                                    <label>Hermanos</label>
+                                    <Dropdown fluid selection
+                                        multiple
+                                        value={formData.brothers}
+                                        onChange={(e, data) => handleChange(data.value, "brothers")}
+                                        options={users.map(p => ({
+                                            key: p.data.name,
+                                            text: `${p.data.lastname}, ${p.data.name}, ${p.data.dni}`,
+                                            value: p.id
+                                        }))} />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Suscripciones</label>
                                     <Dropdown fluid selection
                                         multiple
                                         value={formData.productsSubscribed}

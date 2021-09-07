@@ -20,7 +20,7 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
             <Card.Header textAlign="center">
                 {user.data.lastname}, {user.data.name}
             </Card.Header>
-            <Card.Meta>{(new Date()).getFullYear() - user.data.birthDate.getFullYear()} años</Card.Meta>
+            <Card.Meta>DNI: {user.data.dni} | {(new Date()).getFullYear() - user.data.birthDate.getFullYear()} años</Card.Meta>
             <Card.Description>
                 {user.data.comment}
             </Card.Description>
