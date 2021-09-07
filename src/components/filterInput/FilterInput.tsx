@@ -34,6 +34,7 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange }
     const handleChange = (value: string[]) => {
         const userTypesSelections = value.filter(s => userTypes.includes(s))
         const customSelections = value.filter(s => !userTypes.includes(s))
+        setOptions(options.filter(o => !selections.includes(o.value)))
         onCustomChange(customSelections)
         onUserTypeFilterChange(userTypesSelections)
     }
@@ -47,6 +48,7 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange }
             fluid
             multiple
             allowAdditions
+            additionLabel="Personalizado: "
             onAddItem={(e, d) => handleAddition(d.value as string)}
             onChange={(e, d) => handleChange(d.value as string[])}
         /></Menu>
