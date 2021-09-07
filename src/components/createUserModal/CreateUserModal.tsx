@@ -1,13 +1,15 @@
 import { ChangeEvent, useRef, useState } from "react"
 import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image, Dropdown } from 'semantic-ui-react'
+import { Product } from "../../modules/product/Product"
 import { User } from "../../modules/users/User"
 import { UserPayload } from "../../modules/users/UserPayload"
 import { UserType } from "../../modules/users/UserType"
+import { ProductCard } from "../productCard/ProductCard"
 
 const defaultDate = new Date(0)
 
-export const CreateUserModal = ({ onClose, onSubmit, initialData }:
-    { onClose: any, onSubmit: any, initialData?: User | null }) => {
+export const CreateUserModal = ({ products, onClose, onSubmit, initialData }:
+    { products: Product[], onClose: any, onSubmit: any, initialData?: User | null }) => {
     const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
     const [formData, setFormData] = useState<UserPayload>(
@@ -79,9 +81,9 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             ({
                                                 key: t,
                                                 text: t,
-                                                value: t,
-                                                onClick: () => handleChange(t, "type")
-                                            }))} />
+                                                value: t
+                                            }))}
+                                            onChange={(e, data) => handleChange(data.value, "type")} />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Nombre</label>
@@ -145,6 +147,19 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                     }}>Subir Imagen</Button>
                                     <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
                                 </Segment>
+                                <Form.Field>
+                                    <label>Tipo</label>
+                                    <Dropdown fluid selection
+                                        multiple
+                                        value={formData.productsSubscribed}
+                                        onChange={(e, data) => handleChange(data.value, "productsSubscribed")}
+                                        options={products.map(p => ({
+                                            key: p.data.name,
+                                            text: p.data.name,
+                                            content: <ProductCard product={p} interactable={false} />,
+                                            value: p.id
+                                        }))} />
+                                </Form.Field>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

@@ -54,6 +54,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct }:
             <Divider />
             <Card.Group>
                 {products.map((product) => <ProductCard 
+                    interactable={true}
                     product={product}
                     key={product.id}
                     onDelete={() => {
