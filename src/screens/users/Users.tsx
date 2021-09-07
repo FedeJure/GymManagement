@@ -57,7 +57,9 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
                 Personas
             </Header>
             <Divider />
-            <FilterInput />
+            <FilterInput 
+                onCustomChange={(v: any) => console.log(v)}
+                onUserTypeFilterChange={(v: any) => console.log(v)}/>
             <Divider />
             <Card.Group>
                 {users.map((user: User) => <UserCard key={user.id}
