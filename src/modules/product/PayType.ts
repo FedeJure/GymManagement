@@ -1,4 +1,4 @@
 export enum PayType {
-    MONTHLY= "monthly",
-    PER_CLAS="per_clas"
+    MONTHLY= "Mensual",
+    PER_CLASS="Por clase"
 }

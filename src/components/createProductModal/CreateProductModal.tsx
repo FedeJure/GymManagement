@@ -46,17 +46,13 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
                         <label>Tipo de cobro</label>
                         <Dropdown fluid selection
                             value={formData.payType}
-                            options={[{
-                                key: PayType.MONTHLY,
-                                text: "Mensual",
-                                value: PayType.MONTHLY,
-                                onClick: () => handleChange(PayType.MONTHLY, "payType")
-                            }, {
-                                key: PayType.PER_CLAS,
-                                text: "Por Clase",
-                                value: PayType.PER_CLAS,
-                                onClick: () => handleChange(PayType.PER_CLAS, "payType")
-                            }]} />
+                            options={[PayType.MONTHLY, PayType.PER_CLASS].map(t =>
+                            ({
+                                key: t,
+                                text: t,
+                                value: t,
+                                onClick: () => handleChange(t, "payType")
+                            }))} />
                     </Form.Field>
 
                     <button type="submit" hidden={true} />

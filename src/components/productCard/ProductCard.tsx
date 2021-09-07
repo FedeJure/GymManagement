@@ -6,6 +6,7 @@ export const ProductCard = ({ product, onDelete, onEdit }: {product: Product,
     onDelete: MouseEventHandler, 
     onEdit: MouseEventHandler}) =>
     <Card header={product.data.name} description={<>
+        <Card.Content>{product.data.payType}</Card.Content>
         <Button size="mini" color="red" floated="right" icon="trash" onClick={onDelete}></Button>
         <Button size="mini"  active floated="right" icon="edit" onClick={onEdit}></Button>
     </>} meta={`$${product.data.price}`} />
