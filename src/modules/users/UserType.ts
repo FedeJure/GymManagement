@@ -1,6 +1,6 @@
 
 export enum UserType {
-    ADMIN = "admin",
-    TRAINER = "trainer",
-    STUDENT = "student"
+    ADMIN = "Admin",
+    TRAINER = "Profesor",
+    STUDENT = "Usuario"
 }

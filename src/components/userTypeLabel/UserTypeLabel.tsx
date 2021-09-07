@@ -14,16 +14,5 @@ export const UserTypeLabel = ({ user }: { user: UserPayload }) => (
             default:
                 return "black"
         }
-    })()}  compact>{(() => {
-        switch (user.type) {
-            case UserType.ADMIN:
-                return "Admin"
-            case UserType.STUDENT:
-                return "Alumno"
-            case UserType.TRAINER:
-                return "Profesor"
-            default:
-                return "Alumno"
-        }
-    })()}</Label>
+    })()}  compact>{user.type}</Label>
 )

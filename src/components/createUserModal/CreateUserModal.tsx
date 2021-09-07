@@ -73,24 +73,15 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Field>
                                         <label>Tipo</label>
-                                        <Dropdown fluid selection 
-                                        value={formData.type}
-                                        options={[{
-                                            key: UserType.STUDENT,
-                                            text: "Alumno",
-                                            value: UserType.STUDENT,
-                                            onClick:() => handleChange(UserType.STUDENT, "type")
-                                        },{
-                                            key: UserType.TRAINER,
-                                            text: "Profesor",
-                                            value: UserType.TRAINER,
-                                            onClick:() => handleChange(UserType.TRAINER, "type")
-                                        },{
-                                            key: UserType.ADMIN,
-                                            text: "Administrador",
-                                            value: UserType.ADMIN,
-                                            onClick:() => handleChange(UserType.ADMIN, "type")
-                                        }]}/>
+                                        <Dropdown fluid selection
+                                            value={formData.type}
+                                            options={[UserType.ADMIN, UserType.STUDENT, UserType.TRAINER].map(t =>
+                                            ({
+                                                key: t,
+                                                text: t,
+                                                value: t,
+                                                onClick: () => handleChange(t, "type")
+                                            }))} />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Nombre</label>
