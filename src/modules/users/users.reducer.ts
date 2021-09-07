@@ -16,7 +16,8 @@ const initialState: UserState = {
             profilePicture: "",
             brothers: [],
             comment: "",
-            address: ""
+            address: "",
+            dni: "39065403"
         }
     }],
     lastId: 1,

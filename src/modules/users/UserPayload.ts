@@ -10,5 +10,6 @@ export interface UserPayload {
     comment: string,
     brothers: number[],
     productsSubscribed: number[],
-    profilePicture: string 
+    profilePicture: string,
+    dni: string
 }
