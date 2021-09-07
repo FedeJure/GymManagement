@@ -2,6 +2,8 @@ import { MouseEventHandler, useState } from "react"
 import { Button, Modal, Form, Dropdown } from 'semantic-ui-react'
 import { PayType } from "../../modules/product/PayType"
 import { ProductPayload } from "../../modules/product/ProductPayload"
+import { Weekdays } from "./Weekdays"
+
 
 export const CreateProductModal = ({ onClose, onSubmit, initialData }:
     { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload }) => {
@@ -10,7 +12,8 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
         : {
             name: "",
             price: 0,
-            payType: PayType.MONTHLY
+            payType: PayType.MONTHLY,
+            daysInWeek:[]
         })
     const handleSubmit = () => {
         if (formData.name != "" && formData.price != null)
@@ -50,11 +53,28 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
                             ({
                                 key: t,
                                 text: t,
-                                value: t,
-                                onClick: () => handleChange(t, "payType")
-                            }))} />
+                                value: t                                
+                            }))} 
+                            onChange={(e, data) => handleChange(data.value, "payType")}/>
                     </Form.Field>
-
+                    <Form.Field>
+                        <label>Días de la semána</label>
+                        <Dropdown multiple selection fluid
+                        value={formData.daysInWeek}
+                            options={[Weekdays.Monday,
+                            Weekdays.Tuesday,
+                            Weekdays.Wednesday,
+                            Weekdays.Thursday,
+                            Weekdays.Friday,
+                            Weekdays.Saturday,
+                            Weekdays.Sunday].map(t =>
+                            ({
+                                key: t,
+                                text: t,
+                                value: t
+                            }))} 
+                            onChange={(e, data) => handleChange(data.value, "daysInWeek")}/>
+                    </Form.Field>
                     <button type="submit" hidden={true} />
                 </Form>
             </Modal.Content>

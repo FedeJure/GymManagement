@@ -19,10 +19,7 @@ export const editProduct = (productId: number, data: ProductPayload) => {
         type: "EDIT_PRODUCT",
         product: {
             id: productId,
-            data: {
-                name: data.name,
-                price: data.price
-            }
+            data
         }
     }
 }
