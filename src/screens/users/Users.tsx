@@ -10,7 +10,7 @@ import { StoreState } from "../../store"
 import { UserPayload } from "../../modules/users/UserPayload"
 import { User } from "../../modules/users/User"
 import { Product } from "../../modules/product/Product"
-import { product } from "../../modules/product/product.reducer"
+import { FilterInput } from "../../components/filterInput/FilterInput"
 
 const Users = ({ products, users, createUser, removeUser, editUser }:
     { products: Product[], users: User[], createUser: Function, removeUser: Function, editUser: Function }) => {
@@ -18,7 +18,6 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    console.log(users)
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
         setCreationModalOpen(false)
@@ -57,6 +56,8 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             <Header as='h2' floated='left'>
                 Personas
             </Header>
+            <Divider />
+            <FilterInput />
             <Divider />
             <Card.Group>
                 {users.map((user: User) => <UserCard key={user.id}
