@@ -34,12 +34,13 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange }
     const handleChange = (value: string[]) => {
         const userTypesSelections = value.filter(s => userTypes.includes(s))
         const customSelections = value.filter(s => !userTypes.includes(s))
-        setOptions(options.filter(o => !selections.includes(o.value)))
+        if (value.length == 0) setOptions(options.filter(o => !selections.includes(o.value)))
         onCustomChange(customSelections)
         onUserTypeFilterChange(userTypesSelections)
     }
     return (<Menu>
-        <Menu.Item><Icon name="filter"/></Menu.Item>
+        <Menu.Item><Icon name="filter" /></Menu.Item>
+
         <Dropdown
             options={options}
             placeholder="Filtro"

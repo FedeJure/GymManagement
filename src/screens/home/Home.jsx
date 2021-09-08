@@ -51,7 +51,7 @@ const Home = ({ screen, navigateToScreen }) => {
             </Sidebar>
 
             <Sidebar.Pusher >
-                <div style={{ paddingRight: "150px", minHeight: "100%" }}>
+                <div style={{ paddingRight: "150px", minHeight: "100vh" }}>
                     {getCurrentScreenElement()}
                 </div>
             </Sidebar.Pusher>
