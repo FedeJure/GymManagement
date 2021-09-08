@@ -6,6 +6,7 @@ import Users from "../users/Users"
 import Products from "../products/Products"
 import { Reports } from "../reports/Reports"
 import { navigateTo } from "../../modules/navigation/navigation.actions"
+import Subscriptions from '../subscriptions/Subscriptions'
 
 const Home = ({ screen, navigateToScreen }) => {
     const getCurrentScreenElement = () => {
@@ -16,6 +17,8 @@ const Home = ({ screen, navigateToScreen }) => {
                 return <Products />
             case Screens.Reports:
                 return <Reports />
+            case Screens.Subscriptions:
+                return <Subscriptions />
             default:
                 return <></>
         }
@@ -37,9 +40,15 @@ const Home = ({ screen, navigateToScreen }) => {
                     Personas
                 </Menu.Item>
                 <Menu.Item as='a'
+                    onClick={() => navigateToScreen(Screens.Subscriptions)}
+                    active={screen === Screens.Subscriptions}>
+                    <Icon name='table' />
+                    Suscripciones
+                </Menu.Item>
+                <Menu.Item as='a'
                     onClick={() => navigateToScreen(Screens.Products)}
                     active={screen === Screens.Products}>
-                    <Icon name='table' />
+                    <Icon name='shopping cart' />
                     Productos
                 </Menu.Item>
                 <Menu.Item as='a'
