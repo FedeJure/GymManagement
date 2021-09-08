@@ -46,7 +46,6 @@ const Products = ({ products, createProduct, removeProduct, editProduct }:
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedProduct?.data}/>}
-        <Segment >
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
                 Productos
@@ -66,9 +65,6 @@ const Products = ({ products, createProduct, removeProduct, editProduct }:
                         setEditModalOpen(true)
                     }} />)}
             </Card.Group>
-
-
-        </Segment>
     </div>
 }
 
