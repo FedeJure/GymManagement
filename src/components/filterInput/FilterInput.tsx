@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Dropdown, SemanticShorthandItem, LabelProps, Icon, Menu } from 'semantic-ui-react'
 import { UserType } from "../../modules/users/UserType"
 
@@ -34,7 +34,7 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange }
     const handleChange = (value: string[]) => {
         const userTypesSelections = value.filter(s => userTypes.includes(s))
         const customSelections = value.filter(s => !userTypes.includes(s))
-        if (value.length == 0) setOptions(options.filter(o => !selections.includes(o.value)))
+        if (value.length === 0) setOptions(options.filter(o => !selections.includes(o.value)))
         onCustomChange(customSelections)
         onUserTypeFilterChange(userTypesSelections)
     }

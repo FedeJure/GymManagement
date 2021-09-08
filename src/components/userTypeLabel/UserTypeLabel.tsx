@@ -14,5 +14,5 @@ export const UserTypeLabel = ({ user }: { user: UserPayload }) => (
             default:
                 return "black"
         }
-    })()}  compact>{user.type}</Label>
+    })()} >{user.type}</Label>
 )

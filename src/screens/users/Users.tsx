@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { connect } from "react-redux"
 import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -26,20 +26,20 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
         setCreationModalOpen(false)
     }
     const handleDelete = () => {
-        if (selectedUser == null) return
+        if (selectedUser === null) return
         removeUser(selectedUser.id)
         setDeleteModal(false)
     }
 
     const handleEdit = (editData: UserPayload) => {
-        if (selectedUser == null) return
+        if (selectedUser === null) return
         setEditModalOpen(false)
         editUser(selectedUser.id, editData)
     }
 
     const mustShowUser = (user: User) => {
         const userString = `${user.data.name} ${user.data.lastname} ${user.data.dni}`.toLocaleLowerCase()
-        if (userCustomFiltes.length == 0 && userTagFiltes.length == 0) return true
+        if (userCustomFiltes.length === 0 && userTagFiltes.length === 0) return true
         console.log(userTagFiltes.length > 0 ,userTagFiltes,user.data.type)
         if (userTagFiltes.length > 0 && userTagFiltes.includes(user.data.type)) return true
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
@@ -59,7 +59,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             onClose={() => setCreationModalOpen(false)}
             onSubmit={handleCreation} />}
         {editModalOpen && <CreateUserModal
-            users={users.filter(u => u.id != selectedUser?.id)}
+            users={users.filter(u => u.id !== selectedUser?.id)}
             products={products}
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}

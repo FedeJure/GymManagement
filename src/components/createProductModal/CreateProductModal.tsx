@@ -16,7 +16,7 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
             daysInWeek:[]
         })
     const handleSubmit = () => {
-        if (formData.name != "" && formData.price != null)
+        if (formData.name !== "" && formData.price !== null)
             onSubmit(formData)
     }
 

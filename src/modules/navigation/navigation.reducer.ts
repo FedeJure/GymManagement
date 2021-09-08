@@ -20,11 +20,8 @@ export const navigation = (state: NavigationState, action: NavigationAction) : N
             return {
                 ...state,
                 currentScreen: action.screen
-            }
-            break;
-    
+            }    
         default:
             return state
-            break;
     }
 }
