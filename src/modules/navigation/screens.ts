@@ -1,5 +1,6 @@
 export enum Screens {
     Users="users",
     Products="products",
-    Reports="reports"
+    Reports="reports",
+    Subscriptions="subscription"
 }
