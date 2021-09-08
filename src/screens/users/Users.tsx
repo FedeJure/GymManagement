@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
+import "./Users.css"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal"
 import { UserCard } from "../../components/userCard/UserCard"
@@ -15,6 +16,8 @@ import { FilterInput } from "../../components/filterInput/FilterInput"
 const Users = ({ products, users, createUser, removeUser, editUser }:
     { products: Product[], users: User[], createUser: Function, removeUser: Function, editUser: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
+    const [userTagFiltes, setUserTagFiltes] = useState<string[]>([])
+    const [userCustomFiltes, setUserCustomFiltes] = useState<string[]>([])
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -34,7 +37,16 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
         editUser(selectedUser.id, editData)
     }
 
-    return <div>
+    const mustShowUser = (user: User) => {
+        const userString = `${user.data.name} ${user.data.lastname} ${user.data.dni}`.toLocaleLowerCase()
+        if (userCustomFiltes.length == 0 && userCustomFiltes.length == 0) return true
+        if (userTagFiltes.length > 0 && !userTagFiltes.includes(user.data.type)) return false
+        return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
+    }
+
+    const usersToShow = users.filter(u => mustShowUser(u))
+
+    return <div className="usersScreen">
         {deleteModal && <ConfirmationModal
             open={deleteModal}
             onCancel={() => setDeleteModal(false)}
@@ -51,18 +63,19 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedUser} />}
-        <Segment >
+        <Segment>
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
                 Personas
             </Header>
             <Divider />
-            <FilterInput 
-                onCustomChange={(v: any) => console.log(v)}
-                onUserTypeFilterChange={(v: any) => console.log(v)}/>
+            <FilterInput
+                onCustomChange={(f: string[]) => setUserCustomFiltes(f.map(v => v.toLocaleLowerCase()))}
+                onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
+
             <Divider />
-            <Card.Group>
-                {users.map((user: User) => <UserCard key={user.id}
+            {usersToShow.length > 0 && <Card.Group >
+                {usersToShow.map((user: User) => <UserCard key={user.id}
                     user={user}
                     onDelete={() => {
                         setSelectedUser(user)
@@ -73,7 +86,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
                         setEditModalOpen(true)
                     }}
                     onInfo={() => { }} />)}
-            </Card.Group>
+            </Card.Group>}
 
         </Segment>
     </div>
