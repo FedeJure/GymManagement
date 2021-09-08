@@ -47,7 +47,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
 
     const usersToShow = users.filter(u => mustShowUser(u))
 
-    return <div className="usersScreen">
+    return <div>
         {deleteModal && <ConfirmationModal
             open={deleteModal}
             onCancel={() => setDeleteModal(false)}
@@ -64,7 +64,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedUser} />}
-        <Segment>
+
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
                 Personas
@@ -88,8 +88,6 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
                     }}
                     onInfo={() => { }} />)}
             </Card.Group>}
-
-        </Segment>
     </div>
 }
 

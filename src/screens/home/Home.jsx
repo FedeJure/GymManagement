@@ -21,7 +21,7 @@ const Home = ({ screen, navigateToScreen }) => {
         }
     }
     return (
-        <Sidebar.Pushable as={Segment} className="homeScreen">
+        <Sidebar.Pushable as={Segment}>
             <Sidebar
                 as={Menu}
                 icon='labeled'
@@ -50,10 +50,10 @@ const Home = ({ screen, navigateToScreen }) => {
                 </Menu.Item>
             </Sidebar>
 
-            <Sidebar.Pusher >
-                <div style={{ paddingRight: "150px", minHeight: "100vh" }}>
+            <Sidebar.Pusher className="homeScreen">
+                <Segment style={{ paddingRight: "150px", minHeight: "100vh" }}>
                     {getCurrentScreenElement()}
-                </div>
+                </Segment>
             </Sidebar.Pusher>
         </Sidebar.Pushable>
     )
