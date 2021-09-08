@@ -39,8 +39,9 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
 
     const mustShowUser = (user: User) => {
         const userString = `${user.data.name} ${user.data.lastname} ${user.data.dni}`.toLocaleLowerCase()
-        if (userCustomFiltes.length == 0 && userCustomFiltes.length == 0) return true
-        if (userTagFiltes.length > 0 && !userTagFiltes.includes(user.data.type)) return false
+        if (userCustomFiltes.length == 0 && userTagFiltes.length == 0) return true
+        console.log(userTagFiltes.length > 0 ,userTagFiltes,user.data.type)
+        if (userTagFiltes.length > 0 && userTagFiltes.includes(user.data.type)) return true
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
     }
 
