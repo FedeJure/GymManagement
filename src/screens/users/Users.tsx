@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { connect } from "react-redux"
-import { Divider, Button, Header, Card } from "semantic-ui-react"
+import { Divider, Button, Header, Card, Segment, Container } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
@@ -12,6 +12,7 @@ import { UserPayload } from "../../modules/users/UserPayload"
 import { User } from "../../modules/users/User"
 import { Product } from "../../modules/product/Product"
 import { FilterInput } from "../../components/filterInput/FilterInput"
+import { ExcelUploader } from "../../components/excelUploader/excelUploader"
 
 const Users = ({ products, users, createUser, removeUser, editUser }:
     { products: Product[], users: User[], createUser: Function, removeUser: Function, editUser: Function }) => {
@@ -40,7 +41,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     const mustShowUser = (user: User) => {
         const userString = `${user.data.name} ${user.data.lastname} ${user.data.dni}`.toLocaleLowerCase()
         if (userCustomFiltes.length === 0 && userTagFiltes.length === 0) return true
-        console.log(userTagFiltes.length > 0 ,userTagFiltes,user.data.type)
+        console.log(userTagFiltes.length > 0, userTagFiltes, user.data.type)
         if (userTagFiltes.length > 0 && userTagFiltes.includes(user.data.type)) return true
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
     }
@@ -65,29 +66,40 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             onSubmit={handleEdit}
             initialData={selectedUser} />}
 
-            <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
+
+
+        <Container fluid style={{ minHeight: "2em", display: "flex", justifyContent: "space-between " }}>
             <Header as='h2' floated='left'>
                 Personas
             </Header>
-            <Divider />
-            <FilterInput
-                onCustomChange={(f: string[]) => setUserCustomFiltes(f.map(v => v.toLocaleLowerCase()))}
-                onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
+            <div>
+                <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
+                <ExcelUploader />
 
-            <Divider />
-            {usersToShow.length > 0 && <Card.Group >
-                {usersToShow.map((user: User) => <UserCard key={user.id}
-                    user={user}
-                    onDelete={() => {
-                        setSelectedUser(user)
-                        setDeleteModal(true)
-                    }}
-                    onEdit={() => {
-                        setSelectedUser(user)
-                        setEditModalOpen(true)
-                    }}
-                    onInfo={() => { }} />)}
-            </Card.Group>}
+            </div>
+
+        </Container>
+
+
+        <Divider />
+        <FilterInput
+            onCustomChange={(f: string[]) => setUserCustomFiltes(f.map(v => v.toLocaleLowerCase()))}
+            onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
+
+        <Divider />
+        {usersToShow.length > 0 && <Card.Group >
+            {usersToShow.map((user: User) => <UserCard key={user.id}
+                user={user}
+                onDelete={() => {
+                    setSelectedUser(user)
+                    setDeleteModal(true)
+                }}
+                onEdit={() => {
+                    setSelectedUser(user)
+                    setEditModalOpen(true)
+                }}
+                onInfo={() => { }} />)}
+        </Card.Group>}
     </div>
 }
 
