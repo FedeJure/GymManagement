@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { connect } from "react-redux"
 import { ProductCard } from "../../components/productCard/ProductCard"
-import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
+import { Divider, Button, Header, Card } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
 import { addProduct, editProduct, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
