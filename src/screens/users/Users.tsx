@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { connect } from "react-redux"
-import { Divider, Button, Segment, Header, Card } from "semantic-ui-react"
+import { Divider, Button, Header, Card } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
