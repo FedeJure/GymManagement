@@ -4,7 +4,7 @@ import { Button, ButtonProps } from "semantic-ui-react";
 
 const allowedTypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-exce"]
 
-export const ExcelUploader = ({floated}: ButtonProps) => {
+export const ExcelUploader = ({floated, onLoad}: ButtonProps & {onLoad: Function}) => {
     const fileRef = useRef<HTMLInputElement>(null)
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +24,11 @@ export const ExcelUploader = ({floated}: ButtonProps) => {
             const wb = read(bstr, { type: 'binary' });
             const wsname = wb.SheetNames[0];
             const ws = wb.Sheets[wsname];
-            /* Convert array of arrays */
-            const data = utils.sheet_to_csv(ws);
-            console.log("Data>>>" + data);
+            const data = utils.sheet_to_json(ws);
+            onLoad(data)
         };
         reader.readAsBinaryString(file);
+        event.currentTarget.value = ""
     }
 
     return (<>

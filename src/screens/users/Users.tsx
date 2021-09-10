@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { connect } from "react-redux"
-import { Divider, Button, Header, Card, Segment, Container } from "semantic-ui-react"
+import { Divider, Button, Header, Card, Container } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
@@ -13,9 +13,11 @@ import { User } from "../../modules/users/User"
 import { Product } from "../../modules/product/Product"
 import { FilterInput } from "../../components/filterInput/FilterInput"
 import { ExcelUploader } from "../../components/excelUploader/excelUploader"
+import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader"
+import { mapToExcel, mapFromExcel } from "../../modules/users/UserMapper"
 
 const Users = ({ products, users, createUser, removeUser, editUser }:
-    { products: Product[], users: User[], createUser: Function, removeUser: Function, editUser: Function }) => {
+    { products: Product[], users: User[], createUser: (user: UserPayload) => void, removeUser: Function, editUser: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [userTagFiltes, setUserTagFiltes] = useState<string[]>([])
     const [userCustomFiltes, setUserCustomFiltes] = useState<string[]>([])
@@ -46,6 +48,10 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
     }
 
+    const handleExcelLoad = (data: any[]) => {
+        data.map(d => mapFromExcel(d)).forEach(createUser)
+    }
+
     const usersToShow = users.filter(u => mustShowUser(u))
 
     return <div>
@@ -74,8 +80,8 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             </Header>
             <div>
                 <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
-                <ExcelUploader />
-
+                <ExcelUploader onLoad={handleExcelLoad} />
+                <ExcelDownloader data={users.map(u => mapToExcel(u))} name="Users Database" />
             </div>
 
         </Container>
@@ -87,7 +93,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
             onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
 
         <Divider />
-        {usersToShow.length > 0 && <Card.Group >
+        {usersToShow.length > 0 && <Card.Group centered >
             {usersToShow.map((user: User) => <UserCard key={user.id}
                 user={user}
                 onDelete={() => {
