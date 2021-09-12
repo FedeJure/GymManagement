@@ -12,17 +12,17 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
             {<Image
                 floated='right'
                 size='mini'
-                src={user.data.profilePicture}
+                src={user.profilePicture}
             />}
             <Card.Header textAlign="left">
-                <UserTypeLabel user={user.data}/>      
+                <UserTypeLabel user={user}/>      
             </Card.Header>
             <Card.Header textAlign="center">
-                {user.data.lastname}, {user.data.name}
+                {user.lastname}, {user.name}
             </Card.Header>
-            <Card.Meta>DNI: {user.data.dni} | {(new Date()).getFullYear() - user.data.birthDate.getFullYear()} años</Card.Meta>
+            <Card.Meta>DNI: {user.dni} | {(new Date()).getFullYear() - user.birthDate.getFullYear()} años</Card.Meta>
             <Card.Description>
-                {user.data.comment}
+                {user.comment}
             </Card.Description>
         </Card.Content>
         <Card.Content extra>

@@ -14,7 +14,7 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
     const fileRef = useRef<HTMLInputElement>(null)
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
-            initialData.data :
+            initialData :
             {
                 name: "",
                 lastname: "",
@@ -161,8 +161,8 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
                                         value={formData.brothers}
                                         onChange={(e, data) => handleChange(data.value, "brothers")}
                                         options={users.map(p => ({
-                                            key: p.data.name,
-                                            text: `${p.data.lastname}, ${p.data.name}, ${p.data.dni}`,
+                                            key: p.name,
+                                            text: `${p.lastname}, ${p.name}, ${p.dni}`,
                                             value: p.id
                                         }))} />
                                 </Form.Field>
@@ -173,8 +173,8 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
                                         value={formData.productsSubscribed}
                                         onChange={(e, data) => handleChange(data.value, "productsSubscribed")}
                                         options={products.map(p => ({
-                                            key: p.data.name,
-                                            text: p.data.name,
+                                            key: p.name,
+                                            text: p.name,
                                             content: <ProductCard product={p} interactable={false} />,
                                             value: p.id
                                         }))} />

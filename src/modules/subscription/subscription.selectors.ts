@@ -4,15 +4,15 @@ import { UserPayload } from "../users/UserPayload"
 import { UserSubscription } from "./UserSubscription"
 
 export const getUserSubscriptions = (store: StoreState): UserSubscription[] => {
-    const usersMap: { [key: number]: UserPayload } = {}
-    store.user.users.forEach(u => usersMap[u.id] = u.data)
-    const productMap: { [key: number]: ProductPayload } = {}
-    store.product.products.forEach(p => productMap[p.id] = p.data)
+    const usersMap: { [key: string]: UserPayload } = {}
+    store.user.users.forEach(u => usersMap[u.id] = u)
+    const productMap: { [key: string]: ProductPayload } = {}
+    store.product.products.forEach(p => productMap[p.id] = p)
     return store.subscription.subscriptions
-    .filter(s => usersMap[s.data.userId] && productMap[s.data.productId])
+    .filter(s => usersMap[s.userId] && productMap[s.productId])
         .map(s => ({
-            user: usersMap[s.data.userId],
+            user: usersMap[s.userId],
             subscription: s,
-            product: productMap[s.data.productId]
+            product: productMap[s.productId]
         }))
 }

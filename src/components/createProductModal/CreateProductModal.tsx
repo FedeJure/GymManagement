@@ -6,7 +6,7 @@ import { Weekdays } from "./Weekdays"
 
 
 export const CreateProductModal = ({ onClose, onSubmit, initialData }:
-    { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload }) => {
+    { onClose: MouseEventHandler, onSubmit: (data: ProductPayload) => void, initialData?: ProductPayload | null }) => {
     const [formData, setFormData] = useState<ProductPayload>(initialData
         ? initialData
         : {

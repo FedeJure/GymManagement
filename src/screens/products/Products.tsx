@@ -22,7 +22,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct }:
         createProduct(creationData)
         setCreationModalOpen(false)
     }
-    const handleDelete = (productId: number) => {
+    const handleDelete = (productId: string) => {
         removeProduct(productId)
         setDeleteModal(false)
     }
@@ -45,7 +45,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct }:
         {editModalOpen &&<CreateProductModal
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
-            initialData={selectedProduct?.data}/>}
+            initialData={selectedProduct}/>}
             <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
             <Header as='h2' floated='left'>
                 Productos

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { Divider, Button, Header, Card, Container } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -24,6 +24,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
         setCreationModalOpen(false)
@@ -41,10 +42,10 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     }
 
     const mustShowUser = (user: User) => {
-        const userString = `${user.data.name} ${user.data.lastname} ${user.data.dni}`.toLocaleLowerCase()
+        const userString = `${user.name} ${user.lastname} ${user.dni}`.toLocaleLowerCase()
         if (userCustomFiltes.length === 0 && userTagFiltes.length === 0) return true
-        console.log(userTagFiltes.length > 0, userTagFiltes, user.data.type)
-        if (userTagFiltes.length > 0 && userTagFiltes.includes(user.data.type)) return true
+        console.log(userTagFiltes.length > 0, userTagFiltes, user.type)
+        if (userTagFiltes.length > 0 && userTagFiltes.includes(user.type)) return true
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
     }
 

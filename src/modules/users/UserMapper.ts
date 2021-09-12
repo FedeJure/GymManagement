@@ -3,7 +3,7 @@ import { UserPayload } from "./UserPayload"
 import { UserType } from "./UserType"
 
 interface UserExcel {
-    Id?: number,
+    Id?: string,
     Tipo: string,
     Nombre: string,
     Apellido: string,
@@ -39,20 +39,20 @@ export const mapFromExcel = (excelMapped: UserExcel): UserPayload => {
 export const mapToExcel = (excelMapped: User): UserExcel => {
     return ({
         Id: excelMapped.id,
-        Tipo: excelMapped.data.type,
-        Nombre: excelMapped.data.name,
-        Apellido: excelMapped.data.lastname,
+        Tipo: excelMapped.type,
+        Nombre: excelMapped.name,
+        Apellido: excelMapped.lastname,
         // eslint-disable-next-line
-        ["Email de contacto"]: excelMapped.data.contactEmail,
+        ["Email de contacto"]: excelMapped.contactEmail,
         // eslint-disable-next-line
-        ["Telefono de contacto"]: excelMapped.data.contactPhone,
-        Direccion: excelMapped.data.address,
+        ["Telefono de contacto"]: excelMapped.contactPhone,
+        Direccion: excelMapped.address,
         // eslint-disable-next-line
-        ['Fecha de nacimiento']: excelMapped.data.birthDate.getTime(),
-        Comentario: excelMapped.data.comment,
-        Hermanos: JSON.stringify(excelMapped.data.brothers),
-        Suscripciones: JSON.stringify(excelMapped.data.productsSubscribed),
-        Foto: excelMapped.data.profilePicture,
-        Dni: excelMapped.data.dni
+        ['Fecha de nacimiento']: excelMapped.birthDate.getTime(),
+        Comentario: excelMapped.comment,
+        Hermanos: JSON.stringify(excelMapped.brothers),
+        Suscripciones: JSON.stringify(excelMapped.productsSubscribed),
+        Foto: excelMapped.profilePicture,
+        Dni: excelMapped.dni
     })
 }

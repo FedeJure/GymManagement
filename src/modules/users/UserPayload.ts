@@ -13,3 +13,5 @@ export interface UserPayload {
     profilePicture: string,
     dni: string
 }
+
+type User = UserPayload & {id: number}

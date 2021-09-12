@@ -1,41 +1,37 @@
-// const MongoClient = require('mongodb').MongoClient; //For real database
-const MongoClient = require('mongo-mock').MongoClient; //For mock in-memory database
-const assert = require('assert');
+import  { Schema, Types, Model } from "mongoose"
+import mongoose from "mongoose"
+import  { MockMongoose } from "mock-mongoose"
 
-const { Schema, Types } = require("mongoose")
-const mongoose = require("mongoose")
-const { MockMongoose } = require("mock-mongoose")
 const mockMongoose = new MockMongoose(mongoose)
 const dbName = 'gymManagement';
 const url = 'mongodb://localhost:27017/' + dbName;
 
-var mongoClient = null;
 
 mockMongoose.prepareStorage().then(function () {
   mongoose.connect(url);
   createSchemas()
 });
 
-exports.getClient = () => {
+export const getClient = () => {
 
   return mongoose
 }
 
-exports.getUserModel = () => {
+export const getUserModel = () : Model<any,any,any> => {
   return mongoose.model("User")
 }
 
-exports.getProductModel = () => {
+export const getProductModel = (): Model<any,any,any> => {
   return mongoose.model("Product")
 }
 
-exports.getSubscriptionModel = () => {
+export const getSubscriptionModel = (): Model<any,any,any> => {
   return mongoose.model("Subscription")
 }
 
 const createSchemas = () => {
   const UserSchema = new Schema({
-    _id: Types.ObjectId,
+    id: Types.ObjectId,
     type: String,
     name: String,
     lastname: String,
@@ -53,7 +49,7 @@ const createSchemas = () => {
   mongoose.model("User", UserSchema)
 
   const ProductSchema = new Schema({
-    _id: Types.ObjectId,
+    id: Types.ObjectId,
     name: String,
     payType: String,
     price: Number,
@@ -63,7 +59,7 @@ const createSchemas = () => {
   mongoose.model("Product", ProductSchema)
 
   const SubscriptionSchema = new Schema({
-    _id: Types.ObjectId,
+    id: Types.ObjectId,
     userId: Number,
     productId: Number,
     initialTime: Number,
@@ -74,21 +70,3 @@ const createSchemas = () => {
 
   return []
 }
-  // return new Promise((res, err) => {
-  //   if (mongoClient != null) {
-  //     res(mongoClient);
-  //     return;
-  //   }
-
-  //   try {
-  //     MongoClient.connect(url, {}, function(initError, client) {
-  //       assert.strictEqual(null, initError);
-  //       console.log("Connected successfully to server Mongod");
-  //       const db = client.db();
-  //       mongoClient = db;
-  //       res(db);
-  //     });
-  //   } catch (error) {
-  //     err(error);
-  //   }
-  // })
