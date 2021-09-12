@@ -25,6 +25,10 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+    useEffect(() => {
+        
+    }, [])
+
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
         setCreationModalOpen(false)
@@ -120,8 +124,8 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         createUser: (data: UserPayload) => dispatch(addUser(data)),
-        removeUser: (userId: number) => dispatch(removeUser(userId)),
-        editUser: (userId: number, data: UserPayload) => dispatch(editUser(userId, data))
+        removeUser: (userId: string) => dispatch(removeUser(userId)),
+        editUser: (userId: string, data: UserPayload) => dispatch(editUser(userId, data))
     }
 }
 

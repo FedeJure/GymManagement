@@ -7,14 +7,14 @@ export const addUser = (user: UserPayload) => {
     }
 }
 
-export const removeUser = (userId: number) => {
+export const removeUser = (userId: string) => {
     return {
         type: "REMOVE_USER",
         userId
     }
 }
 
-export const editUser = (userId: number, user: UserPayload) => {
+export const editUser = (userId: string, user: UserPayload) => {
     return {
         type: "EDIT_USER",
         user: {...user, id: userId}
