@@ -1,6 +1,3 @@
 import { UserPayload } from "./UserPayload";
 
-export interface User {
-    id: number,
-    data: UserPayload
-}
+export type User = UserPayload & {id: string}

@@ -27,8 +27,8 @@ const Subscriptions = ({ userSubscriptions }: { userSubscriptions: UserSubscript
                 <List.Content floated="left">Adeuda pagos</List.Content>
                 <List.Content floated="left">{s.product.name}</List.Content>
                 <List.Content floated="left">{s.user.lastname}, {s.user.name}</List.Content>
-                <List.Content floated="left">Desde {s.subscription.data.initialTime.toLocaleDateString()}</List.Content>
-                {s.subscription.data.endTime ? <List.Content floated="left">Hasta 1/12/2021</List.Content>:
+                <List.Content floated="left">Desde {s.subscription.initialTime.toLocaleDateString()}</List.Content>
+                {s.subscription.endTime ? <List.Content floated="left">Hasta 1/12/2021</List.Content>:
                 <List.Content floated="left">Hasta indefinido</List.Content>}
 
             </List.Item>))}
