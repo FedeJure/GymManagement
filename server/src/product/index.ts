@@ -10,16 +10,16 @@ export const getProducts = async ({ page, step }: { page: number, step: number }
 export const saveProduct = async (product: ProductPayload) => {
     const productModel = getProductModel()
     const newProduct = new productModel({ ...product })
-    productModel.create(newProduct)
+    return productModel.create(newProduct)
 }
 
 export const removeProduct = async (productId: number) => {
     const productModel = getProductModel()
-    productModel.deleteOne({ id: productId })
+    return productModel.findOneAndDelete({ _id: productId })
 }
 
-export const updateProduct = async (user: Product) => {
+export const updateProduct = async (product: Product) => {
     const productModel = getProductModel()
-    const newUser = new productModel({ ...user })
-    productModel.updateOne(newUser)  
+    const newProduct = new productModel({ ...product })
+    return productModel.findOneAndUpdate(newProduct)  
 }
