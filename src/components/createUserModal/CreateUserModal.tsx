@@ -37,11 +37,9 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
             formData.contactPhone !== "" &&
             formData.birthDate !== defaultDate)
             onSubmit(formData)
-        console.log(formData)
     }
 
     const handleChange = (value: any, tag: string) => {
-        console.log(value)
         setFormData({ ...formData, [tag]: value })
     }
 
@@ -158,24 +156,11 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
                                     <label>Hermanos</label>
                                     <Dropdown fluid selection
                                         multiple
-                                        value={formData.brothers}
+                                        value={formData.brothers || []}
                                         onChange={(e, data) => handleChange(data.value, "brothers")}
                                         options={users.map(p => ({
                                             key: p.name,
                                             text: `${p.lastname}, ${p.name}, ${p.dni}`,
-                                            value: p.id
-                                        }))} />
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Suscripciones</label>
-                                    <Dropdown fluid selection
-                                        multiple
-                                        value={formData.productsSubscribed}
-                                        onChange={(e, data) => handleChange(data.value, "productsSubscribed")}
-                                        options={products.map(p => ({
-                                            key: p.name,
-                                            text: p.name,
-                                            content: <ProductCard product={p} interactable={false} />,
                                             value: p.id
                                         }))} />
                                 </Form.Field>

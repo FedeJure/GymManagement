@@ -13,37 +13,52 @@ function getOptionsWithBody(body: any, method: string) {
     };
 }
 
-//====USER======
-export const getUsers = async (page: number, step: number) => {
-    return fetch(`${url}/users?page=${page}&step=${step}`)
-        .then(response => response.json())
+function mapToUser(data: any) {
+    return {
+        ...data,
+        id: data._id,
+        birthDate: new Date(data.birthDate)
+    }
 }
 
-export const createUser = (user: UserPayload) => {
+//====USER======
+export const fetchUsers = async (page: number, step: number): Promise<User[]> => {
+    return fetch(`${url}/users?page=${page}&step=${step}`)
+        .then(response => response.json())
+        .then(response => response.map(mapToUser))
+}
+
+export const createUser = (user: UserPayload): Promise<User> => {
     const options = getOptionsWithBody({ user }, "POST")
     return fetch(`${url}/user`, options)
         .then(response => response.json())
+        .then(response => response.user)
+        .then(mapToUser)
 }
 
-export const updateUser = (user: User) => {
+export const updateUser = (user: User): Promise<User> => {
     const options = getOptionsWithBody({ user }, "PUT")
     return fetch(`${url}/user`, options)
         .then(response => response.json())
+        .then(response => response.user)
+        .then(mapToUser)
 }
 
-export const deleteUser = (userId: number) => {
+export const deleteUser = (userId: string): Promise<User> => {
     const options = getOptionsWithBody({ userId }, "DELETE")
     return fetch(`${url}/user`, options)
         .then(response => response.json())
+        .then(response => response.user)
+        .then(mapToUser)
 }
 
 //====PRODUCT=====
-export const getProducts = (page: number, step: number) => {
+export const getProducts = (page: number, step: number): Promise<Product[]> => {
     return fetch(`${url}/products?page=${page}&step=${step}`)
         .then(response => response.json())
 }
 
-export const createProduct = (product: ProductPayload) => {
+export const createProduct = (product: ProductPayload): Promise<Product> => {
     const options = getOptionsWithBody({ product }, "POST")
     return fetch(`${url}/product`, options)
         .then(response => response.json())

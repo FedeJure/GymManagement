@@ -10,6 +10,12 @@ const app = express()
 app.use(json())
 const port = 3001
 
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 app.get('/users', (req: Request, res: Response) => {
   const { page, step } = req.query
@@ -27,8 +33,8 @@ app.post('/user', (req: Request, res: Response) => {
   const { user }: { user: UserPayload } = req.body
 
   saveUser(user)
-    .then(() => {
-      res.status(200).send({ ok: true })
+    .then(savedUser => {
+      res.status(200).send({ ok: true, user: savedUser })
     })
     .catch(error => {
       res.status(500).send({ error })
@@ -51,8 +57,8 @@ app.put('/user', (req: Request, res: Response) => {
   const { user }: { user: User } = req.body
 
   updateUser(user)
-    .then(() => {
-      res.status(200).send({ ok: true })
+    .then(updatedUser => {
+      res.status(200).send({ ok: true, user: updatedUser })
     })
     .catch(error => {
       res.status(500).send({ error })
@@ -75,8 +81,8 @@ app.post('/product', (req: Request, res: Response) => {
   const { product }: { product: ProductPayload } = req.body
 
   saveProduct(product)
-    .then(() => {
-      res.status(200).send({ ok: true })
+    .then(product => {
+      res.status(200).send({ ok: true, product })
     })
     .catch(error => {
       res.status(500).send({ error })
@@ -87,8 +93,8 @@ app.delete('/product', (req: Request, res: Response) => {
   const { productId } = req.body
 
   removeProduct(parseInt(productId as string, 10))
-    .then(() => {
-      res.status(200).send({ ok: true })
+    .then(product => {
+      res.status(200).send({ ok: true, product })
     })
     .catch(error => {
       res.status(500).send({ error })
@@ -99,8 +105,8 @@ app.put('/product', (req: Request, res: Response) => {
   const { product }: { product: Product } = req.body
 
   updateProduct(product)
-    .then(() => {
-      res.status(200).send({ ok: true })
+    .then(product => {
+      res.status(200).send({ ok: true, product })
     })
     .catch(error => {
       res.status(500).send({ error })

@@ -1,4 +1,5 @@
-import { combineReducers, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk"
 import { product } from "./modules/product/product.reducer"
 import { ProductState } from "./modules/product/ProductState";
 import { navigation, NavigationState } from "./modules/navigation/navigation.reducer"
@@ -13,4 +14,6 @@ export interface StoreState {
     user: UserState,
     subscription: SubscriptionState
 }
-export const store = createStore(combineReducers({ product, navigation, user, subscription }))
+export const store = createStore(combineReducers(
+    { product, navigation, user, subscription }),
+    applyMiddleware(thunk))

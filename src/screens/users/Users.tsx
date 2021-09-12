@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Divider, Button, Header, Card, Container } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
-import { addUser, editUser, removeUser } from "../../modules/users/users.actions"
+import { addUser, editUser, getUsersAction, removeUser } from "../../modules/users/users.actions"
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal"
 import { UserCard } from "../../components/userCard/UserCard"
 import { Dispatch } from "redux"
@@ -16,8 +16,15 @@ import { ExcelUploader } from "../../components/excelUploader/excelUploader"
 import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader"
 import { mapToExcel, mapFromExcel } from "../../modules/users/UserMapper"
 
-const Users = ({ products, users, createUser, removeUser, editUser }:
-    { products: Product[], users: User[], createUser: (user: UserPayload) => void, removeUser: Function, editUser: Function }) => {
+const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }:
+    {
+        products: Product[],
+        users: User[],
+        createUser: (user: UserPayload) => void,
+        removeUser: Function,
+        editUser: Function,
+        fetchUsers: (page: number, step: number) => void
+    }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [userTagFiltes, setUserTagFiltes] = useState<string[]>([])
     const [userCustomFiltes, setUserCustomFiltes] = useState<string[]>([])
@@ -26,7 +33,7 @@ const Users = ({ products, users, createUser, removeUser, editUser }:
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     useEffect(() => {
-        
+        fetchUsers(0, 20)
     }, [])
 
     const handleCreation = (creationData: UserPayload) => {
@@ -123,9 +130,10 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        createUser: (data: UserPayload) => dispatch(addUser(data)),
-        removeUser: (userId: string) => dispatch(removeUser(userId)),
-        editUser: (userId: string, data: UserPayload) => dispatch(editUser(userId, data))
+        fetchUsers: (page: number, step: number) => getUsersAction(page, step)(dispatch),
+        createUser: (data: UserPayload) => addUser(data)(dispatch),
+        removeUser: (userId: string) => removeUser(userId)(dispatch),
+        editUser: (userId: string, data: UserPayload) => editUser(userId, data)(dispatch)
     }
 }
 

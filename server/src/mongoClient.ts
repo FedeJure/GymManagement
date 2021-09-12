@@ -31,7 +31,6 @@ export const getSubscriptionModel = (): Model<any,any,any> => {
 
 const createSchemas = () => {
   const UserSchema = new Schema({
-    id: Types.ObjectId,
     type: String,
     name: String,
     lastname: String,
@@ -49,7 +48,6 @@ const createSchemas = () => {
   mongoose.model("User", UserSchema)
 
   const ProductSchema = new Schema({
-    id: Types.ObjectId,
     name: String,
     payType: String,
     price: Number,
@@ -59,7 +57,6 @@ const createSchemas = () => {
   mongoose.model("Product", ProductSchema)
 
   const SubscriptionSchema = new Schema({
-    id: Types.ObjectId,
     userId: Number,
     productId: Number,
     initialTime: Number,

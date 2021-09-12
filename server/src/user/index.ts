@@ -10,16 +10,18 @@ export const getUsers = async ({ page, step }: { page: number, step: number }) =
 export const saveUser = async (user: UserPayload) => {
     const userModel = getUserModel()
     const newUser = new userModel({ ...user })
-    userModel.create(newUser)
+    return userModel.create(newUser)
 }
 
 export const removeUser = async (userId: number) => {
     const userModel = getUserModel()
-    userModel.deleteOne({ id: userId })
+    return userModel.deleteOne({ _id: userId })
+        .then(() => userModel.find({ _id: userId }))
 }
 
 export const updateUser = async (user: User) => {
     const userModel = getUserModel()
     const newUser = new userModel({ ...user })
-    userModel.updateOne(newUser)  
+    return userModel.updateOne({ _id: user.id, ...user })
+        .then(() => userModel.findOne({ _id: user.id }))
 }
