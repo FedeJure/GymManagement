@@ -71,9 +71,12 @@ app.put('/user', (req: Request, res: Response) => {
 })
 
 app.get('/products', (req: Request, res: Response) => {
-  const { page, step } = req.body
+  const { page, step } = req.query
 
-  getProducts({ page, step })
+  getProducts({
+    page: parseInt(page as string, 10),
+    step: parseInt(step as string, 10)
+  })
     .then(products => {
       res.status(200).send(products)
     })
@@ -108,10 +111,9 @@ app.delete('/product', (req: Request, res: Response) => {
 
 app.put('/product', (req: Request, res: Response) => {
   const { product }: { product: Product } = req.body
-
   updateProduct(product)
-    .then(product => {
-      res.status(200).send({ ok: true, product })
+    .then(updatedProduct => {
+      res.status(200).send({ ok: true, product: updatedProduct })
     })
     .catch(error => {
       res.status(500).send({ error })
