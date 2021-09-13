@@ -2,12 +2,12 @@ import { Dispatch } from "redux"
 import { UserPayload } from "./UserPayload"
 import { fetchUsers, createUser, deleteUser, updateUser } from "../../services/api"
 
-export const getUsersAction = (page: number, step: number) => {
+export const getUsersAction = ({page, append}:{page: number, append?: boolean}) => {
     return (dispatch: Dispatch) => {
-        fetchUsers(page, step)
+        fetchUsers(page, 20)
             .then(users => {
                 dispatch({
-                    type: "FETCH_USERS",
+                    type: append ? "APPEND_USERS" : "REPLACE_USERS",
                     users
                 })
             })

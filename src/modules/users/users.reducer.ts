@@ -7,11 +7,17 @@ const initialState: UserState = {
 export const user = (state: UserState, action: any): UserState => {
     if (!state) return initialState
     switch (action.type) {
-        case "FETCH_USERS":
+        case "REPLACE_USERS":
             return {
                 ...state,
                 users: action.users
             }
+        case "APPEND_USERS":
+            return {
+                ...state,
+                users: [...state.users, ...action.users]
+            }
+
         case "CREATE_USER":
             return {
                 ...state,

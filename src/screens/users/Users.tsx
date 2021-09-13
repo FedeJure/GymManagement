@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Divider, Button, Header, Card, Container } from "semantic-ui-react"
+import { Divider, Button, Header, Card, Container, CardGroup } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, getUsersAction, removeUser } from "../../modules/users/users.actions"
@@ -15,6 +15,7 @@ import { FilterInput } from "../../components/filterInput/FilterInput"
 import { ExcelUploader } from "../../components/excelUploader/excelUploader"
 import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader"
 import { mapToExcel, mapFromExcel } from "../../modules/users/UserMapper"
+import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll"
 
 const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }:
     {
@@ -23,7 +24,7 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
         createUser: (user: UserPayload) => void,
         removeUser: Function,
         editUser: Function,
-        fetchUsers: (page: number, step: number) => void
+        fetchUsers: Function
     }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [userTagFiltes, setUserTagFiltes] = useState<string[]>([])
@@ -31,9 +32,16 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [page, setPage] = useState(0)
+
     useEffect(() => {
-        fetchUsers(0, 20)
+        fetchUsers({ page })
     }, [])
+
+    useEffect(() => {
+        if (page === 0) return
+        fetchUsers({ page, append: true })
+    }, [page])
 
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
@@ -63,6 +71,18 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     }
 
     const usersToShow = users.filter(u => mustShowUser(u))
+    console.log(usersToShow)
+    const usersMapped = usersToShow.map((user: User) => <UserCard key={user.id}
+        user={user}
+        onDelete={() => {
+            setSelectedUser(user)
+            setDeleteModal(true)
+        }}
+        onEdit={() => {
+            setSelectedUser(user)
+            setEditModalOpen(true)
+        }}
+        onInfo={() => { }} />)
 
     return <div>
         {deleteModal && <ConfirmationModal
@@ -103,19 +123,11 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
             onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
 
         <Divider />
-        {usersToShow.length > 0 && <Card.Group centered >
-            {usersToShow.map((user: User) => <UserCard key={user.id}
-                user={user}
-                onDelete={() => {
-                    setSelectedUser(user)
-                    setDeleteModal(true)
-                }}
-                onEdit={() => {
-                    setSelectedUser(user)
-                    setEditModalOpen(true)
-                }}
-                onInfo={() => { }} />)}
-        </Card.Group>}
+        {usersToShow.length > 0 &&
+            <CardGroup centered>
+                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} />
+            </CardGroup>}
+
     </div>
 }
 
@@ -128,7 +140,7 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        fetchUsers: (page: number, step: number) => getUsersAction(page, step)(dispatch),
+        fetchUsers: ({ page, append }: { page: number, append: boolean }) => getUsersAction({ page, append })(dispatch),
         createUser: (data: UserPayload) => addUser(data)(dispatch),
         removeUser: (userId: string) => removeUser(userId)(dispatch),
         editUser: (userId: string, data: UserPayload) => editUser(userId, data)(dispatch)
