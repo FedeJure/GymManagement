@@ -4,7 +4,6 @@ import { Product } from "../../modules/product/Product"
 import { User } from "../../modules/users/User"
 import { UserPayload } from "../../modules/users/UserPayload"
 import { UserType } from "../../modules/users/UserType"
-import { ProductCard } from "../productCard/ProductCard"
 
 const defaultDate = new Date(0)
 
