@@ -1,16 +1,18 @@
-import { ChangeEvent, useRef, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image, Dropdown } from 'semantic-ui-react'
-import { Product } from "../../modules/product/Product"
 import { User } from "../../modules/users/User"
 import { UserPayload } from "../../modules/users/UserPayload"
 import { UserType } from "../../modules/users/UserType"
+import { fetchUsers, getBrothersOfUser } from "../../services/api"
 
 const defaultDate = new Date(0)
 
-export const CreateUserModal = ({ products, users, onClose, onSubmit, initialData }:
-    { products: Product[], users: User[], onClose: any, onSubmit: any, initialData?: User | null }) => {
+export const CreateUserModal = ({ onClose, onSubmit, initialData }:
+    { onClose: any, onSubmit: any, initialData?: User | null }) => {
     const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
+    const [brothers, setBrothers] = useState<User[]>([])
+    const [users, setUsers] = useState<User[]>([])
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
             initialData :
@@ -57,6 +59,26 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
         }, false);
         reader.readAsDataURL(file)
     }
+
+    const handleBrotherSearch = (value: string) => {
+        const query = value.trim()
+        if (query.length <= 0) return
+
+        fetchUsers({
+            page: 0,
+            step: 200,
+            filterByContent: [query]
+        })
+            .then(users => {
+                setUsers(users)
+            })
+    }
+
+    useEffect(() => {
+        if (initialData)
+            getBrothersOfUser(initialData.id)
+                .then(users => setBrothers(users))
+    }, [])
 
     return (
         <Modal
@@ -154,10 +176,14 @@ export const CreateUserModal = ({ products, users, onClose, onSubmit, initialDat
                                 <Form.Field>
                                     <label>Hermanos</label>
                                     <Dropdown fluid selection
+                                        search
+                                        onSearchChange={(_, value) => handleBrotherSearch(value.searchQuery)}
                                         multiple
                                         value={formData.brothers || []}
                                         onChange={(e, data) => handleChange(data.value, "brothers")}
-                                        options={users.map(p => ({
+                                        options={[...brothers, ...users]
+                                            .filter(user => user.id !== initialData?.id)
+                                            .map(p => ({
                                             key: p.name,
                                             text: `${p.lastname}, ${p.name}, ${p.dni}`,
                                             value: p.id

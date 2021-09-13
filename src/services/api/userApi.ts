@@ -38,3 +38,9 @@ export const deleteUser = (userId: string) => {
         .then(response => response.json())
         .then(response => response.user)
 }
+
+export const getBrothersOfUser = (userId: string): Promise<User[]> => {
+    return fetch(`${url}/brothers?userId=${userId}`)
+        .then(response => response.json())
+        .then(response => response.map(mapToUser))
+}

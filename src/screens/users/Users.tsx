@@ -90,13 +90,9 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
             onAccept={() => handleDelete()}
             message="Confirma eliminación de este usuario? Esta acción no puede deshacerse." />}
         {creationModalOpen && <CreateUserModal
-            users={users}
-            products={products}
             onClose={() => setCreationModalOpen(false)}
             onSubmit={handleCreation} />}
         {editModalOpen && <CreateUserModal
-            users={users.filter(u => u.id !== selectedUser?.id)}
-            products={products}
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedUser} />}

@@ -1,10 +1,10 @@
 import { ReactElement } from "react"
-import { CardGroup, Visibility } from "semantic-ui-react"
+import { Card, CardGroup, Visibility } from "semantic-ui-react"
 
 export const InfiniteScroll = ({ data, onLoadMore }: { data: JSX.Element[], onLoadMore: Function }) => (
     <>{data.map((d, index) => {
         if (index < data.length - 1) return d
-        return <Visibility
+        return <Visibility as={Card}
             key={d.key}
             onBottomVisible={() => onLoadMore()}
             once={false}

@@ -1,6 +1,9 @@
 import  { Schema, Types, Model } from "mongoose"
 import mongoose from "mongoose"
 import  { MockMongoose } from "mock-mongoose"
+import { User } from "../../src/modules/users/User";
+import { Product } from "../../src/modules/product/Product";
+import { Subscription } from "../../src/modules/subscription/Subscription";
 
 const mockMongoose = new MockMongoose(mongoose)
 const dbName = 'gymManagement';
@@ -17,15 +20,15 @@ export const getClient = () => {
   return mongoose
 }
 
-export const getUserModel = () : Model<any,any,any> => {
+export const getUserModel = () : Model<User,any,any> => {
   return mongoose.model("User")
 }
 
-export const getProductModel = (): Model<any,any,any> => {
+export const getProductModel = (): Model<Product,any,any> => {
   return mongoose.model("Product")
 }
 
-export const getSubscriptionModel = (): Model<any,any,any> => {
+export const getSubscriptionModel = (): Model<Subscription,any,any> => {
   return mongoose.model("Subscription")
 }
 
