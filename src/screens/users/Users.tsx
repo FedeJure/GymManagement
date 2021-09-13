@@ -71,7 +71,6 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     }
 
     const usersToShow = users.filter(u => mustShowUser(u))
-    console.log(usersToShow)
     const usersMapped = usersToShow.map((user: User) => <UserCard key={user.id}
         user={user}
         onDelete={() => {

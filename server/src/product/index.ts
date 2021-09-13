@@ -15,11 +15,11 @@ export const saveProduct = async (product: ProductPayload) => {
 
 export const removeProduct = async (productId: number) => {
     const productModel = getProductModel()
-    return productModel.findOneAndDelete({ _id: productId })
+    return productModel.deleteOne({ _id: productId })
 }
 
 export const updateProduct = async (product: Product) => {
     const productModel = getProductModel()
-    const newProduct = new productModel({ ...product })
-    return productModel.findOneAndUpdate(newProduct)  
+    return productModel.updateOne({ _id: product.id, ...product })
+        .then(() => productModel.findOne({ _id: product.id }))
 }

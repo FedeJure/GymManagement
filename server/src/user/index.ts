@@ -38,7 +38,6 @@ export const removeUser = async (userId: string) => {
 
 export const updateUser = async (user: User) => {
     const userModel = getUserModel()
-    const newUser = new userModel({ ...user })
     return userModel.updateOne({ _id: user.id, ...user })
         .then(() => userModel.findOne({ _id: user.id }))
 }
