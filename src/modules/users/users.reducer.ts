@@ -24,7 +24,6 @@ export const user = (state: UserState, action: any): UserState => {
                 users: [...state.users, action.user]
             }
         case "EDIT_USER":
-            console.log(state.users, action.user)
             return {
                 ...state,
                 users: [...state.users.filter(u => u.id !== action.user.id), action.user]

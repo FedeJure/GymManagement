@@ -41,3 +41,10 @@ export const updateUser = async (user: User) => {
     return userModel.updateOne({ _id: user.id, ...user })
         .then(() => userModel.findOne({ _id: user.id }))
 }
+
+export const getBrothersOfUser = async (userId: string) => {
+    const userModel = getUserModel()
+
+    return userModel.findById(userId)
+        .then((user: User) => userModel.find({ _id: { $in: user.brothers} }))
+}

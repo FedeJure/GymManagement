@@ -3,7 +3,7 @@ import { json } from "body-parser"
 import { UserPayload } from "../../src/modules/users/UserPayload"
 import { Product } from "../../src/modules/product/Product"
 import { User } from "../../src/modules/users/User"
-import { getUsers, saveUser, removeUser, updateUser } from "./user/index"
+import { getUsers, saveUser, removeUser, updateUser, getBrothersOfUser } from "./user/index"
 import { ProductPayload } from "../../src/modules/product/ProductPayload"
 import { saveProduct, updateProduct, removeProduct, getProducts } from "./product"
 const app = express()
@@ -28,6 +28,18 @@ app.get('/users', (req: Request, res: Response) => {
   })
     .then(users => {
       res.status(200).send(users)
+    })
+    .catch(error => {
+      res.status(500).send({ error })
+    })
+})
+
+app.get('/brothers', (req: Request, res: Response) => {
+  const { userId } = req.query
+
+  getBrothersOfUser(userId as string)
+    .then(brothers => {
+      res.status(200).send(brothers)
     })
     .catch(error => {
       res.status(500).send({ error })
