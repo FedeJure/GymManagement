@@ -22,8 +22,9 @@ const mapToUser = (data: any) => {
 }
 
 //====USER======
-export const fetchUsers = async (page: number, step: number): Promise<User[]> => {
-    return fetch(`${url}/users?page=${page}&step=${step}`)
+export const fetchUsers = async ({ page, step, filterByTag = [], filterByContent = [] }
+    : { page: number, step: number, filterByTag?: string[], filterByContent?: string[] }): Promise<User[]> => {
+    return fetch(`${url}/users?page=${page}&step=${step}${filterByTag.length > 0 ? `&tagFilter=${filterByTag.join(',')}` : ""}${filterByContent.length > 0 ? `&contentFilter=${filterByContent.join(',')}` : ""}`)
         .then(response => response.json())
         .then(response => response.map(mapToUser))
 }

@@ -35,13 +35,13 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     const [page, setPage] = useState(0)
 
     useEffect(() => {
-        fetchUsers({ page })
-    }, [])
+        if (page === 0) return
+        fetchUsers({ page, append: true, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
+    }, [page])
 
     useEffect(() => {
-        if (page === 0) return
-        fetchUsers({ page, append: true })
-    }, [page])
+        fetchUsers({ page, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
+    }, [userTagFiltes, userCustomFiltes])
 
     const handleCreation = (creationData: UserPayload) => {
         createUser(creationData)
@@ -140,7 +140,9 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        fetchUsers: ({ page, append }: { page: number, append: boolean }) => getUsersAction({ page, append })(dispatch),
+        fetchUsers: ({ page, append, filterByTag, filterByContent }
+            : { page: number, append: boolean, filterByTag: string[], filterByContent: [] }) =>
+            getUsersAction({ page, append, filterByTag, filterByContent })(dispatch),
         createUser: (data: UserPayload) => addUser(data)(dispatch),
         removeUser: (userId: string) => removeUser(userId)(dispatch),
         editUser: (userId: string, data: UserPayload) => editUser(userId, data)(dispatch)

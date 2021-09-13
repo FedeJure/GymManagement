@@ -18,9 +18,14 @@ app.use((req, res, next) => {
 });
 
 app.get('/users', (req: Request, res: Response) => {
-  const { page, step } = req.query
+  const { page, step, tagFilter, contentFilter } = req.query
 
-  getUsers({ page: parseInt(page as string, 10), step: parseInt(step as string, 10) })
+  getUsers({
+    page: parseInt(page as string, 10),
+    step: parseInt(step as string, 10),
+    tagFilter: tagFilter as string,
+    contentFilter: contentFilter as string
+  })
     .then(users => {
       res.status(200).send(users)
     })
