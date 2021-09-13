@@ -13,7 +13,7 @@ function getOptionsWithBody(body: any, method: string) {
     };
 }
 
-function mapToUser(data: any) {
+const mapToUser = (data: any) => {
     return {
         ...data,
         id: data._id,
@@ -44,12 +44,11 @@ export const updateUser = (user: User): Promise<User> => {
         .then(mapToUser)
 }
 
-export const deleteUser = (userId: string): Promise<User> => {
+export const deleteUser = (userId: string) => {
     const options = getOptionsWithBody({ userId }, "DELETE")
     return fetch(`${url}/user`, options)
         .then(response => response.json())
         .then(response => response.user)
-        .then(mapToUser)
 }
 
 //====PRODUCT=====

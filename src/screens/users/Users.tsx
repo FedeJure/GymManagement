@@ -31,7 +31,6 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
     useEffect(() => {
         fetchUsers(0, 20)
     }, [])
@@ -55,7 +54,6 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
     const mustShowUser = (user: User) => {
         const userString = `${user.name} ${user.lastname} ${user.dni}`.toLocaleLowerCase()
         if (userCustomFiltes.length === 0 && userTagFiltes.length === 0) return true
-        console.log(userTagFiltes.length > 0, userTagFiltes, user.type)
         if (userTagFiltes.length > 0 && userTagFiltes.includes(user.type)) return true
         return userCustomFiltes.some(c => c.length > 1 && userString.includes(c))
     }

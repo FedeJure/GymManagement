@@ -44,7 +44,7 @@ app.post('/user', (req: Request, res: Response) => {
 app.delete('/user', (req: Request, res: Response) => {
   const { userId } = req.body
 
-  removeUser(parseInt(userId as string, 10))
+  removeUser(userId)
     .then(() => {
       res.status(200).send({ ok: true })
     })

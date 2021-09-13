@@ -13,10 +13,9 @@ export const saveUser = async (user: UserPayload) => {
     return userModel.create(newUser)
 }
 
-export const removeUser = async (userId: number) => {
+export const removeUser = async (userId: string) => {
     const userModel = getUserModel()
     return userModel.deleteOne({ _id: userId })
-        .then(() => userModel.find({ _id: userId }))
 }
 
 export const updateUser = async (user: User) => {
