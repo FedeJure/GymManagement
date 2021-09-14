@@ -1,14 +1,26 @@
 import { connect } from 'react-redux'
+import { useState } from 'react'
 import { Dispatch } from 'redux'
 import { Button, List, Header, Divider, Icon } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { getUserSubscriptions } from "../../modules/subscription/subscription.selectors"
 import { UserSubscription } from '../../modules/subscription/UserSubscription'
+import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
+import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
+import { createSubscriptionAction } from '../../modules/subscription/subscription.actions'
 
-const Subscriptions = ({ userSubscriptions }: { userSubscriptions: UserSubscription[] }) => {
+const Subscriptions = ({ userSubscriptions, createSubscription }:
+     { userSubscriptions: UserSubscription[], createSubscription: Function }) => {
+    const [creationModalOpen, setCreationModalOpen] = useState(false);
+
+    const handleSubmit = (data: SubscriptionPayload) => {
+        createSubscription(data)
+    }
 
     return (<div>
-        <Button color="blue" circular icon="plus" onClick={() => { }} />
+        {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
+            onSubmit={handleSubmit} />}
+        <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true) } />
         <Header as='h2' floated='left'>
             Suscripciones
         </Header>
@@ -28,8 +40,8 @@ const Subscriptions = ({ userSubscriptions }: { userSubscriptions: UserSubscript
                 <List.Content floated="left">{s.product.name}</List.Content>
                 <List.Content floated="left">{s.user.lastname}, {s.user.name}</List.Content>
                 <List.Content floated="left">Desde {s.subscription.initialTime.toLocaleDateString()}</List.Content>
-                {s.subscription.endTime ? <List.Content floated="left">Hasta 1/12/2021</List.Content>:
-                <List.Content floated="left">Hasta indefinido</List.Content>}
+                {s.subscription.endTime ? <List.Content floated="left">Hasta 1/12/2021</List.Content> :
+                    <List.Content floated="left">Hasta indefinido</List.Content>}
 
             </List.Item>))}
         </List>
@@ -45,7 +57,7 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        // createUser: (data: UserPayload) => dispatch(addUser(data)),
+        createSubscription: (data: SubscriptionPayload) => createSubscriptionAction(data)(dispatch),
         // removeUser: (userId: number) => dispatch(removeUser(userId)),
         // editUser: (userId: number, data: UserPayload) => dispatch(editUser(userId, data))
     }

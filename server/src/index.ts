@@ -83,11 +83,12 @@ app.put('/user', (req: Request, res: Response) => {
 })
 
 app.get('/products', (req: Request, res: Response) => {
-  const { page, step } = req.query
+  const { page, step, contentFilter } = req.query
 
   getProducts({
     page: parseInt(page as string, 10),
-    step: parseInt(step as string, 10)
+    step: parseInt(step as string, 10),
+    contentFilter: contentFilter as string
   })
     .then(products => {
       res.status(200).send(products)
