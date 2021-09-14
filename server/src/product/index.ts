@@ -2,9 +2,19 @@ import { Product } from "../../../src/modules/product/Product"
 import { ProductPayload } from "../../../src/modules/product/ProductPayload"
 import { getProductModel } from "../mongoClient"
 
-export const getProducts = async ({ page, step }: { page: number, step: number }) => {
+export const getProducts = async ({ page, step, contentFilter }
+    : { page: number, step: number, tagFilter?: string, contentFilter?: string }) => {
     const productModel = getProductModel()
-    return productModel.find({}, null, { skip: step * page, limit: step })
+    let queries: any[] = []
+
+    if (contentFilter) {
+        const filters = contentFilter.split(',')
+        filters.forEach(f => {
+            queries = [...queries, { name: { $regex: f, "$options": "i" } }]
+        })
+    }
+    const withQueries = contentFilter != undefined
+    return productModel.find(withQueries ? { $or: queries } : {}, null, { skip: step * page, limit: step })
 }
 
 export const saveProduct = async (product: ProductPayload) => {

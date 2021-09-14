@@ -9,8 +9,9 @@ function mapToProduct(product: any): Product {
     }
 }
 //====PRODUCT=====
-export const fetchProducts = ({ page, step }: { page: number, step: number }): Promise<Product[]> => {
-    return fetch(`${url}/products?page=${page}&step=${step}`)
+export const fetchProducts = ({ page, step, filterByContent = [] }
+    : { page: number, step: number, filterByContent?: string[] }): Promise<Product[]> => {
+    return fetch(`${url}/products?page=${page}&step=${step}${filterByContent.length > 0 ? `&contentFilter=${filterByContent.join(',')}` : ""}`)
         .then(response => response.json())
         .then(response => response.map(mapToProduct))
 }

@@ -8,7 +8,10 @@ export const subscription = (state: SubscriptionState, action: any): Subscriptio
     if (!state) return initialState
     switch (action.type) {
         case "CREATE_SUBSCRIPTION":
-            return state
+            return {
+                ...state,
+                subscriptions: [...state.subscriptions, action.subscription]
+            }
         default:
             return state
     }

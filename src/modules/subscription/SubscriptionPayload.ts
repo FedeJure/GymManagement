@@ -1,6 +1,7 @@
 export interface SubscriptionPayload {
-    userId: number;
-    productId: number;
-    initialTime: Date;
-    endTime?: Date;
+    userId: string
+    productId: string
+    initialTime: Date
+    endTime?: Date
+    comment: string
 }
