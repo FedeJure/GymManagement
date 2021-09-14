@@ -38,8 +38,8 @@ export const removeUser = async (userId: string) => {
 
 export const updateUser = async (user: User) => {
     const userModel = getUserModel()
-    return userModel.updateOne({ _id: user.id, ...user })
-        .then(() => userModel.findOne({ _id: user.id }))
+    return userModel.findByIdAndUpdate(user.id, { ...user })
+        .then(() => userModel.findById(user.id))
 }
 
 export const getBrothersOfUser = async (userId: string) => {
