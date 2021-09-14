@@ -12,7 +12,7 @@ export interface StoreState {
     product: ProductState,
     navigation: NavigationState
     user: UserState,
-    subscription: SubscriptionState
+    subscription: SubscriptionState,
 }
 export const store = createStore(combineReducers(
     { product, navigation, user, subscription }),

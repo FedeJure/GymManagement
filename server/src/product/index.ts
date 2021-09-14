@@ -10,7 +10,9 @@ export const getProducts = async ({ page, step, contentFilter }
     if (contentFilter) {
         const filters = contentFilter.split(',')
         filters.forEach(f => {
-            queries = [...queries, { name: { $regex: f, "$options": "i" } }]
+            queries = [...queries,
+            { name: { $regex: f, "$options": "i" } },
+            f.length == 24 ? { _id: f } : {}]
         })
     }
     const withQueries = contentFilter != undefined

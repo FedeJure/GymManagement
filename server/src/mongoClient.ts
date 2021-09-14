@@ -42,7 +42,7 @@ const createSchemas = () => {
     address: String,
     birthDate: Date,
     comment: String,
-    brothers: [Types.ObjectId],
+    brothers: [Types.ObjectId], //refactorizar y referenciar user directamente
     profilePicture: String,
     dni: String,
     creationDate: { type: Date, default: Date.now }
@@ -60,10 +60,10 @@ const createSchemas = () => {
   mongoose.model("Product", ProductSchema)
 
   const SubscriptionSchema = new Schema({
-    userId: Number,
-    productId: Number,
-    initialTime: Number,
-    endTime: Number,
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product'},
+    initialTime: Date,
+    endTime: Date,
     creationDate: { type: Date, default: Date.now }
   })
   mongoose.model("Subscription", SubscriptionSchema)

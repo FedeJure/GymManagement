@@ -1,9 +1,5 @@
-import { ProductPayload } from "../product/ProductPayload";
-import { UserPayload } from "../users/UserPayload";
+import { Product } from "../product/Product";
+import { User } from "../users/User";
 import { Subscription } from "./Subscription";
 
-export interface UserSubscription {
-    user: UserPayload,
-    product: ProductPayload
-    subscription: Subscription
-}
+export type UserSubscription = Subscription & {user: User, product: Product}

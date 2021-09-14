@@ -46,5 +46,5 @@ export const getBrothersOfUser = async (userId: string) => {
     const userModel = getUserModel()
 
     return userModel.findById(userId)
-        .then((user: User) => userModel.find({ _id: { $in: user.brothers} }))
+        .then((user: User) => userModel.find({ _id: { $in: user.brothers } }))
 }

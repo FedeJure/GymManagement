@@ -13,8 +13,8 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
     const [products, setProducts] = useState<Product[]>([])
     const [formData, setFormData] = useState<SubscriptionPayload>(
         {
-            userId: "",
-            productId: "",
+            user: "",
+            product: "",
             initialTime: defaultDate,
             endTime: undefined,
             comment: ""
@@ -22,8 +22,8 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
     )
 
     const handleSubmit = () => {
-        if (formData.productId.length > 0
-            && formData.userId.length > 0)
+        if (formData.product.length > 0
+            && formData.user.length > 0)
             onSubmit(formData)
     }
 
@@ -98,7 +98,7 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                                         selection
                                         search
                                         onSearchChange={(_, value) => handleUserSearch(value.searchQuery)}
-                                        onChange={(e, data) => handleChange(data.value, "userId")}
+                                        onChange={(e, data) => handleChange(data.value, "user")}
                                         options={[...users].map(p => ({
                                             key: p.name,
                                             text: `${p.lastname}, ${p.name}, ${p.dni}`,
@@ -113,7 +113,7 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                                         selection
                                         search
                                         onSearchChange={(_, value) => handleProductSearch(value.searchQuery)}
-                                        onChange={(e, data) => handleChange(data.value, "productId")}
+                                        onChange={(e, data) => handleChange(data.value, "product")}
                                         options={[...products].map(p => ({
                                             key: p.name,
                                             text: `${p.name},$${p.price} ${p.payType}(${p.daysInWeek.map(d => d.slice(0,2)).join(', ')})`,
