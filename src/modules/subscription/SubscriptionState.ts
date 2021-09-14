@@ -1,4 +1,4 @@
-import { Subscription } from "./Subscription"
+import { UserSubscription } from "./UserSubscription";
 export interface SubscriptionState {
-    subscriptions: Subscription[];
+    userSubscriptions: UserSubscription[];
 }
