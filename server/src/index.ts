@@ -157,7 +157,6 @@ app.post('/subscription', (req: Request, res: Response) => {
 
   saveSubscription(subscription)
     .then(subscription => {
-      console.log(subscription)
       res.status(200).send({ ok: true, subscription })
     })
     .catch(error => {

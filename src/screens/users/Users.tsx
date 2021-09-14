@@ -120,7 +120,7 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
         <Divider />
         {usersToShow.length > 0 &&
             <CardGroup centered>
-                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} />
+                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} as={Card}/>
             </CardGroup>}
 
     </div>
