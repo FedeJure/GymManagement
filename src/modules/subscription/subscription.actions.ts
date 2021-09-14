@@ -13,11 +13,12 @@ export const createSubscriptionAction = (subscription: SubscriptionPayload) => {
     }
 }
 
-export const fetchSubscriptionsAction = ({ page, filterByContent }: { page: number, filterByContent: string[] }) => {
+export const fetchSubscriptionsAction = ({ page, filterByContent, append = false }
+    : { page: number, filterByContent: string[], append?: boolean }) => {
     return (dispatch: Dispatch) => {
         fetchSubscriptions({ page, step: 20, filterByContent })
             .then(subscriptions => dispatch({
-                type: "FETCH_SUBSCRIPTIONS",
+                type: append ? "APPEND_SUBSCRIPTIONS" : "FETCH_SUBSCRIPTIONS",
                 subscriptions
             }))
     }

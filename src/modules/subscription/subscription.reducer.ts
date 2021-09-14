@@ -1,3 +1,4 @@
+import Subscriptions from "../../screens/subscriptions/Subscriptions"
 import { SubscriptionState } from "./SubscriptionState"
 
 const initialState : SubscriptionState = {
@@ -16,6 +17,11 @@ export const subscription = (state: SubscriptionState, action: any): Subscriptio
             return {
                 ...state,
                 subscriptions: action.subscriptions
+            }
+        case "APPEND_SUBSCRIPTIONS" :
+            return {
+                ...state,
+                subscriptions: [...state.subscriptions, ...action.subscriptions]
             }
         default:
             return state

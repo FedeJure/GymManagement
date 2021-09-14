@@ -1,16 +1,19 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Header, Divider, Icon } from 'semantic-ui-react'
+import { Button, List, Header, Divider } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
 import { createSubscriptionAction, fetchSubscriptionsAction } from '../../modules/subscription/subscription.actions'
 import { Subscription } from '../../modules/subscription/Subscription'
+import { SubscriptionCard } from "../../components/subscriptionCard/SubscriptionCard"
+import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
 
 const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }:
-    { subscriptions: Subscription[], createSubscription: Function,fetchSubscriptions: Function }) => {
+    { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
+    const [page, setPage] = useState(0)
 
     const handleSubmit = (data: SubscriptionPayload) => {
         createSubscription(data)
@@ -18,8 +21,19 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }
     }
 
     useEffect(() => {
-        fetchSubscriptions(0)
+        fetchSubscriptions({
+            page: 0,
+            append: false
+        })
     }, [])
+
+    useEffect(() => {
+        if (page > 0)
+            fetchSubscriptions({
+                page,
+                append: true
+            })
+    }, [page])
 
 
     return (<div>
@@ -33,22 +47,10 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }
 
         <Divider />
         <List divided verticalAlign="middle">
-            {subscriptions.map(s => (<List.Item style={{ padding: "0.5em" }}>
-                <List.Content floated='right'>
-                    <Button icon compact><Icon name="trash"></Icon>Borrar</Button>
-                </List.Content>
-                <List.Content floated='right'>
-                    <Button icon compact><Icon name="file alternate outline"></Icon>Ver Detalle</Button>
-                </List.Content>
-
-                <List.Content floated="left">Adeuda pagos</List.Content>
-                <List.Content floated="left">{s.product.name}</List.Content>
-                <List.Content floated="left">{s.user.lastname}, {s.user.name}</List.Content>
-                <List.Content floated="left">Desde {s.initialTime.toLocaleDateString()}</List.Content>
-                {s.endTime ? <List.Content floated="left">Hasta {s.endTime.toLocaleDateString()}</List.Content> :
-                    <List.Content floated="left">Hasta indefinido</List.Content>}
-
-            </List.Item>))}
+            <InfiniteScroll
+                as={List.Item}
+                onLoadMore={() => setPage(page => page + 1)}
+                data={subscriptions.map(s => <SubscriptionCard subscription={s} />)} />
         </List>
     </div>)
 }
@@ -63,7 +65,8 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         createSubscription: (data: SubscriptionPayload) => createSubscriptionAction(data)(dispatch),
-        fetchSubscriptions: (page: number, filterByContent: string[]) => fetchSubscriptionsAction({ page, filterByContent })(dispatch)
+        fetchSubscriptions: ({ page, filterByContent, append }:
+            { page: number, filterByContent: string[], append: boolean }) => fetchSubscriptionsAction({ page, filterByContent, append })(dispatch)
     }
 }
 
