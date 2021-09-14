@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
 import { Button, List, Header, Divider, Icon } from 'semantic-ui-react'
 import { StoreState } from '../../store'
-import { UserSubscription } from '../../modules/subscription/UserSubscription'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
 import { createSubscriptionAction, fetchSubscriptionsAction } from '../../modules/subscription/subscription.actions'
+import { Subscription } from '../../modules/subscription/Subscription'
 
-const Subscriptions = ({ userSubscriptions, createSubscription, fetchSubscriptions }:
-    { userSubscriptions: UserSubscription[], createSubscription: Function,fetchSubscriptions: Function }) => {
+const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }:
+    { subscriptions: Subscription[], createSubscription: Function,fetchSubscriptions: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
 
     const handleSubmit = (data: SubscriptionPayload) => {
@@ -33,7 +33,7 @@ const Subscriptions = ({ userSubscriptions, createSubscription, fetchSubscriptio
 
         <Divider />
         <List divided verticalAlign="middle">
-            {userSubscriptions.map(s => (<List.Item style={{ padding: "0.5em" }}>
+            {subscriptions.map(s => (<List.Item style={{ padding: "0.5em" }}>
                 <List.Content floated='right'>
                     <Button icon compact><Icon name="trash"></Icon>Borrar</Button>
                 </List.Content>
@@ -56,7 +56,7 @@ const Subscriptions = ({ userSubscriptions, createSubscription, fetchSubscriptio
 
 const mapStateToProps = (state: StoreState) => {
     return {
-        userSubscriptions: state.subscription.userSubscriptions
+        subscriptions: state.subscription.subscriptions
     }
 }
 
