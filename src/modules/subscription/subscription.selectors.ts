@@ -1,6 +1,6 @@
 import { StoreState } from "../../store"
-import { UserSubscription } from "./UserSubscription"
+import { Subscription } from "./Subscription"
 
-export const getUserSubscriptions = (store: StoreState): UserSubscription[] => {
-    return store.subscription.userSubscriptions
+export const getsubscriptions = (store: StoreState): Subscription[] => {
+    return store.subscription.subscriptions
 }

@@ -17,13 +17,17 @@ export const getSubscriptions = async ({ page, step, contentFilter }
     }
     const withQueries = contentFilter != undefined
     return subscriptionModel.find(withQueries ? { $or: queries } : {}, null, { skip: step * page, limit: step })
-        .populate("user").populate("product")
+        .populate(["user", "product"])
 }
 
 export const saveSubscription = async (subscription: SubscriptionPayload) => {
     const subscriptionModel = getSubscriptionModel()
-    const newSubscription = new subscriptionModel({ ...subscription })
+    const newSubscription = new subscriptionModel({
+        ...subscription,
+        user: subscription.userId,
+        product: subscription.productId
+    })
     return subscriptionModel.create(newSubscription)
         .then(saved => subscriptionModel.findById(saved._id)
-            .populate("user").populate("product"))
+            .populate(["user", "product"]))
 }

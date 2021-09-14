@@ -1,3 +1,10 @@
-import {SubscriptionPayload} from "./SubscriptionPayload"
+import { Product } from "../product/Product"
+import { User } from "../users/User"
 
-export type Subscription = SubscriptionPayload & {id: string}
+export interface Subscription {
+    user: User
+    product: Product
+    initialTime: Date
+    endTime?: Date
+    comment: string
+}

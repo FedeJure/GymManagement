@@ -1,7 +1,7 @@
 import { SubscriptionState } from "./SubscriptionState"
 
 const initialState : SubscriptionState = {
-    userSubscriptions: []
+    subscriptions: []
 }
 
 export const subscription = (state: SubscriptionState, action: any): SubscriptionState => {
@@ -10,12 +10,12 @@ export const subscription = (state: SubscriptionState, action: any): Subscriptio
         case "CREATE_SUBSCRIPTION":
             return {
                 ...state,
-                userSubscriptions: [...state.userSubscriptions, action.userSubscription]
+                subscriptions: [...state.subscriptions, action.subscription]
             }
         case "FETCH_SUBSCRIPTIONS":
             return {
                 ...state,
-                userSubscriptions: action.userSubscriptions
+                subscriptions: action.subscriptions
             }
         default:
             return state
