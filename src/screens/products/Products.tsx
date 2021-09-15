@@ -60,7 +60,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
             Productos
         </Header>
         <Divider />
-        <Card.Group>
+        <Card.Group centered>
             {products.map((product) => <ProductCard
                 interactable={true}
                 product={product}

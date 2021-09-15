@@ -51,5 +51,13 @@ export const removeSubscription = async (subscriptionId: string) => {
 }
 
 export const startListenSubscriptions = () => {
+    onNewSubscription
+        .subscribe(subscription => {
 
+        })
+
+    onDeleteSubscription
+        .subscribe(subscription => {
+
+        })
 }
