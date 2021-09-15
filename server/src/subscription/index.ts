@@ -1,5 +1,11 @@
+import { Subject } from "rxjs"
+import { Subscription } from "../../../src/modules/subscription/Subscription"
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload"
 import { getSubscriptionModel } from "../mongoClient"
+
+
+const onNewSubscription = new Subject<Subscription>()
+const onDeleteSubscription = new Subject<Subscription>()
 
 export const getSubscriptions = async ({ page, step, contentFilter }
     : { page: number, step: number, tagFilter?: string, contentFilter?: string }) => {
@@ -28,4 +34,22 @@ export const saveSubscription = async (subscription: SubscriptionPayload) => {
     return subscriptionModel.create(newSubscription)
         .then(saved => subscriptionModel.findById(saved._id)
             .populate(["user", "product"]))
+        .then((subscription: Subscription) => {
+            onNewSubscription.next(subscription)
+            return subscription
+        })
+}
+
+export const removeSubscription = async (subscriptionId: string) => {
+    const subscriptionModel = getSubscriptionModel()
+    return subscriptionModel.findOneAndDelete({ _id: subscriptionId })
+        .populate(["user", "product"]).then(
+            (subscription: Subscription) => {
+                onDeleteSubscription.next(subscription)
+            }
+        )
+}
+
+export const startListenSubscriptions = () => {
+
 }

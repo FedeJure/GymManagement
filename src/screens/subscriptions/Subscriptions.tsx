@@ -5,22 +5,30 @@ import { Button, List, Header, Grid } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
-import { createSubscriptionAction, fetchSubscriptionsAction } from '../../modules/subscription/subscription.actions'
+import { createSubscriptionAction, deleteSubscriptionAction, fetchSubscriptionsAction } from '../../modules/subscription/subscription.actions'
 import { Subscription } from '../../modules/subscription/Subscription'
 import { SubscriptionCard } from "../../components/subscriptionCard/SubscriptionCard"
 import { PayState } from "../../modules/subscription/PayState"
 import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
 import { FilterInput } from '../../components/filterInput/FilterInput'
+import { ConfirmationModal } from '../../components/confirmationModal/ConfirmationModal'
 
-const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }:
-    { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function }) => {
+const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, deleteSubscription }:
+    { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function, deleteSubscription: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
+    const [confirmModal, setConfirmModal] = useState(false)
+    const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null)
 
     const handleSubmit = (data: SubscriptionPayload) => {
         createSubscription(data)
         setCreationModalOpen(false)
+    }
+
+    const handleDelete = () => {
+        setConfirmModal(false)
+        deleteSubscription(selectedSubscription)
     }
 
     useEffect(() => {
@@ -76,15 +84,23 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }
                 }}
             />
         </Grid.Row>
-        <List divided verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "scroll" }}>
+        <List divided verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "auto" }}>
             <InfiniteScroll
                 as={List.Item}
                 onLoadMore={() => setPage(page => page + 1)}
-                data={subscriptions.map(s => <SubscriptionCard subscription={s} />)} />
+                data={subscriptions.map(s => <SubscriptionCard handleDelete={() => {
+                    setSelectedSubscription(s)
+                    setConfirmModal(true)
+                }} subscription={s} />)} />
         </List></>
 
 
     return (<div>
+        {confirmModal && <ConfirmationModal
+            open={confirmModal}
+            onCancel={() => setConfirmModal(false)}
+            onAccept={() => handleDelete()}
+            message="Confirma eliminación de este usuario? Esta acción no puede deshacerse." />}
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
 
@@ -118,6 +134,7 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
+        deleteSubscription: (subscription: Subscription) => deleteSubscriptionAction(subscription)(dispatch),
         createSubscription: (data: SubscriptionPayload) => createSubscriptionAction(data)(dispatch),
         fetchSubscriptions: ({ page, filterByContent, append }:
             { page: number, filterByContent: string[], append: boolean }) => fetchSubscriptionsAction({ page, filterByContent, append })(dispatch)
