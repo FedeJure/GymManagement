@@ -3,6 +3,7 @@ import { json } from "body-parser"
 import { initUsersRoutes } from "./user/routes"
 import { initSubscriptionsRoutes } from "./subscription/routes"
 import { initProductsRoutes } from "./product/routes"
+import { startListenSubscriptions } from "./subscription"
 
 const app = express()
 app.use(json())
@@ -20,5 +21,6 @@ initSubscriptionsRoutes(app)
 initProductsRoutes(app)
 
 app.listen(port, () => {
+  startListenSubscriptions()
   console.log(`Example app listening at http://localhost:${port}`)
 })

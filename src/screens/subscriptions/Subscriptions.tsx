@@ -100,7 +100,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             open={confirmModal}
             onCancel={() => setConfirmModal(false)}
             onAccept={() => handleDelete()}
-            message="Confirma eliminación de este usuario? Esta acción no puede deshacerse." />}
+            message="Confirma eliminación? Esta acción no puede deshacerse." />}
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
 

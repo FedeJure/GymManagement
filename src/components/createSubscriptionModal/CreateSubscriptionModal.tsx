@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Button, Modal, Form, Grid, Divider, Segment, Dropdown } from 'semantic-ui-react'
+import { Button, Modal, Form, Grid, Divider, Segment, Dropdown, Input } from 'semantic-ui-react'
 import { User } from "../../modules/users/User"
 import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload"
 import { fetchProducts, fetchUsers } from "../../services/api"
@@ -15,6 +15,7 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
         {
             userId: "",
             productId: "",
+            specialDiscount: 0,
             initialTime: defaultDate,
             endTime: undefined,
             comment: ""
@@ -57,6 +58,16 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
             .then(products => {
                 setProducts(products)
             })
+    }
+
+    const handleDiscountChange = (value: string, key: string) => {
+        if (value === "") {
+            setFormData(form => ({ ...form, [key]: undefined }))
+            return
+        }
+        const parsed = parseFloat(value) || 0
+        const newValue = parsed >= 0 ? Math.min(parsed, 100) : 0
+        setFormData(form => ({ ...form, [key]: newValue }))
     }
 
     return (
@@ -116,9 +127,16 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                                         onChange={(e, data) => handleChange(data.value, "productId")}
                                         options={[...products].map(p => ({
                                             key: p.name,
-                                            text: `${p.name},$${p.price} ${p.payType}(${p.daysInWeek.map(d => d.slice(0,2)).join(', ')})`,
+                                            text: `${p.name},$${p.price} ${p.payType}(${p.daysInWeek.map(d => d.slice(0, 2)).join(', ')})`,
                                             value: p.id
                                         }))} />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Descuento especial</label>
+                                    <Input label="%" labelPosition="right"
+                                        input={<input
+                                            onChange={target => handleDiscountChange(target.currentTarget.value, "specialDiscount")}
+                                            value={formData.specialDiscount} />} />
                                 </Form.Field>
                             </Grid.Column>
                         </Grid.Row>
