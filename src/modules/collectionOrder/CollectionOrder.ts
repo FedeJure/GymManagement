@@ -1,8 +1,10 @@
+import { Product } from "../product/Product";
+import { User } from "../users/User";
+
 export interface CollectionOrder {
     id: string
-    userId: string,
-    productId: string,
-    productName: string,
-    price: number,
+    user: User,
+    product: Product,
     emittedDate: Date,
+    limitDate: Date
 }

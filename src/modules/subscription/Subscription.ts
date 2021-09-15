@@ -5,6 +5,7 @@ export interface Subscription {
     id: string,
     user: User
     product: Product
+    specialDiscount: number,
     initialTime: Date
     endTime?: Date
     comment: string

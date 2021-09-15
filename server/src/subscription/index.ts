@@ -53,11 +53,11 @@ export const removeSubscription = async (subscriptionId: string) => {
 export const startListenSubscriptions = () => {
     onNewSubscription
         .subscribe(subscription => {
-
+            console.log("New Subscription!", subscription)
         })
 
     onDeleteSubscription
         .subscribe(subscription => {
-
+            console.log("Delete subscription!", subscription)
         })
 }

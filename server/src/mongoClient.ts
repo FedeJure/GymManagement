@@ -55,6 +55,10 @@ const createSchemas = () => {
     payType: String,
     price: Number,
     daysInWeek: [String],
+    oneFamiliarDiscount: Number,
+    twoFamiliarDiscount: Number,
+    threeFamiliarDiscount: Number,
+    fourOrMoreFamiliarDiscount: Number,
     creationDate: { type: Date, default: Date.now }
   });
   mongoose.model("Product", ProductSchema)
@@ -64,6 +68,7 @@ const createSchemas = () => {
     product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product'},
     initialTime: Date,
     endTime: Date,
+    specialDiscount: Number,
     creationDate: { type: Date, default: Date.now }
   })
   mongoose.model("Subscription", SubscriptionSchema)

@@ -4,5 +4,9 @@ export interface ProductPayload {
     name: string
     payType: PayType
     price: number
+    oneFamiliarDiscount: number,
+    twoFamiliarDiscount: number,
+    threeFamiliarDiscount: number,
+    fourOrMoreFamiliarDiscount: number,
     daysInWeek: Weekdays[]
 }
