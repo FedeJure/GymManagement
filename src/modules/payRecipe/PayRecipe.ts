@@ -1,5 +1,8 @@
+import { Order } from "../order/Order"
+
 export interface PayRecipe {
-    id: string,
-    collectionOrderId: string
-    payDay: Date
+    id: string
+    order: Order,
+    amount: number,
+    emittedDate: Date
 }
