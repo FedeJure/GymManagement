@@ -5,6 +5,7 @@ export interface Order {
     productId: string,
     productName: string
     basePrice: number,
+    amountPayed: number
     totalDiscount: number,
     amount: number,
     emittedDate: Date,

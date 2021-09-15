@@ -4,6 +4,7 @@ import { initUsersRoutes } from "./user/routes"
 import { initSubscriptionsRoutes } from "./subscription/routes"
 import { initProductsRoutes } from "./product/routes"
 import { startListenSubscriptions } from "./subscription"
+import { initPaymentRoutes } from "./pay/routes"
 
 const app = express()
 app.use(json())
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 initUsersRoutes(app)
 initSubscriptionsRoutes(app)
 initProductsRoutes(app)
+initPaymentRoutes(app)
 
 app.listen(port, () => {
   startListenSubscriptions()

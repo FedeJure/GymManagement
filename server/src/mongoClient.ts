@@ -94,7 +94,8 @@ const createSchemas = () => {
     amount: Number,
     emittedDate: Date,
     completed: Boolean,
-    cancelled: Boolean
+    cancelled: Boolean,
+    amountPayed: Number
   })
   mongoose.model("Order", OrderSchema)
 
