@@ -1,0 +1,13 @@
+export interface Order {
+    id: string
+    userId: string,
+    userName: string,
+    productId: string,
+    productName: string
+    basePrice: number,
+    totalDiscount: number,
+    amount: number,
+    emittedDate: Date,
+    completed: boolean,
+    cancelled: boolean
+}
