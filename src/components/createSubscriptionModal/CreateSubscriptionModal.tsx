@@ -9,6 +9,7 @@ const defaultDate = new Date(0)
 
 export const CreateSubscriptionModal = ({ onClose, onSubmit }:
     { onClose: any, onSubmit: any }) => {
+    const [submitted, setSubmitted] = useState(false)
     const [users, setUsers] = useState<User[]>([])
     const [products, setProducts] = useState<Product[]>([])
     const [formData, setFormData] = useState<SubscriptionPayload>(
@@ -23,8 +24,10 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
     )
 
     const handleSubmit = () => {
+        setSubmitted(true)
         if (formData.productId.length > 0
-            && formData.userId.length > 0)
+            && formData.userId.length > 0
+            && formData.initialTime != defaultDate)
             onSubmit(formData)
     }
 
@@ -83,7 +86,12 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                         <Grid.Row>
                             <Grid.Column verticalAlign='middle'>
                                 <Form onSubmit={handleSubmit}>
-                                    <Form.Field >
+                                    <Form.Field
+                                        error={submitted && formData.initialTime != defaultDate ? {
+                                            content: 'Ingresar Fecha de inicio',
+                                            pointing: 'below',
+                                        } : false}
+                                    >
                                         <label>Fecha de inicio de suscripción</label>
                                         <input placeholder=''
                                             type="date"
@@ -102,12 +110,16 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                                 </Form>
                             </Grid.Column>
                             <Grid.Column>
-                                <Form.Field>
+                                <Form.Field >
                                     <label>Usuario</label>
-                                    <Dropdown
+                                    <Form.Dropdown
                                         fluid
                                         selection
                                         search
+                                        error={submitted && formData.userId.length == 0 ? {
+                                            content: 'Ingresar un Usuario',
+                                            pointing: 'below',
+                                        } : false}
                                         onSearchChange={(_, value) => handleUserSearch(value.searchQuery)}
                                         onChange={(e, data) => handleChange(data.value, "userId")}
                                         options={[...users].map(p => ({
@@ -117,12 +129,16 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                                         }))} />
                                 </Form.Field>
 
-                                <Form.Field>
+                                <Form.Field >
                                     <label>Producto</label>
-                                    <Dropdown
+                                    <Form.Dropdown
                                         fluid
                                         selection
                                         search
+                                        error={submitted && formData.productId.length == 0 ? {
+                                            content: 'Ingresar un Producto',
+                                            pointing: 'below',
+                                        } : false}
                                         onSearchChange={(_, value) => handleProductSearch(value.searchQuery)}
                                         onChange={(e, data) => handleChange(data.value, "productId")}
                                         options={[...products].map(p => ({

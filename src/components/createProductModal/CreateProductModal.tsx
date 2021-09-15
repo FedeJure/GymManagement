@@ -19,8 +19,12 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
             payType: PayType.MONTHLY,
             daysInWeek: []
         })
+    const [submitted, setSubmitted] = useState(false)
     const handleSubmit = () => {
-        if (formData.name !== "" && formData.price !== null)
+        setSubmitted(true)
+        if (formData.name !== ""
+            && formData.price > 0
+            && formData.daysInWeek.length > 0)
             onSubmit(formData)
     }
 
@@ -30,7 +34,7 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
 
     const handleDiscountChange = (value: string, key: string) => {
         if (value === "") {
-            setFormData(form => ({ ...form, [key]: undefined }))
+            setFormData(form => ({ ...form, [key]: 0 }))
             return
         }
         const parsed = parseFloat(value) || 0
@@ -45,19 +49,27 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
         >
             <Modal.Header>{initialData ? "Edición de producto" : "Creación de producto"}</Modal.Header>
             <Modal.Content image >
-                <Form onSubmit={handleSubmit} style={{width: "100%"}}>
+                <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
                     <Grid columns={2}>
                         <Grid.Row>
                             <Grid.Column verticalAlign='middle'>
-                                <Form.Field inline>
+                                <Form.Field inline
+                                    error={submitted && formData.name.length == 0 ? {
+                                        content: 'Ingresar Nombre',
+                                        pointing: 'below',
+                                    } : false}>
                                     <label>Nombre</label>
-                                    <Input 
+                                    <Input
                                         value={formData.name}
                                         onChange={(v) => handleChange(v.currentTarget.value, "name")} />
                                 </Form.Field>
-                                <Form.Field inline>
+                                <Form.Field inline
+                                    error={submitted && formData.price <= 0 ? {
+                                        content: 'Ingresar Nombre',
+                                        pointing: 'below',
+                                    } : false}>
                                     <label>Precio Base</label>
-                                    <Input  type="number"
+                                    <Input type="number"
                                         label="ARS $"
                                         value={formData.price}
                                         onChange={(v) => handleChange(v.currentTarget.value, "price")} />
@@ -74,7 +86,12 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
                                         }))}
                                         onChange={(e, data) => handleChange(data.value, "payType")} />
                                 </Form.Field>
-                                <Form.Field>
+                                <Form.Field
+                                    error={submitted && formData.daysInWeek.length == 0 ? {
+                                        content: 'Ingresar Dias',
+                                        pointing: 'below',
+                                    } : false}
+                                >
                                     <label>Días de la semána</label>
                                     <Dropdown multiple selection fluid
                                         value={formData.daysInWeek}
