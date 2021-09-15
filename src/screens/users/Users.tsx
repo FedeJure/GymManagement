@@ -10,16 +10,15 @@ import { Dispatch } from "redux"
 import { StoreState } from "../../store"
 import { UserPayload } from "../../modules/users/UserPayload"
 import { User } from "../../modules/users/User"
-import { Product } from "../../modules/product/Product"
 import { FilterInput } from "../../components/filterInput/FilterInput"
 import { ExcelUploader } from "../../components/excelUploader/excelUploader"
 import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader"
 import { mapToExcel, mapFromExcel } from "../../modules/users/UserMapper"
 import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll"
+import { UserType } from "../../modules/users/UserType"
 
-const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }:
+const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     {
-        products: Product[],
         users: User[],
         createUser: (user: UserPayload) => void,
         removeUser: Function,
@@ -114,13 +113,33 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
 
         <Divider />
         <FilterInput
+            tagOptions={[
+                {
+                    key: UserType.ADMIN,
+                    text: UserType.ADMIN,
+                    value: UserType.ADMIN,
+                    label: { color: 'green', empty: true, circular: true }
+                },
+                {
+                    key: UserType.STUDENT,
+                    text: UserType.STUDENT,
+                    value: UserType.STUDENT,
+                    label: { color: 'yellow', empty: true, circular: true }
+                },
+                {
+                    key: UserType.TRAINER,
+                    text: UserType.TRAINER,
+                    value: UserType.TRAINER,
+                    label: { color: 'orange', empty: true, circular: true }
+                }
+            ]}
             onCustomChange={(f: string[]) => setUserCustomFiltes(f.map(v => v.toLocaleLowerCase()))}
             onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
 
         <Divider />
         {usersToShow.length > 0 &&
             <CardGroup centered>
-                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} as={Card}/>
+                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} as={Card} />
             </CardGroup>}
 
     </div>
@@ -129,7 +148,6 @@ const Users = ({ products, users, createUser, removeUser, editUser, fetchUsers }
 const mapStateToProps = (state: StoreState) => {
     return {
         users: state.user.users,
-        products: state.product.products
     }
 }
 

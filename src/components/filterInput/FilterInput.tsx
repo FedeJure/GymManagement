@@ -1,39 +1,19 @@
 import { useState } from "react"
 import { Dropdown, SemanticShorthandItem, LabelProps, Icon, Menu } from 'semantic-ui-react'
-import { UserType } from "../../modules/users/UserType"
 
-const userTypes: string[] = [UserType.ADMIN, UserType.STUDENT, UserType.TRAINER]
-export const FilterInput = ({ onUserTypeFilterChange, onCustomChange }
-    : { onUserTypeFilterChange: Function, onCustomChange: Function }) => {
+export const FilterInput = ({ onUserTypeFilterChange, onCustomChange, tagOptions }
+    : { onUserTypeFilterChange: Function, onCustomChange: Function, tagOptions: any[] }) => {
     const [selections, setSelections] = useState<string[]>([])
-    const [options, setOptions] = useState<{ key: string, value: string, text: string, label: SemanticShorthandItem<LabelProps> }[]>([
-        {
-            key: UserType.ADMIN,
-            text: UserType.ADMIN,
-            value: UserType.ADMIN,
-            label: { color: 'green', empty: true, circular: true }
-        },
-        {
-            key: UserType.STUDENT,
-            text: UserType.STUDENT,
-            value: UserType.STUDENT,
-            label: { color: 'yellow', empty: true, circular: true }
-        },
-        {
-            key: UserType.TRAINER,
-            text: UserType.TRAINER,
-            value: UserType.TRAINER,
-            label: { color: 'orange', empty: true, circular: true }
-        }
-    ])
+    const [options, setOptions] = useState<{ key: string, value: string, text: string, label: SemanticShorthandItem<LabelProps> }[]>(tagOptions)
 
     const handleAddition = (value: string) => {
         setSelections([...selections, value])
         setOptions([...options, { key: value, value, text: value, label: null }])
     }
     const handleChange = (value: string[]) => {
-        const userTypesSelections = value.filter(s => userTypes.includes(s))
-        const customSelections = value.filter(s => !userTypes.includes(s))
+        const types = tagOptions.map((t: any) => t.value)
+        const userTypesSelections = value.filter(s => types.includes(s))
+        const customSelections = value.filter(s => !types.includes(s))
         if (value.length === 0) setOptions(options.filter(o => !selections.includes(o.value)))
         onCustomChange(customSelections)
         onUserTypeFilterChange(userTypesSelections)

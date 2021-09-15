@@ -8,9 +8,9 @@ export const createSubscriptionAction = (subscription: SubscriptionPayload) => {
             .then(subscription => dispatch({
                 type: "CREATE_SUBSCRIPTION",
                 subscription
-            })
-            )
-    }
+            }))
+            .catch(error => console.error(error))
+        }
 }
 
 export const fetchSubscriptionsAction = ({ page, filterByContent, append = false }
@@ -21,5 +21,7 @@ export const fetchSubscriptionsAction = ({ page, filterByContent, append = false
                 type: append ? "APPEND_SUBSCRIPTIONS" : "FETCH_SUBSCRIPTIONS",
                 subscriptions
             }))
+            .catch(error => console.error(error))
+
     }
 }

@@ -8,12 +8,15 @@ import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayl
 import { createSubscriptionAction, fetchSubscriptionsAction } from '../../modules/subscription/subscription.actions'
 import { Subscription } from '../../modules/subscription/Subscription'
 import { SubscriptionCard } from "../../components/subscriptionCard/SubscriptionCard"
+import { PayState } from "../../modules/subscription/PayState"
 import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
+import { FilterInput } from '../../components/filterInput/FilterInput'
 
 const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }:
     { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [page, setPage] = useState(0)
+    const [filter, setFilter] = useState<string[]>([])
 
     const handleSubmit = (data: SubscriptionPayload) => {
         createSubscription(data)
@@ -35,6 +38,14 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }
             })
     }, [page])
 
+    useEffect(() => {
+        fetchSubscriptions({
+            page,
+            append: false,
+            filterByContent: filter
+        })
+    }, [filter])
+
 
     return (<div>
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
@@ -43,7 +54,28 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions }
         <Header as='h2' floated='left'>
             Suscripciones
         </Header>
-        <Divider />
+
+        <FilterInput
+            tagOptions={[
+                {
+                    key: PayState.DEBT,
+                    text: PayState.DEBT,
+                    value: PayState.DEBT,
+                    label: { color: 'red', empty: true, circular: true }
+                },
+                {
+                    key: PayState.ON_DAY,
+                    text: PayState.ON_DAY,
+                    value: PayState.ON_DAY,
+                    label: { color: 'green', empty: true, circular: true }
+                }
+            ]}
+            onUserTypeFilterChange={(f: string[]) => { }}
+            onCustomChange={(f: string[]) => {
+                setPage(0)
+                setFilter(fi => f)
+            }}
+        />
 
         <Divider />
         <List divided verticalAlign="middle">

@@ -12,6 +12,8 @@ export const getProductsAction = ({ page }
                     products
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -24,6 +26,8 @@ export const addProduct = (product: ProductPayload) => {
                     product
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -37,6 +41,8 @@ export const removeProduct = (productId: string) => {
                     productId
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -50,5 +56,7 @@ export const editProduct = (productId: string, productPayload: ProductPayload) =
                     product: updatedProduct
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
