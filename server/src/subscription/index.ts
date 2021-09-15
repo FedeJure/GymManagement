@@ -10,8 +10,6 @@ export const getSubscriptions = async ({ page, step, contentFilter }
         const filters = contentFilter.split(',')
         filters.forEach(f => {
             queries = [...queries,
-            { user: { $regex: f, "$options": "i" } },
-            { product: { $regex: f, "$options": "i" } },
             f.length == 24 ? { _id: f } : {}]
         })
     }

@@ -2,7 +2,7 @@ Cosas necesarias para la salida:
 
 
 Subscriptions: 
-- Crear infinite scroll en subcripciones
+- (LISTO) Crear infinite scroll en subcripciones
 - Crear tarjeta de subscripcion
 - Agregar comportamiento a boton de borrar en subscripciones
 - Crear pantalla de detalle y agregar navegacion

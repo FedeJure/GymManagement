@@ -12,6 +12,8 @@ export const getUsersAction = ({page, append, filterByTag, filterByContent}
                     users
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -24,6 +26,8 @@ export const addUser = (user: UserPayload) => {
                     user
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -37,6 +41,8 @@ export const removeUser = (userId: string) => {
                     userId
                 })
             })
+            .catch(error => console.error(error))
+
     }
 }
 
@@ -50,5 +56,6 @@ export const editUser = (userId: string, userPayload: UserPayload) => {
                     user: updatedUser
                 })
             })
+            .catch(error => console.error(error))
     }
 }
