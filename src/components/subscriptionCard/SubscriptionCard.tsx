@@ -2,7 +2,7 @@ import { Button, Icon, List } from "semantic-ui-react"
 import { Subscription } from "../../modules/subscription/Subscription"
 
 export const SubscriptionCard = ({ subscription }: { subscription: Subscription }) => (
-    <List.Item style={{ padding: "0.5em" }}>
+    <List.Item style={{ padding: "0.5em", width: "100%" }}>
         <List.Content floated='right'>
             <Button icon compact><Icon name="trash"></Icon>Borrar</Button>
         </List.Content>
