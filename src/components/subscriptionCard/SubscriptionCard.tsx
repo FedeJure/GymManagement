@@ -1,10 +1,10 @@
 import { Button, Icon, List } from "semantic-ui-react"
 import { Subscription } from "../../modules/subscription/Subscription"
 
-export const SubscriptionCard = ({ subscription }: { subscription: Subscription }) => (
+export const SubscriptionCard = ({ subscription, handleDelete }: { subscription: Subscription, handleDelete: Function }) => (
     <List.Item style={{ padding: "0.5em", width: "100%" }}>
         <List.Content floated='right'>
-            <Button icon compact><Icon name="trash"></Icon>Borrar</Button>
+            <Button icon compact onClick={() => handleDelete()}><Icon name="trash"></Icon>Borrar</Button>
         </List.Content>
         <List.Content floated='right'>
             <Button icon compact><Icon name="file alternate outline"></Icon>Ver Detalle</Button>

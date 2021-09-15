@@ -1,4 +1,3 @@
-import Subscriptions from "../../screens/subscriptions/Subscriptions"
 import { SubscriptionState } from "./SubscriptionState"
 
 const initialState : SubscriptionState = {
@@ -22,6 +21,11 @@ export const subscription = (state: SubscriptionState, action: any): Subscriptio
             return {
                 ...state,
                 subscriptions: [...state.subscriptions, ...action.subscriptions]
+            }
+        case "REMOVE_SUBSCRIPTION" :
+            return {
+                ...state,
+                subscriptions: state.subscriptions.filter(s => s.id !== action.subscriptionId)
             }
         default:
             return state

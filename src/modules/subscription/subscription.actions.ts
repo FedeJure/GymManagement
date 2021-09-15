@@ -1,5 +1,6 @@
 import { Dispatch } from "redux";
-import { createSubscription, fetchSubscriptions } from "../../services/api";
+import { createSubscription, deleteSubscription, fetchSubscriptions } from "../../services/api";
+import { Subscription } from "./Subscription";
 import { SubscriptionPayload } from "./SubscriptionPayload";
 
 export const createSubscriptionAction = (subscription: SubscriptionPayload) => {
@@ -23,5 +24,15 @@ export const fetchSubscriptionsAction = ({ page, filterByContent, append = false
             }))
             .catch(error => console.error(error))
 
+    }
+}
+
+export const deleteSubscriptionAction = (subscription: Subscription) => {
+    return (dispatch: Dispatch) => {
+        deleteSubscription({subscriptionId: subscription.id})
+        .then(() => dispatch({
+            type: "REMOVE_SUBSCRIPTION",
+            subscriptionId: subscription.id
+        }))
     }
 }

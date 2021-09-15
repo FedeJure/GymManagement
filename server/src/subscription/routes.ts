@@ -1,6 +1,6 @@
 import { Express, Request, Response } from "express"
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload"
-import { getSubscriptions, saveSubscription } from "./index"
+import { getSubscriptions, removeSubscription, saveSubscription } from "./index"
 
 export const initSubscriptionsRoutes = (app: Express) => {
     app.get('/subscriptions', (req: Request, res: Response) => {
@@ -25,6 +25,18 @@ export const initSubscriptionsRoutes = (app: Express) => {
         saveSubscription(subscription)
             .then(subscription => {
                 res.status(200).send({ ok: true, subscription })
+            })
+            .catch(error => {
+                res.status(500).send({ error })
+            })
+    })
+
+    app.delete('/subscription', (req: Request, res: Response) => {
+        const { subscriptionId } = req.body
+
+        removeSubscription(subscriptionId)
+            .then(() => {
+                res.status(200).send({ ok: true })
             })
             .catch(error => {
                 res.status(500).send({ error })

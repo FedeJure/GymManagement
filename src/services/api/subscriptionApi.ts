@@ -24,3 +24,9 @@ export const fetchSubscriptions = ({ page, step, filterByContent = [] }
         .then(response => response.json())
         .then(response => response.map(mapToSubscription))
 }
+
+export const deleteSubscription = ({subscriptionId}: {subscriptionId: string}) => {
+    const options = getOptionsWithBody({ subscriptionId }, "DELETE")
+    return fetch(`${url}/subscription`, options)
+        .then(response => response.json())
+}
