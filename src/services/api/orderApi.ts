@@ -3,6 +3,7 @@ import { getOptionsWithBody, url } from "."
 const mapToOrder = (data: any) => {
     return {
         ...data,
+        id: data._id,
         emittedDate: new Date(data.emittedDate)
     }
 }
