@@ -65,10 +65,10 @@ const createSchemas = () => {
     payType: String,
     price: Number,
     daysInWeek: [String],
-    oneFamiliarDiscount: Number,
-    twoFamiliarDiscount: Number,
-    threeFamiliarDiscount: Number,
-    fourOrMoreFamiliarDiscount: Number,
+    twoSubscriptionsDiscount: Number,
+    threeSubscriptionsDiscount: Number,
+    fourSubscriptionsDiscount: Number,
+    fiveOrMoreSubscriptionsDiscount: Number,
     creationDate: { type: Date, default: Date.now }
   });
   mongoose.model("Product", ProductSchema)

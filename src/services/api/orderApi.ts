@@ -24,3 +24,9 @@ export const createOrder = (subscriptionId: string) => {
         .then(response => response.json())
         .then(response => mapToOrder(response.order))
 }
+
+export const cancelOrder = (orderId: string) => {
+    const options = getOptionsWithBody({ orderId }, "DELETE")
+    return fetch(`${url}/order`, options)
+        .then(response => response.json())
+}
