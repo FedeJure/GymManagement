@@ -61,8 +61,8 @@ const Orders = ({ orders, createOrder, fetchOrders }:
             onAccept={() => handleDelete()}
             message="Confirma eliminación? Esta acción no puede deshacerse." />}
 
-<Grid verticalAlign="middle" style={{ width: "100%" }}>
-            <Grid.Row  columns="equal">
+        <Grid verticalAlign="middle" style={{ width: "100%" }}>
+            <Grid.Row columns="equal">
                 <Grid.Column textAlign="left">
                     <h3>Ordenes de pago</h3>
                 </Grid.Column>
