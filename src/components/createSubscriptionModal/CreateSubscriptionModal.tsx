@@ -65,7 +65,7 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
 
     const handleDiscountChange = (value: string, key: string) => {
         if (value === "") {
-            setFormData(form => ({ ...form, [key]: undefined }))
+            setFormData(form => ({ ...form, [key]: 0 }))
             return
         }
         const parsed = parseFloat(value) || 0
