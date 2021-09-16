@@ -12,11 +12,16 @@ export const order = (state: OrderState, action: any): OrderState => {
                 ...state,
                 orders: action.orders
             }
+        case "APPEND_ORDERS":
+            return {
+                ...state,
+                orders: [...state.orders, ...action.orders]
+            }
         case "CREATE_ORDER":
             return {
                 ...state,
                 orders: [...state.orders, action.order]
-            }    
+            }
         default:
             return state
     }

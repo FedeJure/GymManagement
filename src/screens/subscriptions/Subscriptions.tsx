@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Header, Grid, Menu, GridColumn } from 'semantic-ui-react'
+import { Button, List, Grid} from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
@@ -13,9 +13,10 @@ import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
 import { FilterInput } from '../../components/filterInput/FilterInput'
 import { ConfirmationModal } from '../../components/confirmationModal/ConfirmationModal'
 import Orders from "../orders/Orders"
+import { createOrderAction } from '../../modules/order/order.actions'
 
-const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, deleteSubscription }:
-    { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function, deleteSubscription: Function }) => {
+const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, deleteSubscription, createOrder }:
+    { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function, deleteSubscription: Function, createOrder: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
@@ -30,6 +31,10 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
     const handleDelete = () => {
         setConfirmModal(false)
         deleteSubscription(selectedSubscription)
+    }
+
+    const handleCreateOrder = (subscriptionId: string) => {
+        createOrder(subscriptionId)
     }
 
     useEffect(() => {
@@ -96,7 +101,8 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 data={subscriptions.map(s => <SubscriptionCard handleDelete={() => {
                     setSelectedSubscription(s)
                     setConfirmModal(true)
-                }} subscription={s} />)} />
+                }} subscription={s}
+                handleCreateOrder={handleCreateOrder} />)} />
         </List></>
 
 
@@ -138,7 +144,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         deleteSubscription: (subscription: Subscription) => deleteSubscriptionAction(subscription)(dispatch),
         createSubscription: (data: SubscriptionPayload) => createSubscriptionAction(data)(dispatch),
         fetchSubscriptions: ({ page, filterByContent, append }:
-            { page: number, filterByContent: string[], append: boolean }) => fetchSubscriptionsAction({ page, filterByContent, append })(dispatch)
+            { page: number, filterByContent: string[], append: boolean }) => fetchSubscriptionsAction({ page, filterByContent, append })(dispatch),
+        createOrder: (subscriptionId: string) => createOrderAction(subscriptionId)(dispatch)
     }
 }
 
