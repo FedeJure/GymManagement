@@ -18,7 +18,7 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange, tagOptions
         onCustomChange(customSelections)
         onUserTypeFilterChange(userTypesSelections)
     }
-    return (<Menu>
+    return (<Menu fluid>
         <Menu.Item><Icon name="filter" /></Menu.Item>
 
         <Dropdown
