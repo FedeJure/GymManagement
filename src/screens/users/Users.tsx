@@ -95,7 +95,6 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedUser} />}
-
         <Grid>
             <Grid.Row columns="equal">
                 <Grid.Column width="10" textAlign="left">
@@ -110,9 +109,6 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
                 </Grid.Column>
             </Grid.Row>
         </Grid>
-
-
-        <Divider />
         <FilterInput
             tagOptions={[
                 {
@@ -137,7 +133,6 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
             onCustomChange={(f: string[]) => setUserCustomFiltes(f.map(v => v.toLocaleLowerCase()))}
             onUserTypeFilterChange={(v: string[]) => setUserTagFiltes(v)} />
 
-        <Divider />
         {usersToShow.length > 0 &&
             <CardGroup centered>
                 <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} as={Card} />
