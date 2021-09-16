@@ -1,5 +1,6 @@
 import { Dispatch } from "redux"
 import { createProduct, deleteProduct, fetchProducts, updateProduct } from "../../services/api"
+import { Product } from "./Product"
 import { ProductPayload } from "./ProductPayload"
 
 export const getProductsAction = ({ page }
@@ -46,8 +47,7 @@ export const removeProduct = (productId: string) => {
     }
 }
 
-export const editProduct = (productId: string, productPayload: ProductPayload) => {
-    const product = { id: productId, ...productPayload }
+export const editProduct = (product: Product) => {
     return (dispatch: Dispatch) => {
         updateProduct(product)
             .then(updatedProduct => {

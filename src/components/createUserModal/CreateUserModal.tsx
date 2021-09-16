@@ -12,7 +12,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
     const allowedTypes = ["image/png", "image/jpeg"]
     const fileRef = useRef<HTMLInputElement>(null)
     const [submitted, setSubmitted] = useState(false)
-    const [brothers, setBrothers] = useState<User[]>([])
+    const [familiars, setBrothers] = useState<User[]>([])
     const [users, setUsers] = useState<User[]>([])
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
@@ -25,7 +25,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                 contactEmail: "",
                 comment: "",
                 contactPhone: "",
-                brothers: [],
+                familiars: [],
                 productsSubscribed: [],
                 profilePicture: "",
                 type: UserType.STUDENT,
@@ -81,7 +81,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
         if (initialData)
             getBrothersOfUser(initialData.id)
                 .then(users => setBrothers(users))
-    }, [])
+    }, [initialData])
 
     return (
         <Modal
@@ -204,9 +204,9 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             search
                                             onSearchChange={(_, value) => handleBrotherSearch(value.searchQuery)}
                                             multiple
-                                            value={formData.brothers || []}
-                                            onChange={(e, data) => handleChange(data.value, "brothers")}
-                                            options={[...brothers, ...users]
+                                            value={formData.familiars || []}
+                                            onChange={(e, data) => handleChange(data.value, "familiars")}
+                                            options={[...familiars, ...users]
                                                 .filter(user => user.id !== initialData?.id)
                                                 .map(p => ({
                                                     key: p.name,

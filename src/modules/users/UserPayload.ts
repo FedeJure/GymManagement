@@ -8,7 +8,7 @@ export interface UserPayload {
     address: string,
     birthDate: Date,
     comment: string,
-    brothers: number[],
+    familiars: string[],
     productsSubscribed: number[],
     profilePicture: string,
     dni: string

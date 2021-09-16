@@ -1,6 +1,7 @@
 import { Dispatch } from "redux"
 import { UserPayload } from "./UserPayload"
 import { fetchUsers, createUser, deleteUser, updateUser } from "../../services/api"
+import { User } from "./User"
 
 export const getUsersAction = ({page, append, filterByTag, filterByContent}
     :{page: number, append?: boolean, filterByTag?: string[], filterByContent?: string[]}) => {
@@ -46,8 +47,7 @@ export const removeUser = (userId: string) => {
     }
 }
 
-export const editUser = (userId: string, userPayload: UserPayload) => {
-    const user = { id: userId, ...userPayload }
+export const editUser = (user: User) => {
     return (dispatch: Dispatch) => {
         updateUser(user)
             .then(updatedUser => {

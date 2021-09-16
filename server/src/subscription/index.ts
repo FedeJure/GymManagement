@@ -31,33 +31,14 @@ export const saveSubscription = async (subscription: SubscriptionPayload) => {
         user: subscription.userId,
         product: subscription.productId
     })
-    return subscriptionModel.create(newSubscription)
-        .then(saved => subscriptionModel.findById(saved._id)
-            .populate(["user", "product"]))
-        .then((subscription: Subscription) => {
-            onNewSubscription.next(subscription)
-            return subscription
-        })
+    const saved = await subscriptionModel.create(newSubscription)
+    return subscriptionModel.findById(saved._id)
+        .populate(["user", "product"])
 }
 
 export const removeSubscription = async (subscriptionId: string) => {
     const subscriptionModel = getSubscriptionModel()
-    return subscriptionModel.findOneAndDelete({ _id: subscriptionId })
-        .populate(["user", "product"]).then(
-            (subscription: Subscription) => {
-                onDeleteSubscription.next(subscription)
-            }
-        )
-}
-
-export const startListenSubscriptions = () => {
-    onNewSubscription
-        .subscribe(subscription => {
-            // console.log("New Subscription!", subscription)
-        })
-
-    onDeleteSubscription
-        .subscribe(subscription => {
-            // console.log("Delete subscription!", subscription)
-        })
+    const removedSubscription = await subscriptionModel.findOneAndDelete({ _id: subscriptionId })
+        .populate(["user", "product"])
+    return removedSubscription
 }
