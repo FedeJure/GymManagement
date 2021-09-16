@@ -22,6 +22,7 @@ const Orders = ({ orders, fetchOrders }:
 
     const handleDelete = () => {
         if (!selectedOrder) return setConfirmModal(false)
+        console.log(selectedOrder)
         cancelOrder(selectedOrder.id)
             .then(() => {
                 setConfirmModal(false)
