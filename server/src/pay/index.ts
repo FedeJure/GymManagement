@@ -1,7 +1,6 @@
 import { Subscription } from "../../../src/modules/subscription/Subscription"
 import { PayRecipePayload } from "../../../src/modules/payRecipe/PayRecipePayload"
 import { getOrderModel, getPayRecipeModel, getSubscriptionModel } from "../mongoClient"
-import { Order } from "../../../src/modules/order/Order"
 
 export const generateOrder = (subscriptionId: string) => {
     const orderModel = getOrderModel()
@@ -53,25 +52,33 @@ export const getPayments = ({ page, step }
 }
 
 export const payOrder = async (orderId: string, amount: number) => {
-    const orderModel = getOrderModel()
-    const payRecipeModel = getPayRecipeModel()
+    return new Promise(async (res, error) => {
+        try {
+            const orderModel = getOrderModel()
+            const payRecipeModel = getPayRecipeModel()
+            const order = await orderModel.findOne({ _id: orderId, cancelled: false, completed: false })
+            if (!order) return error("Error desconocido")
+            const newPay: PayRecipePayload = {
+                order,
+                amount,
+                emittedDate: new Date()
+            }
 
-    const order: Order | null = await orderModel.findOne({ _id: orderId, cancelled: false, completed: false })
-    if (!order) return new Promise((_, err) => err())
-    const newPay: PayRecipePayload = {
-        order,
-        amount,
-        emittedDate: new Date()
-    }
+            const payment = await payRecipeModel.create(newPay)
+            const amountPayed = order.amountPayed + amount
+            order.amountPayed = amountPayed
+            order.completed = amountPayed >= order.amount
+            await order.save()
+            payment.order = order
+            await payment.save()
+            console.log(order)
+            res(payment)
+        } catch (err) {
+            error(err)
+        }
 
-    return payRecipeModel.create(newPay)
-        .then(_ => {
-            order.amountPayed += amount
-            return orderModel.updateOne({ _id: orderId }, {
-                ...order,
-                amountPayed: order.amountPayed + amount
-            })
-        })
+    })
+
 }
 
 const calculateDiscount = (subscription: Subscription) => {
