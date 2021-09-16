@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Grid} from 'semantic-ui-react'
+import { Button, List, Grid } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
@@ -21,6 +21,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
     const [confirmModal, setConfirmModal] = useState(false)
+    const [confirmOrderModal, setConfirmOrderModal] = useState(false)
     const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null)
 
     const handleSubmit = (data: SubscriptionPayload) => {
@@ -33,8 +34,9 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
         deleteSubscription(selectedSubscription)
     }
 
-    const handleCreateOrder = (subscriptionId: string) => {
-        createOrder(subscriptionId)
+    const handleCreateOrder = () => {
+        if (!selectedSubscription) return
+        createOrder(selectedSubscription.id)
     }
 
     useEffect(() => {
@@ -102,7 +104,10 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                     setSelectedSubscription(s)
                     setConfirmModal(true)
                 }} subscription={s}
-                handleCreateOrder={handleCreateOrder} />)} />
+                    handleCreateOrder={() => {
+                        setSelectedSubscription(s)
+                        setConfirmOrderModal(true)
+                    }} />)} />
         </List></>
 
 
@@ -112,6 +117,14 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             onCancel={() => setConfirmModal(false)}
             onAccept={() => handleDelete()}
             message="Confirma eliminación? Esta acción no puede deshacerse." />}
+        {confirmOrderModal && <ConfirmationModal
+            open={confirmOrderModal}
+            onCancel={() => setConfirmOrderModal(false)}
+            onAccept={() => {
+                setConfirmOrderModal(false)
+                handleCreateOrder()
+            }}
+            message="Crear orden de compra?" />}
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
 
