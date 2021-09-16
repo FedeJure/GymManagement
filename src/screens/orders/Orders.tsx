@@ -38,7 +38,7 @@ const Orders = ({ orders, fetchOrders }:
         fetchOrders({
             page: 0,
             append: false,
-            filterByContent: filter,
+            contentFilter: filter,
             cancelled: tagFilter.cancelled,
             completed: tagFilter.completed
         })
@@ -49,7 +49,7 @@ const Orders = ({ orders, fetchOrders }:
             fetchOrders({
                 page,
                 append: true,
-                filterByContent: filter,
+                contentFilter: filter,
                 cancelled: tagFilter.cancelled,
                 completed: tagFilter.completed
             })
@@ -59,7 +59,7 @@ const Orders = ({ orders, fetchOrders }:
         fetchOrders({
             page: 0,
             append: false,
-            filterByContent: filter,
+            contentFilter: filter,
             cancelled: tagFilter.cancelled,
             completed: tagFilter.completed
         })
@@ -136,8 +136,8 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         // deleteOrder: (order: Order) => deleteOrderAction(order)(dispatch),
-        fetchOrders: ({ page, filterByContent, append, cancelled, completed }:
-            { page: number, filterByContent: string[], append: boolean, cancelled?: boolean, completed?: boolean }) => getOrdersAction({ page, filterByContent, append, cancelled, completed })(dispatch)
+        fetchOrders: ({ page, contentFilter, append, cancelled, completed }:
+            { page: number, contentFilter: string[], append: boolean, cancelled?: boolean, completed?: boolean }) => getOrdersAction({ page, contentFilter, append, cancelled, completed })(dispatch)
     }
 }
 

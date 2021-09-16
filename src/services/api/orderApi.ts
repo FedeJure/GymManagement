@@ -7,11 +7,12 @@ const mapToOrder = (data: any) => {
     }
 }
 
-export const fetchOrders = ({ page, step, cancelled, completed }:
-     { page: number, step: number, cancelled?: boolean, completed?: boolean }) => {
+export const fetchOrders = ({ page, step, cancelled, completed, contentFilter }:
+     { page: number, step: number, cancelled?: boolean, completed?: boolean, contentFilter?: string[] }) => {
     let urlWithQueries = `${url}/orders?page=${page}&step=${step}`
     urlWithQueries += cancelled != undefined ? `&cancelled=${cancelled}` : ""
     urlWithQueries += completed != undefined ? `&completed=${completed}` : ""
+    urlWithQueries += contentFilter != undefined ? `&contentFilter=${contentFilter.join(',')}` : ""
     return fetch(urlWithQueries)
         .then(response => response.json())
         .then(response => response.map(mapToOrder))

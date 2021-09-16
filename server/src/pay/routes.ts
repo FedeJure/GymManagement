@@ -37,12 +37,13 @@ export const initPaymentRoutes = (app: Express) => {
     })
 
     app.get('/orders', (req: Request, res: Response) => {
-        const { page, step, cancelled, completed } = req.query
+        const { page, step, cancelled, completed, contentFilter } = req.query
 
         getOrders({
             page: parseInt(page as string, 10), step: parseInt(step as string, 10),
             cancelled: cancelled != undefined ? cancelled == "true" : undefined,
-            completed: completed != undefined ? completed == "true" : undefined
+            completed: completed != undefined ? completed == "true" : undefined,
+            contentFilter: contentFilter?.toString()
         })
             .then(orders => {
                 res.status(200).send(orders)
