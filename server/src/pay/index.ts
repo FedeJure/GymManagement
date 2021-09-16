@@ -26,19 +26,29 @@ export const generateOrder = async (subscriptionId: string) => {
     )
 }
 
-export const getOrders = async ({ page, step, contentFilter, completed, cancelled }: { page: number, step: number, contentFilter?: string, completed?: boolean, cancelled?: boolean }) => {
+export const getOrders = async ({ page, step, contentFilter, completed, cancelled }: { page: number, step: number, contentFilter?: string, completed?: Boolean, cancelled?: Boolean }) => {
     const orderModel = getOrderModel()
     let queries: any[] = []
-
+    let withQueries = false
     if (contentFilter) {
+        withQueries = true
         const filters = contentFilter.split(',')
         filters.forEach(f => {
             queries = [...queries,
-            { cancelled },
-            { completed }]
+            { userName: { $regex: f, "$options": "i" } },
+            { productName: { $regex: f, "$options": "i" } }]
         })
     }
-    const withQueries = contentFilter != undefined || completed != undefined || cancelled != undefined
+    if (completed != undefined) {
+        withQueries = true
+        queries = [...queries, { completed }]
+    }
+
+    if (cancelled != undefined) {
+        withQueries = true
+        queries = [...queries, { cancelled }]
+    }
+    console.log(queries)
     return orderModel.find(withQueries ? { $or: queries } : {}, null, { skip: step * page, limit: step })
 }
 

@@ -1,4 +1,6 @@
 export enum OrderStateEnum {
     COMPLETE="Completada",
-    INCOMPLETE="Incompleta"
+    INCOMPLETE="Incompleta",
+    AVAILABLE="Disponible",
+    CANCELLED="Cancelada"
 }

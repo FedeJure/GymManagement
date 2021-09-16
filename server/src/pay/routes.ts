@@ -1,5 +1,5 @@
 import { Express, Request, Response } from "express"
-import { generateOrder, getOrders, getPayments, payOrder } from "."
+import { cancelOrder, generateOrder, getOrders, getPayments, payOrder } from "."
 import { Order } from "../../../src/modules/order/Order"
 
 export const initPaymentRoutes = (app: Express) => {
@@ -25,9 +25,25 @@ export const initPaymentRoutes = (app: Express) => {
             })
     })
 
+    app.delete('/order', (req: Request, res: Response) => {
+        const { orderId } = req.body
+        cancelOrder(orderId)
+            .then((order: Order) => {
+                res.status(200).send({ ok: true, order })
+            })
+            .catch((error: Error) => {
+                res.status(500).send({ error })
+            })
+    })
+
     app.get('/orders', (req: Request, res: Response) => {
-        const { page, step } = req.query
-        getOrders({ page: parseInt(page as string, 10), step: parseInt(step as string, 10) })
+        const { page, step, cancelled, completed } = req.query
+
+        getOrders({
+            page: parseInt(page as string, 10), step: parseInt(step as string, 10),
+            cancelled: cancelled != undefined ? cancelled == "true" : undefined,
+            completed: completed != undefined ? completed == "true" : undefined
+        })
             .then(orders => {
                 res.status(200).send(orders)
             })
