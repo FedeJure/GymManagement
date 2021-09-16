@@ -55,7 +55,7 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     const handleEdit = (editData: UserPayload) => {
         if (selectedUser === null) return
         setEditModalOpen(false)
-        editUser(selectedUser.id, editData)
+        editUser({ ...selectedUser, ...editData })
     }
 
     const mustShowUser = (user: User) => {
@@ -159,7 +159,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
             getUsersAction({ page, append, filterByTag, filterByContent })(dispatch),
         createUser: (data: UserPayload) => addUser(data)(dispatch),
         removeUser: (userId: string) => removeUser(userId)(dispatch),
-        editUser: (userId: string, data: UserPayload) => editUser(userId, data)(dispatch)
+        editUser: (user: User) => editUser(user)(dispatch)
     }
 }
 

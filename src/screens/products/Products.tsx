@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { ProductCard } from "../../components/productCard/ProductCard"
-import { Divider, Button, Header, Card, Grid } from "semantic-ui-react"
+import { Divider, Button, Card, Grid } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
 import { addProduct, editProduct, getProductsAction, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -39,7 +39,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
     const handleEdit = (editData: ProductPayload) => {
         if (!selectedProduct) return
         setEditModalOpen(false)
-        editProduct(selectedProduct.id, editData)
+        editProduct({...selectedProduct, ...editData})
     }
 
     return <div>
@@ -94,7 +94,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         fetchProducts: (page: number) => getProductsAction({ page })(dispatch),
         createProduct: (data: ProductPayload) => addProduct(data)(dispatch),
         removeProduct: (productId: string) => removeProduct(productId)(dispatch),
-        editProduct: (productId: string, data: ProductPayload) => editProduct(productId, data)(dispatch)
+        editProduct: (product: Product) => editProduct(product)(dispatch)
     }
 }
 

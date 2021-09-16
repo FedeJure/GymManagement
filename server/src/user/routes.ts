@@ -22,12 +22,12 @@ export const initUsersRoutes = (app: Express) => {
             })
     })
 
-    app.get('/brothers', (req: Request, res: Response) => {
+    app.get('/familiars', (req: Request, res: Response) => {
         const { userId } = req.query
 
         getBrothersOfUser(userId as string)
-            .then(brothers => {
-                res.status(200).send(brothers)
+            .then(familiars => {
+                res.status(200).send(familiars)
             })
             .catch(error => {
                 res.status(500).send({ error })

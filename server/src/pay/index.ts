@@ -88,7 +88,7 @@ export const cancelOrder = async (orderId: string) => {
 
 const calculateDiscount = (subscription: Subscription) => {
     let discount = 0
-    switch (subscription.user.brothers.length) {
+    switch (subscription.user.familiars.length) {
         case 0:
             break;
         case 1:

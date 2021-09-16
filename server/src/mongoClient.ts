@@ -22,15 +22,15 @@ export const getClient = () => {
   return mongoose
 }
 
-export const getUserModel = (): Model<User, any, any> => {
+export const getUserModel = (): Model<User> => {
   return mongoose.model("User")
 }
 
-export const getProductModel = (): Model<Product, any, any> => {
+export const getProductModel = (): Model<Product> => {
   return mongoose.model("Product")
 }
 
-export const getSubscriptionModel = (): Model<Subscription, any, any> => {
+export const getSubscriptionModel = (): Model<Subscription> => {
   return mongoose.model("Subscription")
 }
 
@@ -43,7 +43,7 @@ export const getPayRecipeModel = (): Model<PayRecipe> => {
 }
 
 const createSchemas = () => {
-  const UserSchema = new Schema({
+  const UserSchema = new Schema<User>({
     type: String,
     name: String,
     lastname: String,
@@ -52,15 +52,15 @@ const createSchemas = () => {
     address: String,
     birthDate: Date,
     comment: String,
-    brothers: [Types.ObjectId], //refactorizar y referenciar user directamente
+    familiars: [Types.ObjectId], //refactorizar y referenciar user directamente
     profilePicture: String,
     dni: String,
-    creationDate: { type: Date, default: Date.now }
+    creationDate: { type: Date, default: new Date() }
   });
 
   mongoose.model("User", UserSchema)
 
-  const ProductSchema = new Schema({
+  const ProductSchema = new Schema<Product>({
     name: String,
     payType: String,
     price: Number,
@@ -69,17 +69,17 @@ const createSchemas = () => {
     threeSubscriptionsDiscount: Number,
     fourSubscriptionsDiscount: Number,
     fiveOrMoreSubscriptionsDiscount: Number,
-    creationDate: { type: Date, default: Date.now }
+    creationDate: { type: Date, default: new Date() }
   });
   mongoose.model("Product", ProductSchema)
 
-  const SubscriptionSchema = new Schema({
+  const SubscriptionSchema = new Schema<Subscription>({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     initialTime: Date,
     endTime: Date,
     specialDiscount: Number,
-    creationDate: { type: Date, default: Date.now }
+    creationDate: { type: Date, default: new Date() }
   })
   mongoose.model("Subscription", SubscriptionSchema)
 

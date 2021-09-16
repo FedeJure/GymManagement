@@ -28,7 +28,7 @@ export const mapFromExcel = (excelMapped: UserExcel): UserPayload => {
         address: excelMapped.Direccion,
         birthDate: new Date(excelMapped["Fecha de nacimiento"]),
         comment: excelMapped.Comentario,
-        brothers: JSON.parse(excelMapped.Hermanos),
+        familiars: JSON.parse(excelMapped.Hermanos),
         productsSubscribed: JSON.parse(excelMapped.Suscripciones),
         profilePicture: excelMapped.Foto,
         dni: excelMapped.Dni
@@ -50,7 +50,7 @@ export const mapToExcel = (excelMapped: User): UserExcel => {
         // eslint-disable-next-line
         ['Fecha de nacimiento']: excelMapped.birthDate.getTime(),
         Comentario: excelMapped.comment,
-        Hermanos: JSON.stringify(excelMapped.brothers),
+        Hermanos: JSON.stringify(excelMapped.familiars),
         Suscripciones: JSON.stringify(excelMapped.productsSubscribed),
         Foto: excelMapped.profilePicture,
         Dni: excelMapped.dni

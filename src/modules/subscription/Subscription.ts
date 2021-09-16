@@ -9,4 +9,5 @@ export interface Subscription {
     initialTime: Date
     endTime?: Date
     comment: string
+    creationDate: Date
 }
