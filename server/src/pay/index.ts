@@ -12,7 +12,7 @@ export const generateOrder = async (subscriptionId: string) => {
     return orderModel.create(
         {
             userId: subscription.user.id,
-            userName: subscription.user.name,
+            userName: `${subscription.user.lastname}, ${subscription.user.name}`,
             productId: subscription.product.id,
             productName: subscription.product.name,
             basePrice: subscription.product.price,
@@ -48,7 +48,6 @@ export const getOrders = async ({ page, step, contentFilter, completed, cancelle
         withQueries = true
         queries = [...queries, { cancelled }]
     }
-    console.log(queries)
     return orderModel.find(withQueries ? { $or: queries } : {}, null, { skip: step * page, limit: step })
 }
 
