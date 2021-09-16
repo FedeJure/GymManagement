@@ -13,9 +13,9 @@ import { OrderCard } from "../../components/orderCard/OrderCard"
 
 const Orders = ({ orders, fetchOrders }:
     { orders: Order[], fetchOrders: Function }) => {
-    const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
+    const [tagFilter, setTagFilter] = useState({ cancelled: undefined, completed: undefined })
     const [confirmModal, setConfirmModal] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
@@ -23,10 +23,24 @@ const Orders = ({ orders, fetchOrders }:
         setConfirmModal(false)
     }
 
+    const handleTagFilterChange = (filters: string[]) => {
+        let newFilter: { cancelled: any, completed: any } = { cancelled: undefined, completed: undefined }
+        filters.forEach(f => {
+            if (f === OrderStateEnum.CANCELLED) newFilter.cancelled = true;
+            if (f === OrderStateEnum.COMPLETE) newFilter.completed = true;
+            if (f === OrderStateEnum.INCOMPLETE) newFilter.completed = false;
+            if (f === OrderStateEnum.AVAILABLE) newFilter.cancelled = false;
+        })
+        setTagFilter(newFilter)
+    }
+
     useEffect(() => {
         fetchOrders({
             page: 0,
-            append: false
+            append: false,
+            filterByContent: filter,
+            cancelled: tagFilter.cancelled,
+            completed: tagFilter.completed
         })
     }, [])
 
@@ -35,7 +49,9 @@ const Orders = ({ orders, fetchOrders }:
             fetchOrders({
                 page,
                 append: true,
-                filterByContent: filter
+                filterByContent: filter,
+                cancelled: tagFilter.cancelled,
+                completed: tagFilter.completed
             })
     }, [page])
 
@@ -43,10 +59,12 @@ const Orders = ({ orders, fetchOrders }:
         fetchOrders({
             page: 0,
             append: false,
-            filterByContent: filter
+            filterByContent: filter,
+            cancelled: tagFilter.cancelled,
+            completed: tagFilter.completed
         })
         setPage(0)
-    }, [filter])
+    }, [filter, tagFilter])
 
     return (<div>
         {confirmModal && <ConfirmationModal
@@ -59,9 +77,6 @@ const Orders = ({ orders, fetchOrders }:
             <Grid.Row columns="equal">
                 <Grid.Column textAlign="left">
                     <h3>Ordenes de cobro</h3>
-                </Grid.Column>
-                <Grid.Column floated="right">
-                    <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
@@ -78,9 +93,22 @@ const Orders = ({ orders, fetchOrders }:
                     text: OrderStateEnum.COMPLETE,
                     value: OrderStateEnum.COMPLETE,
                     label: { color: 'green', empty: true, circular: true }
+                },
+                {
+                    key: OrderStateEnum.CANCELLED,
+                    text: OrderStateEnum.CANCELLED,
+                    value: OrderStateEnum.CANCELLED,
+                    label: { color: 'black', empty: true, circular: true }
+                },
+                {
+                    key: OrderStateEnum.AVAILABLE,
+                    text: OrderStateEnum.AVAILABLE,
+                    value: OrderStateEnum.AVAILABLE,
+                    label: { color: 'yellow', empty: true, circular: true }
                 }
+
             ]}
-            onUserTypeFilterChange={(f: string[]) => { }}
+            onUserTypeFilterChange={(f: string[]) => { handleTagFilterChange(f) }}
             onCustomChange={(f: string[]) => {
                 setPage(0)
                 setFilter(fi => f)
@@ -108,8 +136,8 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         // deleteOrder: (order: Order) => deleteOrderAction(order)(dispatch),
-        fetchOrders: ({ page, filterByContent, append }:
-            { page: number, filterByContent: string[], append: boolean }) => getOrdersAction({ page, filterByContent, append })(dispatch)
+        fetchOrders: ({ page, filterByContent, append, cancelled, completed }:
+            { page: number, filterByContent: string[], append: boolean, cancelled?: boolean, completed?: boolean }) => getOrdersAction({ page, filterByContent, append, cancelled, completed })(dispatch)
     }
 }
 
