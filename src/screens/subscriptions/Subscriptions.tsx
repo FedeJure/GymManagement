@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Header, Grid } from 'semantic-ui-react'
+import { Button, List, Header, Grid, Menu, GridColumn } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
@@ -12,6 +12,7 @@ import { PayState } from "../../modules/subscription/PayState"
 import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
 import { FilterInput } from '../../components/filterInput/FilterInput'
 import { ConfirmationModal } from '../../components/confirmationModal/ConfirmationModal'
+import Orders from "../orders/Orders"
 
 const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, deleteSubscription }:
     { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function, deleteSubscription: Function }) => {
@@ -57,33 +58,37 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
     }, [filter])
 
     const SubscriptionSection = <>
-        <Grid.Row columns={2}>
-            <Grid.Column><h3>Subscriptions</h3></Grid.Column>
-            <Grid.Column><Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></Grid.Column>
-        </Grid.Row>
-        <Grid.Row columns={1}>
-            <FilterInput
-                tagOptions={[
-                    {
-                        key: PayState.DEBT,
-                        text: PayState.DEBT,
-                        value: PayState.DEBT,
-                        label: { color: 'red', empty: true, circular: true }
-                    },
-                    {
-                        key: PayState.ON_DAY,
-                        text: PayState.ON_DAY,
-                        value: PayState.ON_DAY,
-                        label: { color: 'green', empty: true, circular: true }
-                    }
-                ]}
-                onUserTypeFilterChange={(f: string[]) => { }}
-                onCustomChange={(f: string[]) => {
-                    setPage(0)
-                    setFilter(fi => f)
-                }}
-            />
-        </Grid.Row>
+        <Grid columns="equal" verticalAlign="middle" style={{ width: "100%" }}>
+            <Grid.Row >
+                <Grid.Column textAlign="left">
+                    <h2>Subscripciones</h2>
+                </Grid.Column>
+                <Grid.Column floated="right">
+                    <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+        <FilterInput
+            tagOptions={[
+                {
+                    key: PayState.DEBT,
+                    text: PayState.DEBT,
+                    value: PayState.DEBT,
+                    label: { color: 'orange', empty: true, circular: true }
+                },
+                {
+                    key: PayState.ON_DAY,
+                    text: PayState.ON_DAY,
+                    value: PayState.ON_DAY,
+                    label: { color: 'green', empty: true, circular: true }
+                }
+            ]}
+            onUserTypeFilterChange={(f: string[]) => { }}
+            onCustomChange={(f: string[]) => {
+                setPage(0)
+                setFilter(fi => f)
+            }}
+        />
         <List divided verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "auto" }}>
             <InfiniteScroll
                 as={List.Item}
@@ -104,21 +109,17 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
 
-        <Header as='h2' floated='left'>
-            Suscripciones
-        </Header>
-
-        <Grid divided='vertically' style={{ width: "100%" }}>
+        <Grid celled="internally" divided='vertically' style={{ width: "100%" }}>
             <Grid.Row columns={1}>
                 {SubscriptionSection}
             </Grid.Row>
 
             <Grid.Row columns={2}>
                 <Grid.Column>
-                    {SubscriptionSection}
+                    <Orders />
                 </Grid.Column>
                 <Grid.Column>
-                    {SubscriptionSection}
+                    <Orders />
                 </Grid.Column>
             </Grid.Row>
         </Grid>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { ProductCard } from "../../components/productCard/ProductCard"
-import { Divider, Button, Header, Card } from "semantic-ui-react"
+import { Divider, Button, Header, Card, Grid } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
 import { addProduct, editProduct, getProductsAction, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -55,10 +55,16 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedProduct} />}
-        <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} />
-        <Header as='h2' floated='left'>
-            Productos
-        </Header>
+        <Grid>
+            <Grid.Row columns="equal">
+                <Grid.Column textAlign="left">
+                    <h2>Productos</h2>
+                </Grid.Column>
+                <Grid.Column floated="right">
+                    <h4>Crear nuevo <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
         <Divider />
         <Card.Group centered>
             {products.map((product) => <ProductCard
