@@ -1,29 +1,23 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Header, Grid } from 'semantic-ui-react'
+import { Button, List, Grid } from 'semantic-ui-react'
 import { StoreState } from '../../store'
-import { OrderPayload } from '../../modules/order/OrderPayload'
 import { Order } from '../../modules/order/Order'
 import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
 import { FilterInput } from '../../components/filterInput/FilterInput'
 import { ConfirmationModal } from '../../components/confirmationModal/ConfirmationModal'
-import { createOrderAction, getOrdersAction } from "../../modules/order/order.actions"
+import { getOrdersAction } from "../../modules/order/order.actions"
 import { OrderStateEnum } from '../../modules/order/OrderStateEnum'
 import { OrderCard } from "../../components/orderCard/OrderCard"
 
-const Orders = ({ orders, createOrder, fetchOrders }:
-    { orders: Order[], createOrder: Function, fetchOrders: Function }) => {
+const Orders = ({ orders, fetchOrders }:
+    { orders: Order[], fetchOrders: Function }) => {
     const [creationModalOpen, setCreationModalOpen] = useState(false);
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
     const [confirmModal, setConfirmModal] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
-
-    const handleSubmit = (data: OrderPayload) => {
-        createOrder(data)
-        setCreationModalOpen(false)
-    }
 
     const handleDelete = () => {
         setConfirmModal(false)
@@ -59,12 +53,12 @@ const Orders = ({ orders, createOrder, fetchOrders }:
             open={confirmModal}
             onCancel={() => setConfirmModal(false)}
             onAccept={() => handleDelete()}
-            message="Confirma eliminación? Esta acción no puede deshacerse." />}
+            message="Confirma cancelación? Esta acción no puede deshacerse." />}
 
         <Grid verticalAlign="middle" style={{ width: "100%" }}>
             <Grid.Row columns="equal">
                 <Grid.Column textAlign="left">
-                    <h3>Ordenes de pago</h3>
+                    <h3>Ordenes de cobro</h3>
                 </Grid.Column>
                 <Grid.Column floated="right">
                     <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
@@ -114,7 +108,6 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         // deleteOrder: (order: Order) => deleteOrderAction(order)(dispatch),
-        createOrder: (data: OrderPayload) => createOrderAction(data)(dispatch),
         fetchOrders: ({ page, filterByContent, append }:
             { page: number, filterByContent: string[], append: boolean }) => getOrdersAction({ page, filterByContent, append })(dispatch)
     }

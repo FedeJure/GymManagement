@@ -1,13 +1,15 @@
 import { Button, Icon, List } from "semantic-ui-react"
 import { Subscription } from "../../modules/subscription/Subscription"
 
-export const SubscriptionCard = ({ subscription, handleDelete }: { subscription: Subscription, handleDelete: Function }) => (
+export const SubscriptionCard = ({ subscription, handleDelete, handleCreateOrder }:
+    { subscription: Subscription, handleDelete: Function, handleCreateOrder: Function }) => (
     <List.Item style={{ padding: "0.5em", width: "100%" }}>
         <List.Content floated='right'>
-            <Button icon compact onClick={() => handleDelete()}><Icon name="trash"></Icon>Borrar</Button>
+            <Button primary icon compact onClick={() => handleCreateOrder(subscription.id)}><Icon name="dollar"></Icon>Crear orden de cobro</Button>
+            <Button inverted secondary icon compact onClick={() => handleDelete()}><Icon name="trash"></Icon>Borrar</Button>
         </List.Content>
         <List.Content floated='right'>
-            <Button icon compact><Icon name="file alternate outline"></Icon>Ver Detalle</Button>
+            <Button primary icon compact><Icon name="file alternate outline"></Icon>Ver Detalle</Button>
         </List.Content>
 
         <List.Content floated="left">Adeuda pagos</List.Content>
