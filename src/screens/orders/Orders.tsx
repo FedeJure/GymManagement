@@ -10,6 +10,7 @@ import { ConfirmationModal } from '../../components/confirmationModal/Confirmati
 import { getOrdersAction } from "../../modules/order/order.actions"
 import { OrderStateEnum } from '../../modules/order/OrderStateEnum'
 import { OrderCard } from "../../components/orderCard/OrderCard"
+import { cancelOrder } from "../../services/api/orderApi"
 
 const Orders = ({ orders, fetchOrders }:
     { orders: Order[], fetchOrders: Function }) => {
@@ -20,7 +21,23 @@ const Orders = ({ orders, fetchOrders }:
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
     const handleDelete = () => {
-        setConfirmModal(false)
+        if (!selectedOrder) return setConfirmModal(false)
+        cancelOrder(selectedOrder.id)
+            .then(() => {
+                setConfirmModal(false)
+                setPage(0)
+                fetchOrders({
+                    page: 0,
+                    append: false,
+                    contentFilter: filter,
+                    cancelled: tagFilter.cancelled,
+                    completed: tagFilter.completed
+                })
+            })
+            .catch(err => {
+                setConfirmModal(false)
+            })
+
     }
 
     const handleTagFilterChange = (filters: string[]) => {

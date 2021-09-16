@@ -12,10 +12,10 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
         : {
             name: "",
             price: 0,
-            oneFamiliarDiscount: 20,
-            twoFamiliarDiscount: 20,
-            threeFamiliarDiscount: 20,
-            fourOrMoreFamiliarDiscount: 20,
+            twoSubscriptionsDiscount: 20,
+            threeSubscriptionsDiscount: 20,
+            fourSubscriptionsDiscount: 20,
+            fiveOrMoreSubscriptionsDiscount: 20,
             payType: PayType.MONTHLY,
             daysInWeek: []
         })
@@ -111,33 +111,34 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
                                 </Form.Field>
                             </Grid.Column>
                             <Grid.Column verticalAlign='middle'>
+                                <label>Importante: Los siguientes descuentos se refiere a la cantidad total de actividades entre todos los familiares (Ej: Si un alumno tiene 1 actividad y su hermano tiene 2 actividades, el descuento seria por 3 actividades)</label>
                                 <Form.Field>
-                                    <label>Descuento por 1 familiar</label>
+                                    <label>Por 2 actividades</label>
                                     <Input label="%" labelPosition="right" type="number"
                                         input={<input
-                                            onChange={target => handleDiscountChange(target.currentTarget.value, "oneFamiliarDiscount")}
-                                            value={formData.oneFamiliarDiscount} />} />
+                                            onChange={target => handleDiscountChange(target.currentTarget.value, "twoSubscriptionsDiscount")}
+                                            value={formData.twoSubscriptionsDiscount} />} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <label>Descuento por 2 familiares</label>
+                                    <label>Por 3 actividades</label>
                                     <Input label="%" labelPosition="right"
                                         input={<input
-                                            onChange={target => handleDiscountChange(target.currentTarget.value, "twoFamiliarDiscount")}
-                                            value={formData.twoFamiliarDiscount} />} />
+                                            onChange={target => handleDiscountChange(target.currentTarget.value, "threeSubscriptionsDiscount")}
+                                            value={formData.threeSubscriptionsDiscount} />} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <label>Descuento por 3 familiares</label>
+                                    <label>Por 4 actividades</label>
                                     <Input label="%" labelPosition="right"
                                         input={<input
-                                            onChange={target => handleDiscountChange(target.currentTarget.value, "threeFamiliarDiscount")}
-                                            value={formData.threeFamiliarDiscount} />} />
+                                            onChange={target => handleDiscountChange(target.currentTarget.value, "fourSubscriptionsDiscount")}
+                                            value={formData.fourSubscriptionsDiscount} />} />
                                 </Form.Field>
                                 <Form.Field>
-                                    <label>Descuento por 4 o mas familiares</label>
+                                    <label>Por 5 actividades o más</label>
                                     <Input label="%" labelPosition="right"
                                         input={<input
-                                            onChange={target => handleDiscountChange(target.currentTarget.value, "fourOrMoreFamiliarDiscount")}
-                                            value={formData.fourOrMoreFamiliarDiscount} />} />
+                                            onChange={target => handleDiscountChange(target.currentTarget.value, "fiveOrMoreSubscriptionsDiscount")}
+                                            value={formData.fiveOrMoreSubscriptionsDiscount} />} />
                                 </Form.Field>
                                 <button type="submit" hidden={true} />
                             </Grid.Column>

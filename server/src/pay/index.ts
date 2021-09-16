@@ -92,16 +92,16 @@ const calculateDiscount = (subscription: Subscription) => {
         case 0:
             break;
         case 1:
-            discount += subscription.product.oneFamiliarDiscount
+            discount += subscription.product.twoSubscriptionsDiscount
             break;
         case 2:
-            discount += subscription.product.twoFamiliarDiscount
+            discount += subscription.product.threeSubscriptionsDiscount
             break;
         case 3:
-            discount += subscription.product.threeFamiliarDiscount
+            discount += subscription.product.fourSubscriptionsDiscount
             break;
         case 4:
-            discount += subscription.product.fourOrMoreFamiliarDiscount
+            discount += subscription.product.fiveOrMoreSubscriptionsDiscount
             break;
         default:
             break;
