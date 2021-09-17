@@ -15,7 +15,7 @@ export const initSubscriptionsRoutes = (app: Express) => {
                 res.status(200).send(subscriptions)
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -27,7 +27,7 @@ export const initSubscriptionsRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, subscription })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -39,7 +39,7 @@ export const initSubscriptionsRoutes = (app: Express) => {
                 res.status(200).send({ ok: true })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 }

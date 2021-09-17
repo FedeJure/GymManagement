@@ -1,7 +1,7 @@
 import { getUserModel } from "../mongoClient"
 import { UserPayload } from "../../../src/modules/users/UserPayload"
 import { User } from "../../../src/modules/users/User"
-import { Document, Model } from "mongoose"
+import { Model } from "mongoose"
 
 export const getUsers = async ({ page, step, tagFilter, contentFilter }
     : { page: number, step: number, tagFilter?: string, contentFilter?: string }) => {

@@ -16,7 +16,7 @@ export const initProductsRoutes = (app: Express) => {
                 res.status(200).send(products)
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -28,7 +28,7 @@ export const initProductsRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, product })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -40,7 +40,7 @@ export const initProductsRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, product })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -51,7 +51,7 @@ export const initProductsRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, product: updatedProduct })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
