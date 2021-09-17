@@ -75,6 +75,18 @@ export const getBrothersOfUser = async (userId: string) => {
     return userModel.find({ _id: { $in: user.familiars } })
 }
 
+export const getImageRoute = async (userId: string, extension: string) => {
+    return `${userId}.${extension}`
+}
+
+export const updateImagePath = async (userId: string, path: string) => {
+    const userModel = getUserModel()
+    const user = await userModel.findById(userId)
+    if (!user) throw new Error("User not found");
+    user.profilePicture = path
+    return user.save()
+}
+
 function updateSelfToBrothers(newFamiliars: string[], userModel: Model<User, {}, {}>, userId: string, removedFamiliars: string[]) {
     newFamiliars.forEach(async (f) => {
         const familiar = await userModel.findById(f)

@@ -30,23 +30,24 @@ export const createUser = async (user: UserPayload, image?: File): Promise<User>
 }
 
 export const updateUser = async (user: User, image: File | null): Promise<User> => {
-    if (image != null) {
-        await sendImage(image, user.id)
-    }
     const options = getOptionsWithBody({ user }, "PUT")
 
-    return fetch(`${url}/user`, options)
+    const updated = await fetch(`${url}/user`, options)
         .then(response => response.json())
         .then(response => response.user)
         .then(mapToUser)
+    if (image != null) {
+        await sendImage(image, user.id)
+    }
+
+    return updated
 }
 
 const sendImage = async (image: File, userId: string) => {
     let formData = new FormData();
     formData.append('image', image);
-    formData.append("userId", userId)
     const options = getOptionWithForm(formData, "POST")
-    return fetch(`${url}/userImage`, options)
+    return fetch(`${url}/userImage?userId=${userId}`, options)
         .then(response => response.json())
 }
 
