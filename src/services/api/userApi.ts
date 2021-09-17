@@ -1,6 +1,6 @@
 import { UserPayload } from "../../modules/users/UserPayload"
 import { User } from "../../modules/users/User"
-import { getOptionsWithBody, url } from "."
+import { getOptionsWithBody, getOptionWithForm, url } from "."
 
 const mapToUser = (data: any) => {
     return {
@@ -16,20 +16,38 @@ export const fetchUsers = async ({ page, step, filterByTag = [], filterByContent
         .then(response => response.map(mapToUser))
 }
 
-export const createUser = (user: UserPayload): Promise<User> => {
+export const createUser = async (user: UserPayload, image?: File): Promise<User> => {
+
     const options = getOptionsWithBody({ user }, "POST")
+    const newUser = await fetch(`${url}/user`, options)
+        .then(response => response.json())
+        .then(response => response.user)
+        .then(mapToUser)
+    if (image) {
+        await sendImage(image, newUser.id)
+    }
+    return newUser
+}
+
+export const updateUser = async (user: User, image: File | null): Promise<User> => {
+    if (image != null) {
+        await sendImage(image, user.id)
+    }
+    const options = getOptionsWithBody({ user }, "PUT")
+
     return fetch(`${url}/user`, options)
         .then(response => response.json())
         .then(response => response.user)
         .then(mapToUser)
 }
 
-export const updateUser = (user: User): Promise<User> => {
-    const options = getOptionsWithBody({ user }, "PUT")
-    return fetch(`${url}/user`, options)
+const sendImage = async (image: File, userId: string) => {
+    let formData = new FormData();
+    formData.append('image', image);
+    formData.append("userId", userId)
+    const options = getOptionWithForm(formData, "POST")
+    return fetch(`${url}/userImage`, options)
         .then(response => response.json())
-        .then(response => response.user)
-        .then(mapToUser)
 }
 
 export const deleteUser = (userId: string) => {

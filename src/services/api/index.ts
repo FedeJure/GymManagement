@@ -11,3 +11,10 @@ export function getOptionsWithBody(body: any, method: string) {
         body: JSON.stringify(body)
     };
 }
+
+export function getOptionWithForm(form: FormData, method: string) {
+    return {
+        method,
+        body: form
+    };
+}
