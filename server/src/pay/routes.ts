@@ -10,7 +10,7 @@ export const initPaymentRoutes = (app: Express) => {
                 res.status(200).send({ payment })
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -21,7 +21,7 @@ export const initPaymentRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, order })
             })
             .catch((error: Error) => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -32,7 +32,7 @@ export const initPaymentRoutes = (app: Express) => {
                 res.status(200).send({ ok: true, order })
             })
             .catch((error: Error) => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -49,7 +49,7 @@ export const initPaymentRoutes = (app: Express) => {
                 res.status(200).send(orders)
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 
@@ -61,7 +61,7 @@ export const initPaymentRoutes = (app: Express) => {
                 res.status(200).send(payments)
             })
             .catch(error => {
-                res.status(500).send({ error })
+                res.status(503).send({ok: false, message: error.message, stacktrace: error.stack})
             })
     })
 }
