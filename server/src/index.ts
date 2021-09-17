@@ -4,10 +4,10 @@ import { initUsersRoutes } from "./user/routes"
 import { initSubscriptionsRoutes } from "./subscription/routes"
 import { initProductsRoutes } from "./product/routes"
 import { initPaymentRoutes } from "./pay/routes"
+import { PORT } from "./configs"
 
 const app = express()
 app.use(json())
-const port = 3001
 
 app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', ['*']);
@@ -21,6 +21,6 @@ initSubscriptionsRoutes(app)
 initProductsRoutes(app)
 initPaymentRoutes(app)
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(PORT, () => {
+  console.log(`Example app listening at ${PORT}`)
 })
