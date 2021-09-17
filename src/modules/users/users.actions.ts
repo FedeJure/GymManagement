@@ -18,9 +18,9 @@ export const getUsersAction = ({page, append, filterByTag, filterByContent}
     }
 }
 
-export const addUser = (user: UserPayload) => {
+export const addUser = (user: UserPayload, image?: File) => {
     return (dispatch: Dispatch) => {
-        createUser(user)
+        createUser(user, image)
             .then(user => {
                 dispatch({
                     type: "CREATE_USER",
@@ -47,9 +47,9 @@ export const removeUser = (userId: string) => {
     }
 }
 
-export const editUser = (user: User) => {
+export const editUser = (user: User, image: File | null) => {
     return (dispatch: Dispatch) => {
-        updateUser(user)
+        updateUser(user, image)
             .then(updatedUser => {
                 dispatch({
                     type: "EDIT_USER",

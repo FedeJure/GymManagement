@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Divider, Button, Header, Card, Container, CardGroup, Grid } from "semantic-ui-react"
+import { Button, Card, CardGroup, Grid } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, getUsersAction, removeUser } from "../../modules/users/users.actions"
@@ -20,7 +20,7 @@ import { UserType } from "../../modules/users/UserType"
 const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     {
         users: User[],
-        createUser: (user: UserPayload) => void,
+        createUser: Function,
         removeUser: Function,
         editUser: Function,
         fetchUsers: Function
@@ -42,8 +42,8 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
         fetchUsers({ page, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
     }, [userTagFiltes, userCustomFiltes])
 
-    const handleCreation = (creationData: UserPayload) => {
-        createUser(creationData)
+    const handleCreation = (creationData: UserPayload, image: File | null) => {
+        createUser(creationData, image)
         setCreationModalOpen(false)
     }
     const handleDelete = () => {
@@ -52,10 +52,10 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
         setDeleteModal(false)
     }
 
-    const handleEdit = (editData: UserPayload) => {
+    const handleEdit = (editData: UserPayload, image: File | null) => {
         if (selectedUser === null) return
         setEditModalOpen(false)
-        editUser({ ...selectedUser, ...editData })
+        editUser({ ...selectedUser, ...editData }, image)
     }
 
     const mustShowUser = (user: User) => {
@@ -66,7 +66,7 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     }
 
     const handleExcelLoad = (data: any[]) => {
-        data.map(d => mapFromExcel(d)).forEach(createUser)
+        data.map(d => mapFromExcel(d)).forEach(data => createUser(data))
     }
 
     const usersToShow = users.filter(u => mustShowUser(u))
@@ -101,7 +101,7 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
                     <h2>Personas</h2>
                 </Grid.Column>
                 <Grid.Column >
-                    <h4>Crear nueva<Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                    <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
                 </Grid.Column>
                 <Grid.Column>
                     <ExcelUploader onLoad={handleExcelLoad} />
@@ -152,9 +152,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         fetchUsers: ({ page, append, filterByTag, filterByContent }
             : { page: number, append: boolean, filterByTag: string[], filterByContent: [] }) =>
             getUsersAction({ page, append, filterByTag, filterByContent })(dispatch),
-        createUser: (data: UserPayload) => addUser(data)(dispatch),
+        createUser: (data: UserPayload, image: File | undefined) => addUser(data, image)(dispatch),
         removeUser: (userId: string) => removeUser(userId)(dispatch),
-        editUser: (user: User) => editUser(user)(dispatch)
+        editUser: (user: User, image: File | null) => editUser(user, image)(dispatch)
     }
 }
 

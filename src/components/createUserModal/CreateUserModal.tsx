@@ -14,6 +14,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
     const [submitted, setSubmitted] = useState(false)
     const [familiars, setBrothers] = useState<User[]>([])
     const [users, setUsers] = useState<User[]>([])
+    const [image, setImage] = useState<File | null>(null)
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
             initialData :
@@ -40,7 +41,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
             formData.contactPhone !== "" &&
             formData.birthDate !== defaultDate &&
             formData.dni !== "")
-            onSubmit(formData)
+            onSubmit(formData, image)
     }
 
     const handleChange = (value: any, tag: string) => {
@@ -56,11 +57,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
             event.currentTarget.value = ""
             return
         }
-        const reader = new FileReader()
-        reader.addEventListener("load", function () {
-            setFormData({ ...formData, profilePicture: reader.result as string });
-        }, false);
-        reader.readAsDataURL(file)
+        setImage(file)
     }
 
     const handleBrotherSearch = (value: string) => {
@@ -91,11 +88,12 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
             <Modal.Header>{initialData ? "Edición de persona" : "Creación de persona"}</Modal.Header>
             <Modal.Content>
                 <Segment placeholder>
-                    <Form onSubmit={handleSubmit}>
-                        <Grid columns={2} stackable>
-                            <Divider vertical />
-                            <Grid.Row>
-                                <Grid.Column verticalAlign='middle'>
+                    <Grid columns={2} stackable>
+                        <Divider vertical />
+                        <Grid.Row>
+
+                            <Grid.Column verticalAlign='middle'>
+                                <Form onSubmit={handleSubmit}>
 
                                     <Form.Field>
                                         <label>Tipo</label>
@@ -178,9 +176,11 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                     </Form.Field>
 
                                     <input type="submit" hidden={true} />
+                                </Form>
 
-                                </Grid.Column>
-                                <Grid.Column>
+                            </Grid.Column>
+                            <Grid.Column>
+                                <Form onSubmit={handleSubmit}>
                                     <Form.Field
                                         error={submitted && formData.address.length == 0 ? {
                                             content: 'Ingresar Direccion',
@@ -213,25 +213,28 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                                     text: `${p.lastname}, ${p.name}, ${p.dni}`,
                                                     value: p.id
                                                 }))} />
-                                    </Form.Field><Segment placeholder>
-                                        {formData.profilePicture ? <Image fluid src={formData.profilePicture} /> :
-                                            <Header icon>
-                                                <Icon name="file image outline" />
-                                                Imagen de perfil
-                                            </Header>}
-                                        <Divider />
-                                        <Button primary onClick={() => {
-                                            var ref = fileRef.current
-                                            if (ref !== null) {
-                                                ref.click()
-                                            }
-                                        }}>Subir Imagen</Button>
-                                        <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
-                                    </Segment>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </Form>
+
+                                    </Form.Field>
+                                    <input type="submit" hidden={true} />
+                                </Form>
+                                <Segment placeholder>
+                                    {formData.profilePicture ? <Image fluid src={formData.profilePicture} /> :
+                                        <Header icon>
+                                            <Icon name="file image outline" />
+                                            Imagen de perfil
+                                        </Header>}
+                                    <Divider />
+                                    <Button primary onClick={() => {
+                                        var ref = fileRef.current
+                                        if (ref !== null) {
+                                            ref.click()
+                                        }
+                                    }}>Subir Imagen</Button>
+                                    <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
+                                </Segment>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 </Segment>
             </Modal.Content>
             <Modal.Actions>
