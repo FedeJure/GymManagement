@@ -5,7 +5,7 @@ import { ConfirmationModal } from "../../components/confirmationModal/Confirmati
 import "./Users.css"
 import { addUser, editUser, getUsersAction, removeUser } from "../../modules/users/users.actions"
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal"
-import { UserCard } from "../../components/userCard/UserCard"
+import { UserCard } from "../../components/userCard/userCard"
 import { Dispatch } from "redux"
 import { StoreState } from "../../store"
 import { UserPayload } from "../../modules/users/UserPayload"
