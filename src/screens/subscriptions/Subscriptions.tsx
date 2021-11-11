@@ -151,7 +151,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                     <Orders />
                 </Grid.Column>
                 <Grid.Column>
-                    <Orders />
+                    {/* <Orders /> */}
                 </Grid.Column>
             </Grid.Row>
         </Grid>

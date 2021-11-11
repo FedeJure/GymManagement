@@ -11,7 +11,7 @@ interface ISubscriptionCard {
 export const SubscriptionCard: React.FC<ISubscriptionCard> = ({ subscription, handleDelete, handleCreateOrder, handleDetails }) => (
     <List.Item style={{ padding: "0.5em", width: "100%" }}>
         <List.Content floated='right'>
-            <Button primary icon compact onClick={() => handleCreateOrder(subscription.id)}><Icon name="dollar"></Icon>Crear orden de cobro</Button>
+            {/* <Button primary icon compact onClick={() => handleCreateOrder(subscription.id)}><Icon name="dollar"></Icon>Crear orden de cobro</Button> */}
             <Button inverted secondary icon compact onClick={() => handleDelete()}><Icon name="trash"></Icon>Borrar</Button>
         </List.Content>
         <List.Content floated='right'>

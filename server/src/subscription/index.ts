@@ -43,7 +43,7 @@ export const removeSubscription = async (subscriptionId: string) => {
     return removedSubscription
 }
 
-export const generateNewPayOrders = async (): Promise<Order[]> => {
+export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
     const subscriptionModel = getSubscriptionModel()
     const subscriptionWithPendingOrderCreation = await subscriptionModel.find({dateOfNextPayOrder : { $gte: new Date()}})
 
