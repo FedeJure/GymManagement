@@ -1,11 +1,5 @@
-import { Subject } from "rxjs"
-import { Subscription } from "../../../src/modules/subscription/Subscription"
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload"
 import { getSubscriptionModel } from "../mongoClient"
-
-
-const onNewSubscription = new Subject<Subscription>()
-const onDeleteSubscription = new Subject<Subscription>()
 
 export const getSubscriptions = async ({ page, step, contentFilter }
     : { page: number, step: number, tagFilter?: string, contentFilter?: string }) => {
@@ -16,7 +10,7 @@ export const getSubscriptions = async ({ page, step, contentFilter }
         const filters = contentFilter.split(',')
         filters.forEach(f => {
             queries = [...queries,
-            f.length == 24 ? { _id: f } : {}]
+            f.length === 24 ? { _id: f } : {}]
         })
     }
     const withQueries = contentFilter != undefined
