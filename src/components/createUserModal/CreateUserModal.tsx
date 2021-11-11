@@ -15,6 +15,18 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
     const [familiars, setBrothers] = useState<User[]>([])
     const [users, setUsers] = useState<User[]>([])
     const [image, setImage] = useState<File | null>(null)
+    const [base64Image, setBase64Image] = useState<string | null>("")
+
+    useEffect(() => {
+        if (!image) return
+        var reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = function () {
+            setBase64Image(reader.result as string)
+        };
+
+    }, [image])
+
     const [formData, setFormData] = useState<UserPayload>(
         initialData ?
             initialData :
@@ -218,7 +230,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                     <input type="submit" hidden={true} />
                                 </Form>
                                 <Segment placeholder>
-                                    {formData.profilePicture ? <Image fluid src={formData.profilePicture} /> :
+                                    {base64Image || formData.profilePicture ? <Image fluid src={base64Image ? base64Image : formData.profilePicture} /> :
                                         <Header icon>
                                             <Icon name="file image outline" />
                                             Imagen de perfil
