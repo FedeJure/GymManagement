@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Grid } from 'semantic-ui-react'
+import { List, Grid, Container } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { Order } from '../../modules/order/Order'
 import { InfiniteScroll } from '../../components/infiniteScroll/InfiniteScroll'
@@ -15,7 +15,7 @@ import { cancelOrder } from "../../services/api/orderApi"
 const Orders = ({ orders, fetchOrders }:
     { orders: Order[], fetchOrders: Function }) => {
     const [page, setPage] = useState(0)
-    const [filter, setFilter] = useState<string[]>([])
+    const [filter, setFilter] = useState<string[]>([OrderStateEnum.AVAILABLE])
     const [tagFilter, setTagFilter] = useState({ cancelled: undefined, completed: undefined })
     const [confirmModal, setConfirmModal] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
@@ -41,7 +41,9 @@ const Orders = ({ orders, fetchOrders }:
 
     }
 
-    const handleTagFilterChange = (filters: string[]) => {
+    console.log(filter)
+
+    const handleTagFilterChange = useCallback((filters: string[]) => {
         let newFilter: { cancelled: any, completed: any } = { cancelled: undefined, completed: undefined }
         filters.forEach(f => {
             if (f === OrderStateEnum.CANCELLED) newFilter.cancelled = true;
@@ -50,7 +52,7 @@ const Orders = ({ orders, fetchOrders }:
             if (f === OrderStateEnum.AVAILABLE) newFilter.cancelled = false;
         })
         setTagFilter(newFilter)
-    }
+    }, [])
 
     useEffect(() => {
         fetchOrders({
@@ -60,7 +62,7 @@ const Orders = ({ orders, fetchOrders }:
             cancelled: tagFilter.cancelled,
             completed: tagFilter.completed
         })
-    }, [])
+    }, [fetchOrders, filter, tagFilter])
 
     useEffect(() => {
         if (page > 0)
@@ -71,7 +73,7 @@ const Orders = ({ orders, fetchOrders }:
                 cancelled: tagFilter.cancelled,
                 completed: tagFilter.completed
             })
-    }, [page])
+    }, [page, fetchOrders, filter, tagFilter])
 
     useEffect(() => {
         fetchOrders({
@@ -82,7 +84,7 @@ const Orders = ({ orders, fetchOrders }:
             completed: tagFilter.completed
         })
         setPage(0)
-    }, [filter, tagFilter])
+    }, [filter, tagFilter, fetchOrders])
 
     return (<div>
         {confirmModal && <ConfirmationModal
@@ -91,14 +93,18 @@ const Orders = ({ orders, fetchOrders }:
             onAccept={() => handleDelete()}
             message="Confirma cancelación? Esta acción no puede deshacerse." />}
 
-        <Grid verticalAlign="middle" style={{ width: "100%" }}>
-            <Grid.Row columns="equal">
-                <Grid.Column textAlign="left">
-                    <h3>Ordenes de cobro</h3>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+        <Container>
+            <Grid verticalAlign="middle" style={{ width: "100%" }}>
+                <Grid.Row columns="equal">
+                    <Grid.Column textAlign="left">
+                        <h3>Ordenes de pago</h3>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
+
         <FilterInput
+            defaultValues={[OrderStateEnum.AVAILABLE]}
             tagOptions={[
                 {
                     key: OrderStateEnum.INCOMPLETE,

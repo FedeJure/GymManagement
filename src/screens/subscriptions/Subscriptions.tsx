@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
-import { Button, List, Grid } from 'semantic-ui-react'
+import { Button, List, Grid, Container } from 'semantic-ui-react'
 import { StoreState } from '../../store'
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal"
 import { SubscriptionPayload } from '../../modules/subscription/SubscriptionPayload'
@@ -14,6 +14,7 @@ import { FilterInput } from '../../components/filterInput/FilterInput'
 import { ConfirmationModal } from '../../components/confirmationModal/ConfirmationModal'
 import Orders from "../orders/Orders"
 import { createOrderAction } from '../../modules/order/order.actions'
+import { SubscriptionDetailModal } from '../../components/SubscriptionDetailModal'
 
 const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, deleteSubscription, createOrder }:
     { subscriptions: Subscription[], createSubscription: Function, fetchSubscriptions: Function, deleteSubscription: Function, createOrder: Function }) => {
@@ -21,6 +22,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([])
     const [confirmModal, setConfirmModal] = useState(false)
+    const [detailModal, setDetailModal] = useState(false)
     const [confirmOrderModal, setConfirmOrderModal] = useState(false)
     const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null)
 
@@ -44,7 +46,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             page: 0,
             append: false
         })
-    }, [])
+    }, [fetchSubscriptions])
 
     useEffect(() => {
         if (page > 0)
@@ -53,7 +55,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 append: true,
                 filterByContent: filter
             })
-    }, [page])
+    }, [page, fetchSubscriptions, filter])
 
     useEffect(() => {
         fetchSubscriptions({
@@ -62,19 +64,22 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             filterByContent: filter
         })
         setPage(0)
-    }, [filter])
+    }, [filter, fetchSubscriptions])
 
     const SubscriptionSection = <>
-        <Grid columns="equal" verticalAlign="middle" style={{ width: "100%" }}>
-            <Grid.Row >
-                <Grid.Column textAlign="left">
-                    <h2>Subscripciones</h2>
-                </Grid.Column>
-                <Grid.Column floated="right">
-                    <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+        <Container>
+            <Grid columns="equal" verticalAlign="middle" style={{ width: "100%" }}>
+                <Grid.Row >
+                    <Grid.Column textAlign="left">
+                        <h2>Subscripciones</h2>
+                    </Grid.Column>
+                    <Grid.Column floated="right">
+                        <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
+
         <FilterInput
             tagOptions={[
                 {
@@ -100,16 +105,21 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             <InfiniteScroll
                 as={List.Item}
                 onLoadMore={() => setPage(page => page + 1)}
-                data={subscriptions.map(s => <SubscriptionCard handleDelete={() => {
-                    setSelectedSubscription(s)
-                    setConfirmModal(true)
-                }} subscription={s}
-                    handleCreateOrder={() => {
+                data={subscriptions.map(s =>
+                    <SubscriptionCard handleDelete={() => {
                         setSelectedSubscription(s)
-                        setConfirmOrderModal(true)
-                    }} />)} />
-        </List></>
+                        setConfirmModal(true)
+                    }} subscription={s}
+                        handleCreateOrder={() => {
+                            setSelectedSubscription(s)
+                            setConfirmOrderModal(true)
+                        }}
+                        handleDetails={() => {
+                            setSelectedSubscription(s)
+                            setDetailModal(true)
 
+                        }} />)} />
+        </List></>
 
     return (<div>
         {confirmModal && <ConfirmationModal
@@ -127,6 +137,9 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
             message="Crear orden de compra?" />}
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
+        {detailModal && selectedSubscription && <SubscriptionDetailModal
+            subscription={selectedSubscription}
+            onClose={() => setDetailModal(false)} />}
 
         <Grid celled="internally" divided='vertically' style={{ width: "100%" }}>
             <Grid.Row columns={1}>

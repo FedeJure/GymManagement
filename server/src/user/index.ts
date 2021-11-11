@@ -1,4 +1,4 @@
-import { getUserModel } from "../mongoClient"
+import { getSubscriptionModel, getUserModel } from "../mongoClient"
 import { UserPayload } from "../../../src/modules/users/UserPayload"
 import { User } from "../../../src/modules/users/User"
 import { Model } from "mongoose"
@@ -38,8 +38,10 @@ export const saveUser = async (user: UserPayload) => {
 
 export const removeUser = async (userId: string) => {
     const userModel = getUserModel()
+    const subscriptionModel = getSubscriptionModel()
     const user = await userModel.findById(userId)
     if (!user) throw new Error("User not found");
+    await subscriptionModel.deleteMany({user: user})
     updateSelfToBrothers([], userModel, user.id, user.familiars)
     return userModel.deleteOne({ _id: userId })
 }

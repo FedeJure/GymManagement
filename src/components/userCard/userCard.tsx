@@ -1,13 +1,15 @@
 import { MouseEventHandler } from "react"
-import { Card, Image, Button} from "semantic-ui-react"
+import { Card, Image, Button, Container } from "semantic-ui-react"
 import { User } from "../../modules/users/User"
-import {UserTypeLabel} from "../userTypeLabel/UserTypeLabel"
+import { UserTypeLabel } from "../userTypeLabel/UserTypeLabel"
 
-const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
-    onEdit: MouseEventHandler, 
+const UserCard = ({ user, onEdit, onDelete, onInfo }: {
+    user: User,
+    onEdit: MouseEventHandler,
     onDelete: MouseEventHandler,
-    onInfo: MouseEventHandler }) => (
-    <Card>
+    onInfo: MouseEventHandler
+}) => (
+    <Card style={{height: "auto"}}>
         <Card.Content>
             {<Image
                 floated='right'
@@ -15,14 +17,14 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: { user: User,
                 src={user.profilePicture}
             />}
             <Card.Header textAlign="left">
-                <UserTypeLabel user={user}/>      
+                <UserTypeLabel user={user} />
             </Card.Header>
             <Card.Header textAlign="center">
                 {user.lastname}, {user.name}
             </Card.Header>
             <Card.Meta>DNI: {user.dni} | {(new Date()).getFullYear() - user.birthDate.getFullYear()} años</Card.Meta>
-            <Card.Description>
-                {user.comment}
+            <Card.Description >
+                <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>{user.comment}</p>
             </Card.Description>
         </Card.Content>
         <Card.Content extra>
