@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { connect } from "react-redux"
 import { Button, Card, CardGroup, Container, Grid } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -34,13 +34,17 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     const [page, setPage] = useState(0)
 
     useEffect(() => {
-        if (page === 0) return
         fetchUsers({ page, append: true, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
-    }, [page])
+    }, [])
 
-    useEffect(() => {
-        fetchUsers({ page, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
-    }, [userTagFiltes, userCustomFiltes])
+    const fetchNewUserPage = useCallback((newPage: number) => {
+        fetchUsers({ page: newPage, append: true, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
+        setPage(newPage)
+    }, [fetchUsers, userCustomFiltes, userTagFiltes])
+
+    // useEffect(() => {
+    //     fetchUsers({ page, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
+    // }, [userTagFiltes, userCustomFiltes, fetchUsers, page])
 
     const handleCreation = (creationData: UserPayload, image: File | null) => {
         createUser(creationData, image)
@@ -138,7 +142,7 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
 
         {usersToShow.length > 0 &&
             <CardGroup centered>
-                <InfiniteScroll data={usersMapped} onLoadMore={() => setPage(page + 1)} as={Card} />
+                <InfiniteScroll data={usersMapped} onLoadMore={() => fetchNewUserPage(page + 1)} as={Card} />
             </CardGroup>}
 
     </div>
