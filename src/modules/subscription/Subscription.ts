@@ -10,4 +10,5 @@ export interface Subscription {
     endTime?: Date
     comment: string
     creationDate: Date
+    dateOfNextPayOrder: Date
 }

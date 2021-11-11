@@ -88,7 +88,7 @@ export const initUsersRoutes = (app: Express) => {
     const { userId } = req.body;
 
     removeUser(userId)
-      .then(user => {
+      .then((user) => {
         res.status(200).send({ ok: true });
       })
       .catch((error) => {
@@ -116,7 +116,6 @@ export const initUsersRoutes = (app: Express) => {
     upload.single("image"),
     (req: Request, res: Response) => {
       if (req.file) {
-        const image = req.file;
         res.status(200).send({ ok: true });
       } else res.status(500).send({ error: "Not image sended" });
     }

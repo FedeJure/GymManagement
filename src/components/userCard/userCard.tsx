@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react"
-import { Card, Image, Button, Container } from "semantic-ui-react"
+import { Card, Image, Button } from "semantic-ui-react"
 import { User } from "../../modules/users/User"
 import { UserTypeLabel } from "../userTypeLabel/UserTypeLabel"
 
