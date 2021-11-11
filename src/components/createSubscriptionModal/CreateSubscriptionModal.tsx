@@ -111,13 +111,13 @@ export const CreateSubscriptionModal = ({ onClose, onSubmit }:
                             </Grid.Column>
                             <Grid.Column>
                                 <Form.Field >
-                                    <label>Usuario</label>
+                                    <label>Alumno</label>
                                     <Form.Dropdown
                                         fluid
                                         selection
                                         search
                                         error={submitted && formData.userId.length == 0 ? {
-                                            content: 'Ingresar un Usuario',
+                                            content: 'Ingresar un Alumno',
                                             pointing: 'below',
                                         } : false}
                                         onSearchChange={(_, value) => handleUserSearch(value.searchQuery)}

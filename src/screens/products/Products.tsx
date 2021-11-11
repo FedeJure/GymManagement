@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { ProductCard } from "../../components/productCard/ProductCard"
-import { Divider, Button, Card, Grid } from "semantic-ui-react"
+import { Divider, Button, Card, Grid, Container } from "semantic-ui-react"
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal"
 import { addProduct, editProduct, getProductsAction, removeProduct } from "../../modules/product/product.actions"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
@@ -39,7 +39,7 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
     const handleEdit = (editData: ProductPayload) => {
         if (!selectedProduct) return
         setEditModalOpen(false)
-        editProduct({...selectedProduct, ...editData})
+        editProduct({ ...selectedProduct, ...editData })
     }
 
     return <div>
@@ -55,16 +55,19 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedProduct} />}
-        <Grid>
-            <Grid.Row columns="equal">
-                <Grid.Column textAlign="left">
-                    <h2>Productos</h2>
-                </Grid.Column>
-                <Grid.Column floated="right">
-                    <h4>Crear nuevo <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+        <Container>
+            <Grid>
+                <Grid.Row columns="equal">
+                    <Grid.Column textAlign="left">
+                        <h2>Productos</h2>
+                    </Grid.Column>
+                    <Grid.Column floated="right">
+                        <h4>Crear nuevo <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
+
         <Divider />
         <Card.Group centered>
             {products.map((product) => <ProductCard

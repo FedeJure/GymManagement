@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Button, Card, CardGroup, Grid } from "semantic-ui-react"
+import { Button, Card, CardGroup, Container, Grid } from "semantic-ui-react"
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal"
 import "./Users.css"
 import { addUser, editUser, getUsersAction, removeUser } from "../../modules/users/users.actions"
@@ -95,20 +95,23 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
             onClose={() => setEditModalOpen(false)}
             onSubmit={handleEdit}
             initialData={selectedUser} />}
-        <Grid>
-            <Grid.Row columns="equal">
-                <Grid.Column width="10" textAlign="left">
-                    <h2>Personas</h2>
-                </Grid.Column>
-                <Grid.Column >
-                    <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
-                </Grid.Column>
-                <Grid.Column>
-                    <ExcelUploader onLoad={handleExcelLoad} />
-                    <ExcelDownloader data={users.map(u => mapToExcel(u))} name="Users Database" />
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+        <Container>
+            <Grid>
+                <Grid.Row columns="equal">
+                    <Grid.Column width="10" textAlign="left">
+                        <h2>Personas</h2>
+                    </Grid.Column>
+                    <Grid.Column >
+                        <h4>Crear nueva <Button color="blue" circular icon="plus" onClick={() => setCreationModalOpen(true)} /></h4>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <ExcelUploader onLoad={handleExcelLoad} />
+                        <ExcelDownloader data={users.map(u => mapToExcel(u))} name="Users Database" />
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </Container>
+
         <FilterInput
             tagOptions={[
                 {
