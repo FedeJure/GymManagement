@@ -16,7 +16,7 @@ const Orders = ({ orders, fetchOrders }:
     { orders: Order[], fetchOrders: Function }) => {
     const [page, setPage] = useState(0)
     const [filter, setFilter] = useState<string[]>([OrderStateEnum.AVAILABLE])
-    const [tagFilter, setTagFilter] = useState({ cancelled: undefined, completed: undefined })
+    const [tagFilter, setTagFilter] = useState({ cancelled: false, completed: undefined })
     const [confirmModal, setConfirmModal] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
@@ -40,8 +40,6 @@ const Orders = ({ orders, fetchOrders }:
             })
 
     }
-
-    console.log(filter)
 
     const handleTagFilterChange = useCallback((filters: string[]) => {
         let newFilter: { cancelled: any, completed: any } = { cancelled: undefined, completed: undefined }
@@ -85,7 +83,6 @@ const Orders = ({ orders, fetchOrders }:
         })
         setPage(0)
     }, [filter, tagFilter, fetchOrders])
-
     return (<div>
         {confirmModal && <ConfirmationModal
             open={confirmModal}
@@ -104,7 +101,7 @@ const Orders = ({ orders, fetchOrders }:
         </Container>
 
         <FilterInput
-            defaultValues={[OrderStateEnum.AVAILABLE]}
+            defaultTagFilters={[OrderStateEnum.AVAILABLE]}
             tagOptions={[
                 {
                     key: OrderStateEnum.INCOMPLETE,
@@ -142,7 +139,9 @@ const Orders = ({ orders, fetchOrders }:
             <InfiniteScroll
                 as={List.Item}
                 onLoadMore={() => setPage(page => page + 1)}
-                data={orders.map(s => <OrderCard handleCancel={() => {
+                data={orders.map(s => <OrderCard 
+                    key={s.id}
+                    handleCancel={() => {
                     setSelectedOrder(s)
                     setConfirmModal(true)
                 }} order={s} />)} />

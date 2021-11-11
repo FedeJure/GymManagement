@@ -5,6 +5,7 @@ import { initSubscriptionsRoutes } from "./subscription/routes"
 import { initProductsRoutes } from "./product/routes"
 import { initPaymentRoutes } from "./pay/routes"
 import { PORT } from "./configs"
+import { generateNewPayOrders } from "./subscription"
 
 const app = express()
 app.use(json())
@@ -23,4 +24,5 @@ initPaymentRoutes(app)
 
 app.listen(PORT, () => {
   console.log(`Example app listening at ${PORT}`)
+  generateNewPayOrders()
 })

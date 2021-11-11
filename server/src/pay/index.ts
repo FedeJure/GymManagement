@@ -2,14 +2,14 @@ import { Subscription } from "../../../src/modules/subscription/Subscription"
 import { PayRecipePayload } from "../../../src/modules/payRecipe/PayRecipePayload"
 import { getOrderModel, getPayRecipeModel, getSubscriptionModel } from "../mongoClient"
 
-export const generateOrder = async (subscriptionId: string) => {
+export const generateOrderAndUpdateSubscription = async (subscriptionId: string) => {
     const orderModel = getOrderModel()
     const subscriptionModel = getSubscriptionModel()
     const subscription = await subscriptionModel.findById(subscriptionId)
         .populate(["user", "product"])
     if (!subscription) throw new Error("Subscription not founded");
     const discount = calculateDiscount(subscription)
-    return orderModel.create(
+    const order = await orderModel.create(
         {
             userId: subscription.user.id,
             userName: `${subscription.user.lastname}, ${subscription.user.name}`,
@@ -24,6 +24,11 @@ export const generateOrder = async (subscriptionId: string) => {
             amountPayed: 0
         }
     )
+    subscription.dateOfNextPayOrder.setMonth(subscription.dateOfNextPayOrder.getMonth() + 1)
+    subscription.dateOfNextPayOrder.setDate(1)
+    if (subscription.endTime && subscription.endTime > subscription.dateOfNextPayOrder)
+        subscription.save()
+    return order
 }
 
 export const getOrders = async ({ page, step, contentFilter, completed, cancelled }: { page: number, step: number, contentFilter?: string, completed?: Boolean, cancelled?: Boolean }) => {
@@ -39,12 +44,12 @@ export const getOrders = async ({ page, step, contentFilter, completed, cancelle
             { productName: { $regex: f, "$options": "i" } }]
         })
     }
-    if (completed != undefined) {
+    if (completed !== undefined) {
         withQueries = true
         queries = [...queries, { completed }]
     }
 
-    if (cancelled != undefined) {
+    if (cancelled !== undefined) {
         withQueries = true
         queries = [...queries, { cancelled }]
     }

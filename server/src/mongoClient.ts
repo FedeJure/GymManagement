@@ -75,6 +75,7 @@ const createSchemas = () => {
     endTime: Date,
     specialDiscount: Number,
     creationDate: { type: Date, default: new Date() },
+    dateOfNextPayOrder: Date,
   });
   mongoose.model("Subscription", SubscriptionSchema);
 

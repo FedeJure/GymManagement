@@ -1,5 +1,5 @@
 import { Express, Request, Response } from "express"
-import { cancelOrder, generateOrder, getOrders, getPayments, payOrder } from "."
+import { cancelOrder, generateOrderAndUpdateSubscription, getOrders, getPayments, payOrder } from "."
 import { Order } from "../../../src/modules/order/Order"
 
 export const initPaymentRoutes = (app: Express) => {
@@ -16,7 +16,7 @@ export const initPaymentRoutes = (app: Express) => {
 
     app.post('/order', (req: Request, res: Response) => {
         const { subscriptionId } = req.body
-        generateOrder(subscriptionId)
+        generateOrderAndUpdateSubscription(subscriptionId)
             .then((order: Order) => {
                 res.status(200).send({ ok: true, order })
             })
@@ -41,8 +41,8 @@ export const initPaymentRoutes = (app: Express) => {
 
         getOrders({
             page: parseInt(page as string, 10), step: parseInt(step as string, 10),
-            cancelled: cancelled != undefined ? cancelled == "true" : undefined,
-            completed: completed != undefined ? completed == "true" : undefined,
+            cancelled: cancelled !== undefined ? cancelled === "true" : undefined,
+            completed: completed !== undefined ? completed === "true" : undefined,
             contentFilter: contentFilter?.toString()
         })
             .then(orders => {

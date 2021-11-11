@@ -108,7 +108,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(e, data) => handleChange(data.value, "type")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.name.length == 0 ? {
+                                        error={submitted && formData.name.length === 0 ? {
                                             content: 'Ingresar Nombre',
                                             pointing: 'below',
                                         } : false}
@@ -119,7 +119,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(v.currentTarget.value, "name")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.lastname.length == 0 ? {
+                                        error={submitted && formData.lastname.length === 0 ? {
                                             content: 'Ingresar Apellido',
                                             pointing: 'below',
                                         } : false}
@@ -130,7 +130,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(v.currentTarget.value, "lastname")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.dni.length == 0 ? {
+                                        error={submitted && formData.dni.length === 0 ? {
                                             content: 'Ingresar Documento',
                                             pointing: 'below',
                                         } : false}
@@ -141,7 +141,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(v.currentTarget.value, "dni")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.birthDate == defaultDate ? {
+                                        error={submitted && formData.birthDate === defaultDate ? {
                                             content: 'Ingresar Fecha de nacimiento',
                                             pointing: 'below',
                                         } : false}
@@ -153,7 +153,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(new Date(v.currentTarget.value), "birthDate")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.contactPhone.length == 0 ? {
+                                        error={submitted && formData.contactPhone.length === 0 ? {
                                             content: 'Ingresar Telefono',
                                             pointing: 'below',
                                         } : false}
@@ -164,7 +164,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                                             onChange={(v) => handleChange(v.currentTarget.value, "contactPhone")} />
                                     </Form.Field>
                                     <Form.Field
-                                        error={submitted && formData.contactEmail.length == 0 ? {
+                                        error={submitted && formData.contactEmail.length === 0 ? {
                                             content: 'Ingresar Email',
                                             pointing: 'below',
                                         } : false}
@@ -182,7 +182,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                             <Grid.Column>
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Field
-                                        error={submitted && formData.address.length == 0 ? {
+                                        error={submitted && formData.address.length === 0 ? {
                                             content: 'Ingresar Direccion',
                                             pointing: 'below',
                                         } : false}
