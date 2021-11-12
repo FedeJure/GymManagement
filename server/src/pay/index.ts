@@ -38,7 +38,6 @@ export const generateOrderAndUpdateSubscription = async (
     completed: false,
     cancelled: false,
     amountPayed: 0,
-    period: subscription.currentPeriod,
     subscriptionId: subscriptionId,
   });
   subscription.dateOfNextPayOrder.setMonth(

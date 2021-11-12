@@ -11,6 +11,5 @@ export interface Order {
     emittedDate: Date,
     completed: boolean,
     cancelled: boolean
-    period: number
     subscriptionId: string
 }

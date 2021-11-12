@@ -101,7 +101,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 setFilter(fi => f)
             }}
         />
-        <List divided verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "auto" }}>
+        <List verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "auto" }}>
             <InfiniteScroll
                 as={List.Item}
                 onLoadMore={() => setPage(page => page + 1)}
