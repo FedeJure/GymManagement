@@ -13,6 +13,7 @@ export const SubscriptionCard: React.FC<ISubscriptionCard> = ({ subscription, ha
         <Card fluid color="teal">
             <Card.Content>
                 <List.Content floated='right'>
+                    <Button primary icon compact onClick={() => handleCreateOrder(subscription.id)}><Icon name="dollar"></Icon>Crear orden de cobro</Button>
                     <Button inverted secondary icon compact onClick={() => handleDelete()}><Icon name="trash"></Icon>Borrar</Button>
                 </List.Content>
                 <List.Content floated='right'>
