@@ -15,7 +15,7 @@ import { cancelOrder } from "../../services/api/orderApi"
 const Orders = ({ orders, fetchOrders }:
     { orders: Order[], fetchOrders: Function }) => {
     const [page, setPage] = useState(0)
-    const [filter, setFilter] = useState<string[]>([OrderStateEnum.AVAILABLE])
+    const [filter, setFilter] = useState<string[]>([])
     const [tagFilter, setTagFilter] = useState({ cancelled: false, completed: undefined })
     const [confirmModal, setConfirmModal] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
@@ -60,7 +60,7 @@ const Orders = ({ orders, fetchOrders }:
             cancelled: tagFilter.cancelled,
             completed: tagFilter.completed
         })
-    }, [fetchOrders, filter, tagFilter])
+    }, [])
 
     useEffect(() => {
         if (page > 0)
@@ -71,7 +71,7 @@ const Orders = ({ orders, fetchOrders }:
                 cancelled: tagFilter.cancelled,
                 completed: tagFilter.completed
             })
-    }, [page, fetchOrders, filter, tagFilter])
+    }, [page, filter, tagFilter])
 
     useEffect(() => {
         fetchOrders({
@@ -82,7 +82,7 @@ const Orders = ({ orders, fetchOrders }:
             completed: tagFilter.completed
         })
         setPage(0)
-    }, [filter, tagFilter, fetchOrders])
+    }, [filter, tagFilter])
     return (<div>
         {confirmModal && <ConfirmationModal
             open={confirmModal}
@@ -132,7 +132,7 @@ const Orders = ({ orders, fetchOrders }:
             onUserTypeFilterChange={(f: string[]) => { handleTagFilterChange(f) }}
             onCustomChange={(f: string[]) => {
                 setPage(0)
-                setFilter(fi => f)
+                setFilter(f)
             }}
         />
         <List divided verticalAlign="middle" style={{ height: "30vh", width: "100%", overflowY: "auto" }}>

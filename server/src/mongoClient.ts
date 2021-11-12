@@ -51,6 +51,7 @@ const createSchemas = () => {
     profilePicture: String,
     dni: String,
     creationDate: { type: Date, default: new Date() },
+    pendingPay: {type: Boolean, default: false}
   });
 
   mongoose.model("User", UserSchema);
@@ -76,7 +77,10 @@ const createSchemas = () => {
     specialDiscount: Number,
     creationDate: { type: Date, default: new Date() },
     dateOfNextPayOrder: Date,
+    pendingPay: {type: Boolean, default: false},
+    currentPeriod: {type: Number, default: 0}
   });
+
   mongoose.model("Subscription", SubscriptionSchema);
 
   const OrderSchema = new Schema<Order>({
@@ -92,6 +96,8 @@ const createSchemas = () => {
     completed: Boolean,
     cancelled: Boolean,
     amountPayed: Number,
+    period: Number,
+    subscriptionId: Types.ObjectId
   });
   mongoose.model("Order", OrderSchema);
 

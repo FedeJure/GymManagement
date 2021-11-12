@@ -8,7 +8,7 @@ export const ProductCard = ({ interactable=true, product, onDelete=() => {}, onE
     onDelete?: MouseEventHandler,
     onEdit?: MouseEventHandler
 }) =>
-    <Card header={product.name} description={<>
+    <Card color="teal" header={product.name} description={<>
         <Card.Content>{product.payType}</Card.Content>
         {product.daysInWeek.length > 0 && <Card.Content>{product.daysInWeek.length} veces por semana</Card.Content>}
         {product.daysInWeek.length > 0 && <Card.Content>({product.daysInWeek.map(d => d.slice(0,2)).join(', ')})</Card.Content>}

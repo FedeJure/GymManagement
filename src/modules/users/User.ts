@@ -1,3 +1,7 @@
 import { UserPayload } from "./UserPayload";
 
-export type User = UserPayload & {id: string, creationDate: Date}
+export interface User extends UserPayload {
+    id: string
+    creationDate: Date
+    pendingPay: boolean
+}

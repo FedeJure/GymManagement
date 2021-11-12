@@ -34,7 +34,7 @@ const Users = ({ users, createUser, removeUser, editUser, fetchUsers }:
     const [page, setPage] = useState(0)
 
     useEffect(() => {
-        fetchUsers({ page, append: true, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
+        fetchUsers({ page:0, append: false, filterByTag: userTagFiltes, filterByContent: userCustomFiltes })
     }, [])
 
     const fetchNewUserPage = useCallback((newPage: number) => {

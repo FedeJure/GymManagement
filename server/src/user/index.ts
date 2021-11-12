@@ -141,3 +141,11 @@ function updateSelfToBrothers(
     await familiar.save();
   });
 }
+
+export const setPendingPayed = async (userId: string) => {
+  const userModel = getUserModel();
+  const oldUser = await userModel.findOne({ _id: userId });
+  if (!oldUser) throw Error("User not found");
+  oldUser.pendingPay = true
+  oldUser.save()
+}

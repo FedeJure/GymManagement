@@ -146,12 +146,9 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 {SubscriptionSection}
             </Grid.Row>
 
-            <Grid.Row columns={2}>
+            <Grid.Row columns={1}>
                 <Grid.Column>
                     <Orders />
-                </Grid.Column>
-                <Grid.Column>
-                    {/* <Orders /> */}
                 </Grid.Column>
             </Grid.Row>
         </Grid>
