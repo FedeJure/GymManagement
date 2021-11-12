@@ -12,5 +12,4 @@ export interface Subscription {
     creationDate: Date
     dateOfNextPayOrder: Date
     pendingPay: boolean
-    currentPeriod: number
 }

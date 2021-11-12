@@ -78,7 +78,6 @@ const createSchemas = () => {
     creationDate: { type: Date, default: new Date() },
     dateOfNextPayOrder: Date,
     pendingPay: {type: Boolean, default: false},
-    currentPeriod: {type: Number, default: 0}
   });
 
   mongoose.model("Subscription", SubscriptionSchema);
@@ -96,7 +95,6 @@ const createSchemas = () => {
     completed: Boolean,
     cancelled: Boolean,
     amountPayed: Number,
-    period: Number,
     subscriptionId: Types.ObjectId
   });
   mongoose.model("Order", OrderSchema);
