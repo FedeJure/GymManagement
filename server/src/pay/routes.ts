@@ -29,7 +29,7 @@ export const initPaymentRoutes = (app: Express) => {
         if (order) res.status(200).send({ ok: true, order });
         else
           res
-            .status(400)
+            .status(501)
             .send({
               ok: false,
               message: "Already submitted order for this period",

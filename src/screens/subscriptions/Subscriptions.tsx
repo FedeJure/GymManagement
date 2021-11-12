@@ -106,10 +106,11 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 as={List.Item}
                 onLoadMore={() => setPage(page => page + 1)}
                 data={subscriptions.map(s =>
-                    <SubscriptionCard handleDelete={() => {
-                        setSelectedSubscription(s)
-                        setConfirmModal(true)
-                    }} subscription={s}
+                    <SubscriptionCard
+                        key={s.id} handleDelete={() => {
+                            setSelectedSubscription(s)
+                            setConfirmModal(true)
+                        }} subscription={s}
                         handleCreateOrder={() => {
                             setSelectedSubscription(s)
                             setConfirmOrderModal(true)
@@ -134,7 +135,7 @@ const Subscriptions = ({ subscriptions, createSubscription, fetchSubscriptions, 
                 setConfirmOrderModal(false)
                 handleCreateOrder()
             }}
-            message="Crear orden de compra?" />}
+            message={<><h2>Crear orden de cobro?</h2><br/> Tenga en cuenta que las ordenes de cobro son generadas automaticamente cuando es requerido</>} />}
         {creationModalOpen && <CreateSubscriptionModal onClose={() => setCreationModalOpen(false)}
             onSubmit={handleSubmit} />}
         {detailModal && selectedSubscription && <SubscriptionDetailModal
