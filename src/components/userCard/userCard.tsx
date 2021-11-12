@@ -9,9 +9,10 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: {
     onDelete: MouseEventHandler,
     onInfo: MouseEventHandler
 }) => (
-    <Card style={{height: "auto"}}>
+    <Card style={{ height: "auto" }} color="teal">
         <Card.Content>
             {<Image
+                rounded
                 floated='right'
                 size='mini'
                 src={user.profilePicture}
@@ -24,7 +25,7 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: {
             </Card.Header>
             <Card.Meta>DNI: {user.dni} | {(new Date()).getFullYear() - user.birthDate.getFullYear()} años</Card.Meta>
             <Card.Description >
-                <p style={{overflow: "hidden", textOverflow: "ellipsis"}}>{user.comment}</p>
+                <p style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{user.comment}</p>
             </Card.Description>
         </Card.Content>
         <Card.Content extra>

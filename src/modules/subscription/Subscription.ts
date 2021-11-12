@@ -11,4 +11,6 @@ export interface Subscription {
     comment: string
     creationDate: Date
     dateOfNextPayOrder: Date
+    pendingPay: boolean
+    currentPeriod: number
 }
