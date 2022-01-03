@@ -35,6 +35,8 @@ export const CreateSubscriptionModal = ({
     comment: "",
   });
 
+  console.log(formData.initialTime)
+
   const handleSubmit = () => {
     setSubmitted(true);
     if (
