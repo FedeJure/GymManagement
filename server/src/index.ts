@@ -24,6 +24,6 @@ initPaymentRoutes(app)
 
 app.listen(PORT, () => {
   console.log(`Example app listening at ${PORT}`)
-  generateNewPayOrdersIfNeeded()
+  generateNewPayOrdersIfNeeded() 
   setInterval(generateNewPayOrdersIfNeeded, 3600000 /** 1 hour */)
 })

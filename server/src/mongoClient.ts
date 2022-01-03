@@ -7,7 +7,8 @@ import { Subscription } from "../../src/modules/subscription/Subscription";
 import { PayRecipe } from "../../src/modules/payRecipe/PayRecipe";
 import { Order } from "../../src/modules/order/Order";
 
-const mocked = false;
+const mocked = false;// This actually is not working if true, I dont know why
+
 
 const mockMongoose = new MockMongoose(mongoose);
 const dbName = "gymManagement";
@@ -113,8 +114,12 @@ const createSchemas = () => {
 if (mocked) {
   mockMongoose.prepareStorage().then(function () {
     mongoose.connect(url);
+    mongoose.connection.on('connected', () => {  
+      console.log("CONNECTED MOCK DB")
+    }); 
     createSchemas();
-  });
+  })
+  .catch(console.log);
 } else {
   mongoose.connect(url);
   createSchemas();
