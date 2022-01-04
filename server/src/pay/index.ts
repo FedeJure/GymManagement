@@ -8,20 +8,17 @@ import {
 import { Order } from "../../../src/modules/order/Order";
 
 export const generateOrderAndUpdateSubscription = async (
-  subscriptionPayload: Subscription
+  subscriptionId: string
 ): Promise<Order | null> => {
-  console.log(new Date(),subscriptionPayload.dateOfNextPayOrder)
-  if (Date.now() < subscriptionPayload.dateOfNextPayOrder.getTime())
-    return null;
   const orderModel = getOrderModel();
   const subscriptionModel = getSubscriptionModel();
   const subscription = await subscriptionModel
-    .findById(subscriptionPayload.id)
+    .findById(subscriptionId)
     .populate(["user", "product"]);
   if (!subscription) throw new Error("Subscription not founded");
 
   const existentOrder = await orderModel.findOne({
-    subscriptionId: subscriptionPayload.id,
+    subscriptionId: subscriptionId,
     emittedDate: { $lte: subscription.dateOfNextPayOrder },
     cancelled: false,
   });
@@ -41,7 +38,7 @@ export const generateOrderAndUpdateSubscription = async (
     completed: false,
     cancelled: false,
     amountPayed: 0,
-    subscriptionId: subscriptionPayload.id,
+    subscriptionId: subscriptionId,
   });
 
   return order;
