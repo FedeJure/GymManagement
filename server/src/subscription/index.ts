@@ -1,7 +1,9 @@
+import { Document } from "mongodb";
 import { Order } from "../../../src/modules/order/Order";
+import { Subscription } from "../../../src/modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
 import { getSubscriptionModel, getOrderModel } from "../mongoClient";
-import { generateOrderAndUpdateSubscription } from "../pay";
+import { generateOrderAndUpdateSubscription as generateOrder } from "../pay";
 import { setPendingPayed } from "../user";
 
 export const getSubscriptions = async ({
@@ -31,19 +33,7 @@ export const getSubscriptions = async ({
       limit: step,
     })
     .populate(["user", "product"]);
-  const now = Date.now();
-  return Promise.all(
-    subscriptions.map(async (s) => {
-      s.pendingPay =
-        now > s.initialTime.getTime() &&
-        (await orderModel.exists({
-          cancelled: false,
-          completed: false,
-          subscriptionId: s.id,
-        }));
-      return s;
-    })
-  );
+  return subscriptions;
 };
 
 export const saveSubscription = async (subscription: SubscriptionPayload) => {
@@ -56,20 +46,7 @@ export const saveSubscription = async (subscription: SubscriptionPayload) => {
     product: subscription.productId,
   });
   const createdSubscription = await subscriptionModel.create(newSubscription);
-  const generatedOrder = await generateOrderAndUpdateSubscription(
-    createdSubscription
-  );
-  if (
-    generatedOrder &&
-    !createdSubscription.pendingPay &&
-    !generatedOrder.completed
-  ) {
-    createdSubscription.pendingPay = true;
-    createdSubscription.dateOfNextPayOrder.setMonth(
-      createdSubscription.dateOfNextPayOrder.getMonth() + 1
-    );
-    createdSubscription.save();
-  }
+  generateOrderAndUpdateSubscription(createdSubscription);
 
   return subscriptionModel
     .findById(createdSubscription._id)
@@ -103,4 +80,19 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
     .map((o) => o as Order);
   orders.forEach((order) => setPendingPayed(order.userId));
   return orders;
+};
+
+const generateOrderAndUpdateSubscription = async (
+  subscription: Document & Subscription
+) => {
+  if (Date.now() < subscription.dateOfNextPayOrder.getTime()) return null;
+  const generatedOrder = await generateOrder(subscription.id);
+  if (generatedOrder && !subscription.pendingPay && !generatedOrder.completed) {
+    subscription.pendingPay = true;
+    subscription.dateOfNextPayOrder.setMonth(
+      subscription.dateOfNextPayOrder.getMonth() + 1
+    );
+    subscription.save();
+  }
+  return generatedOrder;
 };
