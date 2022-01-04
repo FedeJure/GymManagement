@@ -143,6 +143,7 @@ function updateSelfToBrothers(
 }
 
 export const setPendingPayed = async (userId: string) => {
+  console.log("Set payed on update")
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: userId });
   if (!oldUser) throw Error("User not found");

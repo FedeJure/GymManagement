@@ -83,6 +83,7 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   )
     .filter((o) => o !== null)
     .map((o) => o as Order);
+    console.log(orders)
   orders.forEach((order) => setPendingPayed(order.userId));
   return orders;
 };

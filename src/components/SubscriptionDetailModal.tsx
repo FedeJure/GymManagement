@@ -8,7 +8,6 @@ interface ISubscriptionDetailModal {
 }
 
 export const SubscriptionDetailModal: React.FC<ISubscriptionDetailModal> = ({ subscription, onClose }) => {
-    console.log(subscription.creationDate)
     return (<Modal open onClose={onClose}>
         <Modal.Header>
             Detalle de subscripcion
