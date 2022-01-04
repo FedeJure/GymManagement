@@ -31,13 +31,16 @@ export const getSubscriptions = async ({
       limit: step,
     })
     .populate(["user", "product"]);
+  const now = Date.now();
   return Promise.all(
     subscriptions.map(async (s) => {
-      s.pendingPay = await orderModel.exists({
-        cancelled: false,
-        completed: false,
-        subscriptionId: s.id,
-      });
+      s.pendingPay =
+        now > s.initialTime.getTime() &&
+        (await orderModel.exists({
+          cancelled: false,
+          completed: false,
+          subscriptionId: s.id,
+        }));
       return s;
     })
   );
@@ -46,16 +49,31 @@ export const getSubscriptions = async ({
 export const saveSubscription = async (subscription: SubscriptionPayload) => {
   const subscriptionModel = getSubscriptionModel();
   const nextPayOrder = new Date(subscription.initialTime);
-  nextPayOrder.setMonth(nextPayOrder.getMonth() + 1);
   const newSubscription = new subscriptionModel({
     ...subscription,
     dateOfNextPayOrder: nextPayOrder,
     user: subscription.userId,
     product: subscription.productId,
   });
-  const saved = await subscriptionModel.create(newSubscription);
-  generateOrderAndUpdateSubscription(saved.id);
-  return subscriptionModel.findById(saved._id).populate(["user", "product"]);
+  const createdSubscription = await subscriptionModel.create(newSubscription);
+  const generatedOrder = await generateOrderAndUpdateSubscription(
+    createdSubscription
+  );
+  if (
+    generatedOrder &&
+    !createdSubscription.pendingPay &&
+    !generatedOrder.completed
+  ) {
+    createdSubscription.pendingPay = true;
+    createdSubscription.dateOfNextPayOrder.setMonth(
+      createdSubscription.dateOfNextPayOrder.getMonth() + 1
+    );
+    createdSubscription.save();
+  }
+
+  return subscriptionModel
+    .findById(createdSubscription._id)
+    .populate(["user", "product"]);
 };
 
 export const removeSubscription = async (subscriptionId: string) => {
@@ -77,13 +95,12 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   const orders: Order[] = (
     await Promise.all(
       subscriptionWithPendingOrderCreation.map((s) =>
-        generateOrderAndUpdateSubscription(s.id)
+        generateOrderAndUpdateSubscription(s)
       )
     )
   )
     .filter((o) => o !== null)
     .map((o) => o as Order);
-    console.log(orders)
   orders.forEach((order) => setPendingPayed(order.userId));
   return orders;
 };
