@@ -12,7 +12,7 @@ import { User } from "../../modules/users/User";
 import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload";
 import { fetchProducts, fetchUsers } from "../../services/api";
 import { Product } from "../../modules/product/Product";
-import { DateInput } from "../inputComponent/InputComponent";
+import { DateInput } from "../inputComponent/DateInputComponent";
 
 const defaultDate = new Date(0);
 
@@ -34,8 +34,6 @@ export const CreateSubscriptionModal = ({
     endTime: undefined,
     comment: "",
   });
-
-  console.log(formData.initialTime)
 
   const handleSubmit = () => {
     setSubmitted(true);

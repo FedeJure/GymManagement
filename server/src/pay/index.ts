@@ -40,11 +40,14 @@ export const generateOrderAndUpdateSubscription = async (
     amountPayed: 0,
     subscriptionId: subscriptionId,
   });
+  if (Date.now() > subscription.initialTime.getTime()) {
+    subscription.pendingPay = true;
+  }
+
   subscription.dateOfNextPayOrder.setMonth(
     subscription.dateOfNextPayOrder.getMonth() + 1
   );
   subscription.dateOfNextPayOrder.setDate(1);
-  subscription.pendingPay = true;
   if (
     subscription.endTime &&
     subscription.endTime > subscription.dateOfNextPayOrder
