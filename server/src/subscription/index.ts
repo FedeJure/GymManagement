@@ -2,7 +2,7 @@ import { Document } from "mongodb";
 import { Order } from "../../../src/modules/order/Order";
 import { Subscription } from "../../../src/modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
-import { getSubscriptionModel, getOrderModel } from "../mongoClient";
+import { getSubscriptionModel } from "../mongoClient";
 import { generateOrderAndUpdateSubscription as generateOrder } from "../pay";
 import { setPendingPayed } from "../user";
 
@@ -17,7 +17,6 @@ export const getSubscriptions = async ({
   contentFilter?: string;
 }) => {
   const subscriptionModel = getSubscriptionModel();
-  const orderModel = getOrderModel();
   let queries: any[] = [];
 
   if (contentFilter) {
