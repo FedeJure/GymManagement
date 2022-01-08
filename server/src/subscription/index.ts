@@ -45,7 +45,7 @@ export const saveSubscription = async (subscription: SubscriptionPayload) => {
     product: subscription.productId,
   });
   const createdSubscription = await subscriptionModel.create(newSubscription);
-  generateOrderAndUpdateSubscription(createdSubscription);
+  await generateOrderAndUpdateSubscription(createdSubscription);
 
   return subscriptionModel
     .findById(createdSubscription._id)
@@ -91,7 +91,7 @@ const generateOrderAndUpdateSubscription = async (
     subscription.dateOfNextPayOrder.setMonth(
       subscription.dateOfNextPayOrder.getMonth() + 1
     );
-    subscription.save();
+    await subscription.save();
   }
   return generatedOrder;
 };

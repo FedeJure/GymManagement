@@ -1,6 +1,13 @@
 import { MockDb } from "../test/db";
 import { getSubscriptions, saveSubscription } from ".";
-import { InitProductOnDb, InitUserOnDb, MockSubscriptionPayload } from "../test/mocks";
+import {
+  InitProductOnDb,
+  InitUserOnDb,
+  MockSubscriptionPayload,
+} from "../test/mocks";
+import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
+import { getOrders, getPayments } from "../pay";
+import { getOrderModel } from "../mongoClient";
 
 const db = new MockDb();
 beforeAll(async () => await db.connect());
@@ -21,11 +28,46 @@ describe("Subscriptions", () => {
 
   it("save new subscription", (done) => {
     saveSubscription(MockSubscriptionPayload).then((subscription) => {
-      expect(subscription?.user.id).toEqual(MockSubscriptionPayload.userId)
-      expect(subscription?.product.id).toEqual(MockSubscriptionPayload.productId)
-      expect(subscription?.initialTime.toISOString()).toEqual(MockSubscriptionPayload.initialTime.toISOString())
-      expect(subscription?.endTime?.toISOString()).toEqual(MockSubscriptionPayload.endTime?.toISOString())
+      expect(subscription?.user.id).toEqual(MockSubscriptionPayload.userId);
+      expect(subscription?.product.id).toEqual(
+        MockSubscriptionPayload.productId
+      );
+      expect(subscription?.initialTime.toISOString()).toEqual(
+        MockSubscriptionPayload.initialTime.toISOString()
+      );
+      expect(subscription?.endTime?.toISOString()).toEqual(
+        MockSubscriptionPayload.endTime?.toISOString()
+      );
       done();
+    });
+  });
+
+  it("No order created on subscription with future initial time", (done) => {
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now() + 10000000),
+    };
+    saveSubscription(mockSubscriptionPayload).then((_) => {
+      getOrders({ page: 0, step: 10 }).then((orders) => {
+        expect(orders.length).toBe(0);
+        done();
+      });
+    });
+  });
+
+  it("order created on subscription with initial time started", (done) => {
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+    };
+    saveSubscription(mockSubscriptionPayload).then((subscription) => {
+      getOrders({ page: 0, step: 10 }).then((orders) => {
+        expect(orders.length).toBe(1);
+        expect(orders[0].subscriptionId.toString()).toEqual(subscription?.id.toString())
+        expect(orders[0].productId.toString()).toEqual(subscription?.product.id.toString())
+        expect(orders[0].userId.toString()).toEqual(subscription?.user.id.toString())
+        done();
+      });
     });
   });
 });
