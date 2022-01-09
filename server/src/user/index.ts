@@ -138,7 +138,7 @@ async function updateSelfToBrothers(
   userId: string,
   removedFamiliars: string[]
 ) {
-  newFamiliars.forEach(async (f) => {
+  return Promise.all(newFamiliars.map(async (f) => {
     const familiar = await userModel.findById(f);
     if (!familiar)
       throw new Error(
@@ -146,13 +146,12 @@ async function updateSelfToBrothers(
       );
     familiar.familiars = [...familiar.familiars, userId];
     await familiar.save();
-  });
-  removedFamiliars.forEach(async (f) => {
+  }, ...removedFamiliars.map(async (f) => {
     const familiar = await userModel.findById(f);
     if (!familiar) return;
     familiar.familiars = familiar.familiars.filter((ff) => ff != userId);
     await familiar.save();
-  });
+  })));
 }
 
 export const setPendingPayed = async (userId: string) => {
