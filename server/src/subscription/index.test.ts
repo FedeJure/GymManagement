@@ -24,199 +24,167 @@ afterEach(async () => await db.clearDatabase());
 afterAll(async () => await db.closeDatabase());
 
 describe("Subscriptions", () => {
-  it("get subscriptions on empty db", (done) => {
-    getSubscriptions({ page: 0, step: 10 }).then((subscriptions) => {
-      expect(subscriptions.length).toBe(0);
-      done();
-    });
+  it("get subscriptions on empty db", async (done) => {
+    const subscriptions = await getSubscriptions({ page: 0, step: 10 });
+    expect(subscriptions.length).toBe(0);
+    done();
   });
 
-  it("save new subscription", (done) => {
-    saveSubscription(MockSubscriptionPayload).then((subscription) => {
-      expect(subscription?.user.id).toEqual(MockSubscriptionPayload.userId);
-      expect(subscription?.product.id).toEqual(
-        MockSubscriptionPayload.productId
-      );
-      expect(subscription?.initialTime.toISOString()).toEqual(
-        MockSubscriptionPayload.initialTime.toISOString()
-      );
-      expect(subscription?.endTime?.toISOString()).toEqual(
-        MockSubscriptionPayload.endTime?.toISOString()
-      );
-      done();
-    });
+  it("save new subscription", async (done) => {
+    const savedSubscription = await saveSubscription(MockSubscriptionPayload);
+    expect(savedSubscription?.user.id).toEqual(MockSubscriptionPayload.userId);
+    expect(savedSubscription?.product.id).toEqual(
+      MockSubscriptionPayload.productId
+    );
+    expect(savedSubscription?.initialTime.toISOString()).toEqual(
+      MockSubscriptionPayload.initialTime.toISOString()
+    );
+    expect(savedSubscription?.endTime?.toISOString()).toEqual(
+      MockSubscriptionPayload.endTime?.toISOString()
+    );
+    done();
   });
 
-  it("No order created on subscription with future initial time", (done) => {
+  it("No order created on subscription with future initial time", async (done) => {
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
       initialTime: new Date(Date.now() + 10000000),
     };
-    saveSubscription(mockSubscriptionPayload).then((_) => {
-      getOrders({ page: 0, step: 10 }).then((orders) => {
-        expect(orders.length).toBe(0);
-        done();
-      });
-    });
+    await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(0);
+    done();
   });
 
-  it("order created on subscription with initial time started", (done) => {
+  it("order created on subscription with initial time started", async (done) => {
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
       initialTime: new Date(Date.now()),
     };
-    saveSubscription(mockSubscriptionPayload).then((subscription) => {
-      getOrders({ page: 0, step: 10 }).then((orders) => {
-        expect(orders.length).toBe(1);
-        expect(orders[0].subscriptionId.toString()).toEqual(
-          subscription?.id.toString()
-        );
-        expect(orders[0].productId.toString()).toEqual(
-          subscription?.product.id.toString()
-        );
-        expect(orders[0].userId.toString()).toEqual(
-          subscription?.user.id.toString()
-        );
-        done();
-      });
-    });
+    const savedSubscription = await saveSubscription(mockSubscriptionPayload);
+
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(1);
+    expect(orders[0].subscriptionId.toString()).toEqual(
+      savedSubscription?.id.toString()
+    );
+    expect(orders[0].productId.toString()).toEqual(
+      savedSubscription?.product.id.toString()
+    );
+    expect(orders[0].userId.toString()).toEqual(
+      savedSubscription?.user.id.toString()
+    );
+    done();
   });
 
-  it("create order without discount", (done) => {
+  it("create order without discount", async (done) => {
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
       initialTime: new Date(Date.now()),
     };
-    saveSubscription(mockSubscriptionPayload).then((subscription) => {
-      getOrders({ page: 0, step: 10 }).then((orders) => {
-        expect(orders[0].amount).toEqual(subscription?.product.price);
-        done();
-      });
-    });
+    const savedSubscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+
+    expect(orders[0].amount).toEqual(savedSubscription?.product.price);
+    done();
   });
 
-  it("create order with special discount", (done) => {
+  it("create order with special discount", async (done) => {
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
       initialTime: new Date(Date.now()),
       specialDiscount: 5, // percent
     };
-    saveSubscription(mockSubscriptionPayload).then((subscription) => {
-      getOrders({ page: 0, step: 10 }).then((orders) => {
-        expect(orders[0].amount).toEqual(
-          (subscription?.product.price || 0) * 0.95
-        );
-        done();
-      });
-    });
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.95);
+    done();
   });
 
-  it("create order with one brother", (done) => {
-    InitBrothersOnDb(1).then(() => {
-      const mockSubscriptionPayload: SubscriptionPayload = {
-        ...MockSubscriptionPayload,
-        initialTime: new Date(Date.now()),
-      };
-      saveSubscription(mockSubscriptionPayload).then((subscription) => {
-        getOrders({ page: 0, step: 10 }).then((orders) => {
-          expect(orders[0].amount).toEqual(
-            (subscription?.product.price || 0) * 0.95
-          );
-          done();
-        });
-      });
-    });
+  it("create order with one brother", async (done) => {
+    await InitBrothersOnDb(1);
+
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+    };
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.95);
+    done();
   });
 
-  it("create order with two brothers", (done) => {
-    InitBrothersOnDb(2).then(() => {
-      const mockSubscriptionPayload: SubscriptionPayload = {
-        ...MockSubscriptionPayload,
-        initialTime: new Date(Date.now()),
-      };
-      saveSubscription(mockSubscriptionPayload).then((subscription) => {
-        getOrders({ page: 0, step: 10 }).then((orders) => {
-          expect(orders[0].amount).toEqual(
-            (subscription?.product.price || 0) * 0.9
-          );
-          done();
-        });
-      });
-    });
+  it("create order with two brothers", async (done) => {
+    await InitBrothersOnDb(2);
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+    };
+
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.9);
+    done();
   });
 
-  it("create order with three brothers", (done) => {
-    InitBrothersOnDb(3).then(() => {
-      const mockSubscriptionPayload: SubscriptionPayload = {
-        ...MockSubscriptionPayload,
-        initialTime: new Date(Date.now()),
-      };
-      saveSubscription(mockSubscriptionPayload).then((subscription) => {
-        getOrders({ page: 0, step: 10 }).then((orders) => {
-          expect(orders[0].amount).toEqual(
-            (subscription?.product.price || 0) * 0.85
-          );
-          done();
-        });
-      });
-    });
+  it("create order with three brothers", async (done) => {
+    await InitBrothersOnDb(3);
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+    };
+
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.85);
+    done();
   });
 
-  it("create order with four brothers", (done) => {
-    InitBrothersOnDb(4).then(() => {
-      const mockSubscriptionPayload: SubscriptionPayload = {
-        ...MockSubscriptionPayload,
-        initialTime: new Date(Date.now()),
-      };
-      saveSubscription(mockSubscriptionPayload).then((subscription) => {
-        getOrders({ page: 0, step: 10 }).then((orders) => {
-          expect(orders[0].amount).toEqual(
-            (subscription?.product.price || 0) * 0.8
-          );
-          done();
-        });
-      });
-    });
+  it("create order with four brothers", async (done) => {
+    await InitBrothersOnDb(4);
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+    };
+
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.8);
+    done();
   });
 
-  it("create order with max discount applied", (done) => {
-    InitBrothersOnDb(4).then(() => {
-      const mockSubscriptionPayload: SubscriptionPayload = {
-        ...MockSubscriptionPayload,
-        initialTime: new Date(Date.now()),
-        specialDiscount: 30,
-      };
-      saveSubscription(mockSubscriptionPayload).then((subscription) => {
-        getOrders({ page: 0, step: 10 }).then((orders) => {
-          expect(orders[0].amount).toEqual(
-            (subscription?.product.price || 0) * 0.7
-          );
-          done();
-        });
-      });
-    });
+  it("create order with max discount applied", async (done) => {
+    await InitBrothersOnDb(4);
+
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: new Date(Date.now()),
+      specialDiscount: 30,
+    };
+    const subscription = await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders[0].amount).toEqual((subscription?.product.price || 0) * 0.7);
+    done();
   });
 
-  it("Generate pay order after subscription creation", (done) => {
+  it("Generate pay order after subscription creation", async (done) => {
     const date = new Date(2021, 1, 2);
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
       initialTime: date,
     };
-    mockNextDate(new Date(new Date(2021,1,1)));
-    saveSubscription(mockSubscriptionPayload).then((_) => {
-      getOrders({ page: 0, step: 10 }).then((orders) => {
-        expect(orders.length).toBe(0);
-        mockNextDate(new Date(new Date(2021,1,3)));
+    mockNextDate(new Date(new Date(2021, 1, 1)));
+    await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(0);
+    mockNextDate(new Date(new Date(2021, 1, 3)));
 
-        generateNewPayOrdersIfNeeded().then(() => {
-          getOrders({ page: 0, step: 10 }).then((newOrders) => {
-            expect(newOrders.length).toBe(1);
-            resetMockDate();
-            done();
-          });
-        });
-      });
-    });
+    await generateNewPayOrdersIfNeeded()
+    var newOrders = await getOrders({ page: 0, step: 10 });
+    expect(newOrders.length).toBe(1);
+    resetMockDate();
+    done();
   });
 });
