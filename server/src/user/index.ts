@@ -59,10 +59,15 @@ export const saveUser = async (user: UserPayload) => {
     );
   }
 
-  const newUser = new userModel({ ...user });
-  const createdUser = await userModel.create(newUser);
+  // const newUser = new userModel({ ...user });
+  const createdUser = await userModel.create({ ...user });
   if (user.familiars.length > 0) {
-    await updateSelfToBrothers(createdUser.familiars, userModel, createdUser.id, []);
+    await updateSelfToBrothers(
+      createdUser.familiars,
+      userModel,
+      createdUser.id,
+      []
+    );
   }
   return createdUser;
 };
@@ -74,16 +79,16 @@ export const removeUser = async (userId: string): Promise<User> => {
   if (!user) throw new Error("User not found");
   await subscriptionModel.deleteMany({ user: user });
   if (user.profilePicture) removeImage(user.profilePicture);
-  updateSelfToBrothers([], userModel, user.id, user.familiars);
+  await updateSelfToBrothers([], userModel, user.id, user.familiars);
   await userModel.deleteOne({ _id: userId });
   return user;
 };
 
-export const updateUser = async (user: User) => {
+export const updateUser = async (user: User): Promise<User> => {
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: user.id });
   if (!oldUser) throw Error("User not found");
-  if (!oldUser.familiars.every(async (f) => user.familiars.includes(f))) {
+  if (user.familiars.length > 0 && oldUser.familiars.length === 0 || !oldUser.familiars.every((f) => user.familiars.includes(f))) {
     const allFamiliars = [...oldUser.familiars, ...user.familiars];
     const newFamiliars = allFamiliars.filter(
       (f) => !oldUser.familiars.includes(f)
@@ -91,20 +96,31 @@ export const updateUser = async (user: User) => {
     const removedFamiliars = allFamiliars.filter(
       (f) => !user.familiars.includes(f)
     );
-    updateSelfToBrothers(newFamiliars, userModel, oldUser.id, removedFamiliars);
+    await updateSelfToBrothers(
+      newFamiliars,
+      userModel,
+      oldUser.id,
+      removedFamiliars
+    );
   }
-  oldUser.name = user.name;
-  oldUser.lastname = user.lastname;
-  oldUser.dni = user.dni;
-  oldUser.familiars = user.familiars;
-  oldUser.birthDate = user.birthDate;
-  oldUser.contactEmail = user.contactEmail;
-  oldUser.contactPhone = user.contactPhone;
-  oldUser.profilePicture = user.profilePicture;
-  oldUser.comment = user.comment;
-  oldUser.address = user.address;
-  await oldUser.save();
-  return oldUser;
+  await userModel.updateOne(
+    {
+      _id: user.id,
+    },
+    {
+      name: user.name,
+      lastname: user.lastname,
+      dni: user.dni,
+      familiars: user.familiars,
+      birthDate: user.birthDate,
+      contactEmail: user.contactEmail,
+      contactPhone: user.contactPhone,
+      profilePicture: user.profilePicture,
+      comment: user.comment,
+      address: user.address,
+    }
+  );
+  return (await userModel.findById(user.id)) || oldUser;
 };
 
 export const getBrothersOfUser = async (userId: string) => {
@@ -138,20 +154,32 @@ async function updateSelfToBrothers(
   userId: string,
   removedFamiliars: string[]
 ) {
-  return Promise.all(newFamiliars.map(async (f) => {
-    const familiar = await userModel.findById(f);
-    if (!familiar)
-      throw new Error(
-        `Non existent familiar with id: ${f}. Please create that user before assing it as familair`
+  return Promise.all([
+    ...newFamiliars.map(async (f) => {
+      const familiar = await userModel.findById(f);
+      if (!familiar)
+        throw new Error(
+          `Non existent familiar with id: ${f}. Please create that user before assing it as familair`
+        );
+      return await userModel.updateOne(
+        { _id: f },
+        { familiars: [...familiar.familiars, userId] }
       );
-    familiar.familiars = [...familiar.familiars, userId];
-    await familiar.save();
-  }, ...removedFamiliars.map(async (f) => {
-    const familiar = await userModel.findById(f);
-    if (!familiar) return;
-    familiar.familiars = familiar.familiars.filter((ff) => ff != userId);
-    await familiar.save();
-  })));
+    }),
+    ...removedFamiliars.map(async (f) => {
+      const familiar = await userModel.findById(f);
+      if (!familiar) return;
+      console.log("removed familiars", familiar)
+      return await userModel.updateOne(
+        {
+          _id: f,
+        },
+        {
+          familiars: familiar.familiars.filter((ff) => ff != userId),
+        }
+      );
+    }),
+  ]);
 }
 
 export const setPendingPayed = async (userId: string) => {
