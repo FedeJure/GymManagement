@@ -6,6 +6,7 @@ import { Model } from "mongoose";
 import { promisify } from "util";
 import { unlink } from "fs";
 import { STATIC_DIR } from "../configs";
+import { ObjectId } from "mongodb";
 
 export const getUsers = async ({
   page,
@@ -49,10 +50,19 @@ export const getUsers = async ({
 
 export const saveUser = async (user: UserPayload) => {
   const userModel = getUserModel();
+  const familiars = await userModel.find({
+    _id: { $in: user.familiars.map((id) => new ObjectId(id)) },
+  });
+  if (familiars.length !== user.familiars.length) {
+    throw new Error(
+      `Non existent familiar or familiars. Please create those users before assing it as familair`
+    );
+  }
+
   const newUser = new userModel({ ...user });
   const createdUser = await userModel.create(newUser);
   if (user.familiars.length > 0) {
-    updateSelfToBrothers(createdUser.familiars, userModel, createdUser.id, []);
+    await updateSelfToBrothers(createdUser.familiars, userModel, createdUser.id, []);
   }
   return createdUser;
 };
@@ -122,7 +132,7 @@ export const updateImagePath = async (userId: string, path: string) => {
   return user.save();
 };
 
-function updateSelfToBrothers(
+async function updateSelfToBrothers(
   newFamiliars: string[],
   userModel: Model<User, {}, {}>,
   userId: string,
@@ -130,7 +140,10 @@ function updateSelfToBrothers(
 ) {
   newFamiliars.forEach(async (f) => {
     const familiar = await userModel.findById(f);
-    if (!familiar) return;
+    if (!familiar)
+      throw new Error(
+        `Non existent familiar with id: ${f}. Please create that user before assing it as familair`
+      );
     familiar.familiars = [...familiar.familiars, userId];
     await familiar.save();
   });
