@@ -1,7 +1,14 @@
 import { ObjectId } from "mongodb";
 import { getBrothersOfUser, getUsers, saveUser } from ".";
 import { MockDb } from "../test/db";
-import { InitProductOnDb, InitUserOnDb, MockUserPayload } from "../test/mocks";
+import {
+  InitBrothersOnDb,
+  InitProductOnDb,
+  InitUserOnDb,
+  MockBrotherIds,
+  MockUserId,
+  MockUserPayload,
+} from "../test/mocks";
 
 const db = new MockDb();
 beforeAll(async () => await db.connect());
@@ -29,6 +36,35 @@ describe("Users", () => {
         familiars: [new ObjectId().toString()],
       });
     }).rejects.toThrowError();
+    done();
+  });
+
+  it("create user with existent familiar", async (done) => {
+    const brother = await saveUser({
+      ...MockUserPayload,
+    });
+    const user = await saveUser({
+      ...MockUserPayload,
+      familiars: [brother._id.toString()],
+    });
+    expect(user.name).toEqual(MockUserPayload.name);
+    done();
+  });
+
+  it("update familiar user when another asignit like familiar", async (done) => {
+    let brother = await saveUser({
+      ...MockUserPayload,
+    });
+    const user = await saveUser({
+      ...MockUserPayload,
+      familiars: [brother._id.toString()],
+    });
+
+    const users = await getUsers({page: 0, step: 10})
+    brother = users.find(u => u.id === brother.id) || brother
+    expect(brother.familiars.length).toEqual(1)
+    console.log(user)
+    expect(brother.familiars[0] == user.id.toString()).toBeTruthy()
     done();
   });
 });
