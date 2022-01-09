@@ -20,7 +20,7 @@ export const MockProductId = new ObjectId();
 
 export const InitUserOnDb = async () => {
   const userModel = getUserModel();
-  return await userModel.create({ ...MockUserPayload, _id: MockUserId });
+  return userModel.create({ ...MockUserPayload, _id: MockUserId, id: MockUserId });
 };
 
 export const InitProductOnDb = async () => {
@@ -45,7 +45,6 @@ export const InitBrothersOnDb = async (brothersCount: 1 | 2 | 3 | 4 | 5) => {
       birthDate: getNowDate(),
       comment: "Fake comment",
       familiars: [MockUserId],
-      productsSubscribed: [],
       profilePicture: "",
       dni: "112333232",
     };
@@ -69,7 +68,6 @@ export const MockUserPayload: UserPayload = {
   birthDate: getNowDate(),
   comment: "Fake comment",
   familiars: [],
-  productsSubscribed: [],
   profilePicture: "",
   dni: "112333232",
 };
