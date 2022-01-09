@@ -6,6 +6,7 @@ import {
   getSubscriptionModel,
 } from "../mongoClient";
 import { Order } from "../../../src/modules/order/Order";
+import { getNowDate } from "../utils/date";
 
 export const generateOrderAndUpdateSubscription = async (
   subscriptionId: string
@@ -34,7 +35,7 @@ export const generateOrderAndUpdateSubscription = async (
     basePrice: subscription.product.price,
     totalDiscount: discount,
     amount: getFinalAmount(subscription.product.price, discount),
-    emittedDate: new Date(),
+    emittedDate: getNowDate(),
     completed: false,
     cancelled: false,
     amountPayed: 0,
@@ -109,7 +110,7 @@ export const payOrder = async (orderId: string, amount: number) => {
   const newPay: PayRecipePayload = {
     order,
     amount,
-    emittedDate: new Date(),
+    emittedDate: getNowDate(),
   };
 
   const payment = await payRecipeModel.create(newPay);

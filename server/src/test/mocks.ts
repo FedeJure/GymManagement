@@ -6,6 +6,7 @@ import { SubscriptionPayload } from "../../../src/modules/subscription/Subscript
 import { UserPayload } from "../../../src/modules/users/UserPayload";
 import { UserType } from "../../../src/modules/users/UserType";
 import { getProductModel, getUserModel } from "../mongoClient";
+import { getNowDate } from "../utils/date";
 
 export const MockUserId = new ObjectId();
 export const MockBrotherIds = [
@@ -41,7 +42,7 @@ export const InitBrothersOnDb = async (brothersCount: 1 | 2 | 3 | 4 | 5) => {
       contactEmail: "mock@email.com",
       contactPhone: "99999999",
       address: "Fake address 123",
-      birthDate: new Date(),
+      birthDate: getNowDate(),
       comment: "Fake comment",
       familiars: [MockUserId],
       productsSubscribed: [],
@@ -65,7 +66,7 @@ export const MockUserPayload: UserPayload = {
   contactEmail: "mock@email.com",
   contactPhone: "99999999",
   address: "Fake address 123",
-  birthDate: new Date(),
+  birthDate: getNowDate(),
   comment: "Fake comment",
   familiars: [],
   productsSubscribed: [],

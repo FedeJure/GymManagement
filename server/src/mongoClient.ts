@@ -6,6 +6,7 @@ import { Product } from "../../src/modules/product/Product";
 import { Subscription } from "../../src/modules/subscription/Subscription";
 import { PayRecipe } from "../../src/modules/payRecipe/PayRecipe";
 import { Order } from "../../src/modules/order/Order";
+import { getNowDate } from "./utils/date";
 
 const mocked = false;// This actually is not working if true, I dont know why
 
@@ -51,7 +52,7 @@ const createSchemas = () => {
     familiars: [Types.ObjectId], //refactorizar y referenciar user directamente
     profilePicture: String,
     dni: String,
-    creationDate: { type: Date, default: new Date() },
+    creationDate: { type: Date, default: getNowDate() },
     pendingPay: {type: Boolean, default: false}
   });
 
@@ -66,7 +67,7 @@ const createSchemas = () => {
     threeSubscriptionsDiscount: Number,
     fourSubscriptionsDiscount: Number,
     fiveOrMoreSubscriptionsDiscount: Number,
-    creationDate: { type: Date, default: new Date() },
+    creationDate: { type: Date, default: getNowDate() },
   });
   mongoose.model("Product", ProductSchema);
 
@@ -76,7 +77,7 @@ const createSchemas = () => {
     initialTime: Date,
     endTime: Date,
     specialDiscount: Number,
-    creationDate: { type: Date, default: new Date() },
+    creationDate: { type: Date, default: getNowDate() },
     dateOfNextPayOrder: Date,
     pendingPay: {type: Boolean, default: false},
   });
