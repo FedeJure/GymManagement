@@ -3,6 +3,7 @@ import multer from "multer";
 import { User } from "../../../src/modules/users/User";
 import { UserPayload } from "../../../src/modules/users/UserPayload";
 import { ORIGIN, STATIC_DIR } from "../configs";
+import { getNowDate } from "../utils/date";
 import {
   getBrothersOfUser,
   getUsers,
@@ -23,7 +24,7 @@ export const initUsersRoutes = (app: Express) => {
         try {
           const userId = req.query.userId as string;
           const splitted = file.originalname.split(".");
-          const imageName = `${Date.now()}-${await getImageRoute(
+          const imageName = `${getNowDate().getTime()}-${await getImageRoute(
             userId,
             splitted[splitted.length - 1]
           )}`;

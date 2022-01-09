@@ -109,8 +109,8 @@ export const getImageRoute = async (userId: string, extension: string) => {
 };
 
 export const removeImage = async (path: string) => {
-  const pathParts = path.split('/')
-  return promisify(unlink)(`${STATIC_DIR}/${pathParts[pathParts.length - 1]}`)
+  const pathParts = path.split("/");
+  return promisify(unlink)(`${STATIC_DIR}/${pathParts[pathParts.length - 1]}`);
 };
 
 export const updateImagePath = async (userId: string, path: string) => {
@@ -143,10 +143,10 @@ function updateSelfToBrothers(
 }
 
 export const setPendingPayed = async (userId: string) => {
-  console.log("Set payed on update")
+  console.log("Set payed on update");
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: userId });
   if (!oldUser) throw Error("User not found");
-  oldUser.pendingPay = true
-  oldUser.save()
-}
+  oldUser.pendingPay = true;
+  oldUser.save();
+};

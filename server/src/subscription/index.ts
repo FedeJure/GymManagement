@@ -2,9 +2,10 @@ import { Document } from "mongodb";
 import { Order } from "../../../src/modules/order/Order";
 import { Subscription } from "../../../src/modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
-import { getSubscriptionModel } from "../mongoClient";
+import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { generateOrderAndUpdateSubscription as generateOrder } from "../pay";
 import { setPendingPayed } from "../user";
+import { getNowDate } from "../utils/date";
 
 export const getSubscriptions = async ({
   page,
@@ -62,12 +63,11 @@ export const removeSubscription = async (subscriptionId: string) => {
 
 export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   const subscriptionModel = getSubscriptionModel();
-  const now = new Date();
+  const now = getNowDate();
   const subscriptionWithPendingOrderCreation = await subscriptionModel.find({
-    initialTime: { $lte: now },
-    dateOfNextPayOrder: { $gte: now },
+    // initialTime: { $lt: now },
+    dateOfNextPayOrder: { $lte: now },
   });
-
   const orders: Order[] = (
     await Promise.all(
       subscriptionWithPendingOrderCreation.map((s) =>
@@ -77,14 +77,16 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   )
     .filter((o) => o !== null)
     .map((o) => o as Order);
-  orders.forEach((order) => setPendingPayed(order.userId));
+  await Promise.all(orders.map((order) => setPendingPayed(order.userId)));
+
   return orders;
 };
 
 const generateOrderAndUpdateSubscription = async (
   subscription: Document & Subscription
 ) => {
-  if (Date.now() < subscription.dateOfNextPayOrder.getTime()) return null;
+  if (getNowDate().getTime() < subscription.dateOfNextPayOrder.getTime())
+    return null;
   const generatedOrder = await generateOrder(subscription.id);
   if (generatedOrder && !subscription.pendingPay && !generatedOrder.completed) {
     subscription.pendingPay = true;
