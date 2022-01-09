@@ -1,11 +1,14 @@
 import { ObjectId } from "mongodb";
-import { getBrothersOfUser, getUsers, saveUser } from ".";
+import { getBrothersOfUser, getUsers, saveUser, updateUser } from ".";
+import { UserPayload } from "../../../src/modules/users/UserPayload";
+import { UserType } from "../../../src/modules/users/UserType";
 import { MockDb } from "../test/db";
 import {
   InitBrothersOnDb,
   InitProductOnDb,
   InitUserOnDb,
   MockBrotherIds,
+  MockProductId,
   MockUserId,
   MockUserPayload,
 } from "../test/mocks";
@@ -60,11 +63,40 @@ describe("Users", () => {
       familiars: [brother._id.toString()],
     });
 
-    const users = await getUsers({page: 0, step: 10})
-    brother = users.find(u => u.id === brother.id) || brother
-    expect(brother.familiars.length).toEqual(1)
-    console.log(user)
-    expect(brother.familiars[0] == user.id.toString()).toBeTruthy()
+    const users = await getUsers({ page: 0, step: 10 });
+    brother = users.find((u) => u.id === brother.id) || brother;
+    expect(brother.familiars.length).toEqual(1);
+    console.log(user);
+    expect(brother.familiars[0] == user.id.toString()).toBeTruthy();
+    done();
+  });
+
+  it("update info of user", async (done) => {
+    const user = await InitUserOnDb();
+    const newData: UserPayload = {
+      ...MockUserPayload,
+      name: "New name",
+      address: "New Address",
+      contactEmail: "New Email",
+      contactPhone: "New Phone",
+      dni: "New Dni",
+      comment: "New Comment",
+      birthDate: new Date(),
+    };
+
+    const newUser = await updateUser({
+      ...user,
+      ...newData,
+      id: MockUserId.toString(),
+    });
+
+    expect(newUser.name).toEqual(newData.name);
+    expect(newUser.address).toEqual(newData.address);
+    expect(newUser.contactEmail).toEqual(newData.contactEmail);
+    expect(newUser.contactPhone).toEqual(newData.contactPhone);
+    expect(newUser.dni).toEqual(newData.dni);
+    expect(newUser.comment).toEqual(newData.comment);
+    expect(newUser.birthDate).toEqual(newData.birthDate);
     done();
   });
 });
