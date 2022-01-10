@@ -102,10 +102,10 @@ describe("Users", () => {
 
   it("update brothers of user", async (done) => {
     let brother = await saveUser({
-        ...MockUserPayload,
-        name: "Brother",
-        familiars: [],
-      });
+      ...MockUserPayload,
+      name: "Brother",
+      familiars: [],
+    });
     let user = await saveUser({
       ...MockUserPayload,
       familiars: [],
@@ -123,6 +123,29 @@ describe("Users", () => {
     user = users.find((u) => u.id === user.id) || user;
     expect(user.familiars.length).toEqual(1);
     expect(user.familiars[0] == brother.id.toString()).toBeTruthy();
+    done();
+  });
+
+  it("remove brother of user", async (done) => {
+    let user = await InitUserOnDb();
+    await InitBrothersOnDb(1);
+
+    await updateUser({
+      ...user,
+      id: MockUserId.toString(),
+      familiars: [],
+    });
+    const users = await getUsers({ page: 0, step: 10 });
+    const brother = users.find((u) => u.id === MockBrotherIds[0].toString());
+
+    if (brother === undefined) {
+        done()
+        return
+    }
+    expect(brother.familiars.length).toEqual(0);
+
+    user = users.find((u) => u.id === user.id) || user;
+    expect(user.familiars.length).toEqual(0);
     done();
   });
 });
