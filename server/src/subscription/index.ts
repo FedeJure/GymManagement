@@ -70,15 +70,27 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   });
   const orders: Order[] = (
     await Promise.all(
-      subscriptionWithPendingOrderCreation.map((s) =>
-        generateOrderAndUpdateSubscription(s)
-      )
+      subscriptionWithPendingOrderCreation.map(async (s) => {
+        const order = await generateOrderAndUpdateSubscription(s);
+        if (!order) return order;
+        const nextDate = s.dateOfNextPayOrder;
+        nextDate.setMonth(s.dateOfNextPayOrder.getMonth() + 1);
+        await subscriptionModel.updateOne(
+          {
+            _id: s._id,
+          },
+          {
+            pendingPay: true,
+            dateOfNextPayOrder: nextDate,
+          }
+        );
+        return order;
+      })
     )
   )
     .filter((o) => o !== null)
     .map((o) => o as Order);
-  await Promise.all(orders.map((order) => setPendingPayed(order.userId)));
-
+  // await Promise.all(orders.map((order) => setPendingPayed(order.userId)));
   return orders;
 };
 

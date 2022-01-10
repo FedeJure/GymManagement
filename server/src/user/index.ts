@@ -88,7 +88,10 @@ export const updateUser = async (user: User): Promise<User> => {
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: user.id });
   if (!oldUser) throw Error("User not found");
-  if (user.familiars.length > 0 && oldUser.familiars.length === 0 || !oldUser.familiars.every((f) => user.familiars.includes(f))) {
+  if (
+    (user.familiars.length > 0 && oldUser.familiars.length === 0) ||
+    !oldUser.familiars.every((f) => user.familiars.includes(f))
+  ) {
     const allFamiliars = [...oldUser.familiars, ...user.familiars];
     const newFamiliars = allFamiliars.filter(
       (f) => !oldUser.familiars.includes(f)
@@ -169,7 +172,7 @@ async function updateSelfToBrothers(
     ...removedFamiliars.map(async (f) => {
       const familiar = await userModel.findById(f);
       if (!familiar) return;
-      console.log("removed familiars", familiar)
+      console.log("removed familiars", familiar);
       return await userModel.updateOne(
         {
           _id: f,
@@ -187,6 +190,12 @@ export const setPendingPayed = async (userId: string) => {
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: userId });
   if (!oldUser) throw Error("User not found");
-  oldUser.pendingPay = true;
-  oldUser.save();
+  return userModel.updateOne(
+    {
+      _id: userId,
+    },
+    {
+      pendingPay: true,
+    }
+  );
 };
