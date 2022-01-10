@@ -187,4 +187,24 @@ describe("Subscriptions", () => {
     resetMockDate();
     done();
   });
+
+  it("Generate only one pay order after subscription creation", async (done) => {
+    const date = new Date(2021, 1, 2);
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: date,
+    };
+    mockNextDate(new Date(new Date(2021, 1, 1)));
+    await saveSubscription(mockSubscriptionPayload);
+    const orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(0);
+    mockNextDate(new Date(new Date(2021, 1, 3)));
+
+    await generateNewPayOrdersIfNeeded()
+    await generateNewPayOrdersIfNeeded()
+    var newOrders = await getOrders({ page: 0, step: 10 });
+    expect(newOrders.length).toBe(1);
+    resetMockDate();
+    done();
+  });
 });
