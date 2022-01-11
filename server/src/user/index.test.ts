@@ -1,15 +1,12 @@
 import { ObjectId } from "mongodb";
-import { getBrothersOfUser, getUsers, saveUser, updateUser } from ".";
-import { User } from "../../../src/modules/users/User";
+import {  getUsers, saveUser, updateUser } from ".";
 import { UserPayload } from "../../../src/modules/users/UserPayload";
-import { UserType } from "../../../src/modules/users/UserType";
 import { MockDb } from "../test/db";
 import {
   InitBrothersOnDb,
   InitProductOnDb,
   InitUserOnDb,
   MockBrotherIds,
-  MockProductId,
   MockUserId,
   MockUserPayload,
 } from "../test/mocks";
