@@ -1,7 +1,7 @@
 import { Express, Request, Response } from "express";
 import {
   cancelOrder,
-  generateOrderAndUpdateSubscription,
+  tryGenerateOrder,
   getOrders,
   getPayments,
   payOrder,
@@ -24,7 +24,7 @@ export const initPaymentRoutes = (app: Express) => {
 
   app.post("/order", (req: Request, res: Response) => {
     const { subscriptionId } = req.body;
-    generateOrderAndUpdateSubscription(subscriptionId)
+    tryGenerateOrder(subscriptionId)
       .then((order: Order | null) => {
         if (order) res.status(200).send({ ok: true, order });
         else
