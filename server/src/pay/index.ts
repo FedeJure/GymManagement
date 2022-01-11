@@ -8,7 +8,7 @@ import {
 import { Order } from "../../../src/modules/order/Order";
 import { getNowDate } from "../utils/date";
 
-export const generateOrderAndUpdateSubscription = async (
+export const tryGenerateOrder = async (
   subscriptionId: string
 ): Promise<Order | null> => {
   const orderModel = getOrderModel();
@@ -18,9 +18,15 @@ export const generateOrderAndUpdateSubscription = async (
     .populate(["user", "product"]);
   if (!subscription) throw new Error("Subscription not founded");
 
+  const now = getNowDate()
+  if (now.getTime() < subscription.initialTime.getTime()) return null
+  const period = new Date(
+    subscription.dateOfNextPayOrder.getFullYear(),
+    subscription.dateOfNextPayOrder.getMonth()
+  )
   const existentOrder = await orderModel.findOne({
     subscriptionId: subscriptionId,
-    emittedDate: { $lte: subscription.dateOfNextPayOrder },
+    periodPayed: period,
     cancelled: false,
   });
   if (existentOrder) return null;
@@ -35,12 +41,14 @@ export const generateOrderAndUpdateSubscription = async (
     basePrice: subscription.product.price,
     totalDiscount: discount,
     amount: getFinalAmount(subscription.product.price, discount),
-    emittedDate: getNowDate(),
+    emittedDate: now,
+    periodPayed: period,
     completed: false,
     cancelled: false,
     amountPayed: 0,
     subscriptionId: subscriptionId,
   });
+
 
   return order;
 };

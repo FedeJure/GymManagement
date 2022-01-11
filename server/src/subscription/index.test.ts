@@ -46,13 +46,16 @@ describe("Subscriptions", () => {
   });
 
   it("No order created on subscription with future initial time", async (done) => {
+    mockNextDate(new Date(2021, 1, 3))
+
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
-      initialTime: new Date(Date.now() + 10000000),
+      initialTime: new Date(2021, 1, 4),
     };
     await saveSubscription(mockSubscriptionPayload);
     const orders = await getOrders({ page: 0, step: 10 });
     expect(orders.length).toBe(0);
+    resetMockDate()
     done();
   });
 
@@ -204,6 +207,32 @@ describe("Subscriptions", () => {
     await generateNewPayOrdersIfNeeded()
     var newOrders = await getOrders({ page: 0, step: 10 });
     expect(newOrders.length).toBe(1);
+    resetMockDate();
+    done();
+  });
+
+  it("Generate next pay order after a moth pass", async (done) => {
+    const date = new Date(2021, 1, 2);
+    const mockSubscriptionPayload: SubscriptionPayload = {
+      ...MockSubscriptionPayload,
+      initialTime: date,
+    };
+    mockNextDate(new Date(2021, 1, 3));
+    await saveSubscription(mockSubscriptionPayload);
+    let orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(1);
+
+    mockNextDate(new Date(2021, 1, 28));
+    await generateNewPayOrdersIfNeeded()
+
+    orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(1);
+
+    mockNextDate(new Date(2021, 2, 1));
+    await generateNewPayOrdersIfNeeded()
+
+    orders = await getOrders({ page: 0, step: 10 });
+    expect(orders.length).toBe(2);
     resetMockDate();
     done();
   });
