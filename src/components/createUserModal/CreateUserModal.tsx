@@ -39,7 +39,6 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                 comment: "",
                 contactPhone: "",
                 familiars: [],
-                productsSubscribed: [],
                 profilePicture: "",
                 type: UserType.STUDENT,
                 dni: ""

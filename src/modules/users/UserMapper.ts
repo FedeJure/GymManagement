@@ -13,7 +13,6 @@ interface UserExcel {
     ['Fecha de nacimiento']: number,
     Comentario: string,
     Hermanos: string,
-    Suscripciones: string,
     Foto: string,
     Dni: string
 }
@@ -29,7 +28,6 @@ export const mapFromExcel = (excelMapped: UserExcel): UserPayload => {
         birthDate: new Date(excelMapped["Fecha de nacimiento"]),
         comment: excelMapped.Comentario,
         familiars: JSON.parse(excelMapped.Hermanos),
-        productsSubscribed: JSON.parse(excelMapped.Suscripciones),
         profilePicture: excelMapped.Foto,
         dni: excelMapped.Dni
 
@@ -51,7 +49,6 @@ export const mapToExcel = (excelMapped: User): UserExcel => {
         ['Fecha de nacimiento']: excelMapped.birthDate.getTime(),
         Comentario: excelMapped.comment,
         Hermanos: JSON.stringify(excelMapped.familiars),
-        Suscripciones: JSON.stringify(excelMapped.productsSubscribed),
         Foto: excelMapped.profilePicture,
         Dni: excelMapped.dni
     })
