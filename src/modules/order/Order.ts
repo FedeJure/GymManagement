@@ -12,4 +12,5 @@ export interface Order {
     completed: boolean,
     cancelled: boolean
     subscriptionId: string
+    periodPayed: Date
 }

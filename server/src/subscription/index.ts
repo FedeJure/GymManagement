@@ -38,7 +38,8 @@ export const getSubscriptions = async ({
 
 export const saveSubscription = async (subscription: SubscriptionPayload) => {
   const subscriptionModel = getSubscriptionModel();
-  const nextPayOrder = new Date(subscription.initialTime.getFullYear(), subscription.initialTime.getMonth());
+  const subscriptionInitalDate = new Date(subscription.initialTime)
+  const nextPayOrder = new Date(subscriptionInitalDate.getFullYear(), subscriptionInitalDate.getMonth());
   const newSubscription = new subscriptionModel({
     ...subscription,
     dateOfNextPayOrder: nextPayOrder,
