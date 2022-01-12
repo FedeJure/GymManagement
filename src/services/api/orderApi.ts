@@ -4,7 +4,6 @@ import { Order } from "../../modules/order/Order";
 const mapToOrder = (data: Order) => {
   return {
     ...data,
-    id: data._id,
     emittedDate: new Date(data.emittedDate),
     periodPayed: new Date(data.periodPayed)
   };
