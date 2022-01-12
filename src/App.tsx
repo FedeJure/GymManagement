@@ -1,4 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary"
+import AlertTemplate from 'react-alert-template-basic'
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import Home from "./screens/home/Home";
@@ -18,14 +20,25 @@ const OurFallbackComponent = ({ error, componentStack, resetErrorBoundary }: any
   );
 };
 
+const options = {
+  // you can also just use 'bottom center'
+  position: positions.BOTTOM_RIGHT,
+  timeout: 3000,
+  offset: '30px',
+  // you can also just use 'scale'
+  transition: transitions.SCALE
+}
+
 function App() {
   return (
     <ErrorBoundary FallbackComponent={OurFallbackComponent}>
+      <AlertProvider template={AlertTemplate} {...options}>
       <Provider store={store}>
         <div className="App">
           <Home />
         </div>
       </Provider>
+      </AlertProvider>
     </ErrorBoundary>
 
   );

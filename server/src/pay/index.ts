@@ -124,6 +124,7 @@ export const payOrder = async (orderId: string, amount: number) => {
   if (!order) throw new Error("Valid order not found");
   const existentPayments = await payRecipeModel.find({ order });
   if (
+    existentPayments.length > 0 &&
     existentPayments.map((p) => p.amount).reduce((a, b) => a + b) > order.amount
   )
     throw new Error("Amount exceed debt");
