@@ -1,7 +1,6 @@
 import { Dispatch } from "redux";
 import { createSubscription, deleteSubscription, fetchSubscriptions } from "../../services/api";
 import { Subscription } from "./Subscription";
-import { subscription } from "./subscription.reducer";
 import { SubscriptionPayload } from "./SubscriptionPayload";
 
 export const createSubscriptionAction = (subscription: SubscriptionPayload) => {

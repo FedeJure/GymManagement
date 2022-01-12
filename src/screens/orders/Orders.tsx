@@ -35,7 +35,7 @@ const Orders = ({
   const handlePay = (value: number) => {
     if (!selectedOrder) return;
     setGenerateModal(false)
-    generatePayment(selectedOrder.id, value).then((response) => {
+    generatePayment(selectedOrder.id, value).then((updatedResponse) => {
       alert.success("Pago guardado")
     })
     .catch(error => {
@@ -48,6 +48,7 @@ const Orders = ({
     cancelOrder(selectedOrder.id)
       .then(() => {
         setConfirmModal(false);
+        alert.success("Orden cancelada")
         setPage(0);
         fetchOrders({
           page: 0,
@@ -59,6 +60,7 @@ const Orders = ({
       })
       .catch((err) => {
         setConfirmModal(false);
+        alert.error("Ocurrio un problema")
       });
   };
 
