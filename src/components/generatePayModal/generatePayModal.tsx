@@ -4,7 +4,6 @@ import {
   Modal,
   Form,
   Segment,
-  FormInput,
   Divider,
 } from "semantic-ui-react";
 import { Order } from "../../modules/order/Order";
@@ -12,7 +11,7 @@ import { Order } from "../../modules/order/Order";
 interface IGeneratePayModal {
   order: Order;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (value: number) => void;
 }
 
 export const GeneratePayModal: React.FC<IGeneratePayModal> = ({
@@ -24,7 +23,9 @@ export const GeneratePayModal: React.FC<IGeneratePayModal> = ({
 
   const debt = order.amount - order.amountPayed;
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    onSubmit(value)
+  };
   return (
     <Modal size={"mini"} onClose={onClose} open>
       <Modal.Header>Generar pago</Modal.Header>

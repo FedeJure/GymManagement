@@ -14,7 +14,7 @@ export const OrderCard = ({
   <List.Item style={{ padding: "0.5em", width: "100%" }}>
     <Card fluid color="teal">
       <Card.Content>
-        {order.amountPayed <= 0 && !order.cancelled && !order.completed && (
+        {order.amountPayed < order.amount && !order.cancelled && !order.completed && (
           <List.Content floated="right">
             <Button icon compact primary onClick={() => handleGenerate()}>
               <Icon name="payment"></Icon> Generar pago

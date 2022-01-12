@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import { useAlert } from 'react-alert'
 import { useCallback, useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { List, Grid, Container } from "semantic-ui-react";
@@ -10,7 +11,7 @@ import { ConfirmationModal } from "../../components/confirmationModal/Confirmati
 import { getOrdersAction } from "../../modules/order/order.actions";
 import { OrderStateEnum } from "../../modules/order/OrderStateEnum";
 import { OrderCard } from "../../components/orderCard/OrderCard";
-import { cancelOrder } from "../../services/api/orderApi";
+import { cancelOrder, generatePayment } from "../../services/api/orderApi";
 import { GeneratePayModal } from "../../components/generatePayModal/generatePayModal";
 
 const Orders = ({
@@ -29,6 +30,18 @@ const Orders = ({
   const [confirmModal, setConfirmModal] = useState(false);
   const [generateModal, setGenerateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const alert = useAlert()
+
+  const handlePay = (value: number) => {
+    if (!selectedOrder) return;
+    setGenerateModal(false)
+    generatePayment(selectedOrder.id, value).then((response) => {
+      alert.success("Pago guardado")
+    })
+    .catch(error => {
+      alert.error("Ocurrio un problema")
+    })
+  };
 
   const handleDelete = () => {
     if (!selectedOrder) return setConfirmModal(false);
@@ -107,7 +120,7 @@ const Orders = ({
       {selectedOrder && generateModal && (
         <GeneratePayModal
           onClose={() => setGenerateModal(false)}
-          onSubmit={() => {}}
+          onSubmit={handlePay}
           order={selectedOrder}
         />
       )}

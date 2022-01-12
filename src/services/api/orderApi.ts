@@ -5,7 +5,7 @@ const mapToOrder = (data: Order) => {
   return {
     ...data,
     emittedDate: new Date(data.emittedDate),
-    periodPayed: new Date(data.periodPayed)
+    periodPayed: new Date(data.periodPayed),
   };
 };
 
@@ -39,6 +39,11 @@ export const createOrder = (subscriptionId: string): Promise<Order | null> => {
   return fetch(`${url}/order`, options)
     .then((response) => response.json())
     .then((response) => (response.order ? mapToOrder(response.order) : null));
+};
+
+export const generatePayment = (orderId: string, amount: number) => {
+  const options = getOptionsWithBody({ orderId, amount }, "POST");
+  return fetch(`${url}/pay`, options).then((response) => response.json());
 };
 
 export const cancelOrder = (orderId: string) => {
