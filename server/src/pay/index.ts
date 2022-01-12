@@ -18,12 +18,12 @@ export const tryGenerateOrder = async (
     .populate(["user", "product"]);
   if (!subscription) throw new Error("Subscription not founded");
 
-  const now = getNowDate()
-  if (now.getTime() < subscription.initialTime.getTime()) return null
+  const now = getNowDate();
+  if (now.getTime() < subscription.initialTime.getTime()) return null;
   const period = new Date(
     subscription.dateOfNextPayOrder.getFullYear(),
     subscription.dateOfNextPayOrder.getMonth()
-  )
+  );
   const existentOrder = await orderModel.findOne({
     subscriptionId: subscriptionId,
     periodPayed: period,
@@ -48,7 +48,6 @@ export const tryGenerateOrder = async (
     amountPayed: 0,
     subscriptionId: subscriptionId,
   });
-
 
   return order;
 };
@@ -89,10 +88,18 @@ export const getOrders = async ({
     withQueries = true;
     queries = [...queries, { cancelled }];
   }
-  return orderModel.find(withQueries ? { $and: queries } : {}, null, {
-    skip: step * page,
-    limit: step,
-  });
+  const orders = await orderModel
+    .find(withQueries ? { $and: queries } : {}, null, {
+      skip: step * page,
+      limit: step,
+    })
+    .then((documents) => {
+      return documents.map((d) => {
+        d.id = d._id;
+        return d;
+      });
+    });
+  return orders;
 };
 
 export const getPayments = async ({
@@ -115,6 +122,12 @@ export const payOrder = async (orderId: string, amount: number) => {
     completed: false,
   });
   if (!order) throw new Error("Valid order not found");
+  const existentPayments = await payRecipeModel.find({ order });
+  if (
+    existentPayments.map((p) => p.amount).reduce((a, b) => a + b) > order.amount
+  )
+    throw new Error("Amount exceed debt");
+
   const newPay: PayRecipePayload = {
     order,
     amount,
@@ -123,6 +136,7 @@ export const payOrder = async (orderId: string, amount: number) => {
 
   const payment = await payRecipeModel.create(newPay);
   const amountPayed = order.amountPayed + amount;
+
   order.amountPayed = amountPayed;
   order.completed = amountPayed >= order.amount;
   await order.save();
