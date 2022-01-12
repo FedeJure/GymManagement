@@ -1,14 +1,17 @@
 import { ObjectId } from "mongodb";
 import { Weekdays } from "../../../src/components/createProductModal/Weekdays";
+import { Order } from "../../../src/modules/order/Order";
 import { PayType } from "../../../src/modules/product/PayType";
 import { ProductPayload } from "../../../src/modules/product/ProductPayload";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
 import { UserPayload } from "../../../src/modules/users/UserPayload";
 import { UserType } from "../../../src/modules/users/UserType";
-import { getProductModel, getUserModel } from "../mongoClient";
+import { getOrderModel, getProductModel, getUserModel } from "../mongoClient";
 import { getNowDate } from "../utils/date";
 
 export const MockUserId = new ObjectId();
+export const MockSubscriptionId = new ObjectId();
+export const MockOrderId = new ObjectId();
 export const MockBrotherIds = [
   new ObjectId(),
   new ObjectId(),
@@ -30,6 +33,11 @@ export const InitProductOnDb = async () => {
     _id: MockProductId,
   });
 };
+
+export const InitOrderOnDb = async (order: Order) => {
+  const orderModel = getOrderModel()
+  return orderModel.create({...order, _id: order.id})
+}
 
 export const InitBrothersOnDb = async (brothersCount: 1 | 2 | 3 | 4 | 5) => {
   const userModel = getUserModel();
@@ -90,3 +98,20 @@ export const MockSubscriptionPayload: SubscriptionPayload = {
   initialTime: new Date(),
   comment: "comment",
 };
+
+export const MockOrderPayload: Order = {
+  id: MockOrderId.toString(),
+  userId: MockUserId.toString(),
+  userName: MockUserPayload.name,
+  productId: MockProductId.toString(),
+  productName: MockProductPayload.name,
+  basePrice: 3000,
+  amountPayed: 0,
+  totalDiscount: 0,
+  amount: 3000,
+  emittedDate: getNowDate(),
+  completed: false,
+  cancelled: false,
+  subscriptionId: MockSubscriptionId.toString(),
+  periodPayed: getNowDate()
+}
