@@ -2,9 +2,8 @@ import { Document } from "mongodb";
 import { Order } from "../../../src/modules/order/Order";
 import { Subscription } from "../../../src/modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
-import { getSubscriptionModel, getUserModel } from "../mongoClient";
+import { getSubscriptionModel } from "../mongoClient";
 import { tryGenerateOrder } from "../pay";
-import { setPendingPayed } from "../user";
 import { getNowDate } from "../utils/date";
 
 export const getSubscriptions = async ({
@@ -79,7 +78,6 @@ export const generateNewPayOrdersIfNeeded = async (): Promise<Order[]> => {
   )
     .filter((o) => o !== null)
     .map((o) => o as Order);
-  // await Promise.all(orders.map((order) => setPendingPayed(order.userId)));
   return orders;
 };
 

@@ -4,6 +4,7 @@ import {
   getOrderModel,
   getPayRecipeModel,
   getSubscriptionModel,
+  getUserModel,
 } from "../mongoClient";
 import { Order } from "../../../src/modules/order/Order";
 import { getNowDate } from "../utils/date";
@@ -116,18 +117,15 @@ export const getPayments = async ({
 export const payOrder = async (orderId: string, amount: number) => {
   const orderModel = getOrderModel();
   const payRecipeModel = getPayRecipeModel();
+  const userModel = getUserModel();
+  const subscriptionModel = getSubscriptionModel()
   const order = await orderModel.findOne({
     _id: orderId,
     cancelled: false,
     completed: false,
   });
   if (!order) throw new Error("Valid order not found");
-  const existentPayments = await payRecipeModel.find({ order });
-  if (
-    existentPayments.length > 0 &&
-    existentPayments.map((p) => p.amount).reduce((a, b) => a + b) > order.amount
-  )
-    throw new Error("Amount exceed debt");
+  if (order.amountPayed > order.amount) throw new Error("Amount exceed debt");
 
   const newPay: PayRecipePayload = {
     order,
@@ -143,6 +141,30 @@ export const payOrder = async (orderId: string, amount: number) => {
   await order.save();
   payment.order = order;
   await payment.save();
+
+  if (order.completed) {
+    await subscriptionModel.updateOne({
+      _id: order.subscriptionId
+    }, {
+      pendingPay: false
+    })
+    const haveAnotherOrdersOpen = await orderModel.exists({
+      userId: order.userId,
+      completed: false,
+      cancelled: false,
+    });
+    if (!haveAnotherOrdersOpen) {
+      await userModel.updateOne(
+        {
+          _id: order.userId,
+        },
+        {
+          pendingPay: false,
+        }
+      );
+    }
+      
+  }
   return payment;
 };
 
