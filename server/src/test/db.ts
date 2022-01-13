@@ -6,7 +6,7 @@ export class MockDb {
   private db: MongoMemoryServer = new MongoMemoryServer({
     instance: {
       port: 27017,
-      dbName: "gymManagement",
+      dbName: "gymManagementMock",
     },
   });
   constructor() {}
@@ -14,10 +14,10 @@ export class MockDb {
     this.db = await MongoMemoryServer.create({
       instance: {
         port: 27017,
-        dbName: "gymManagement",
+        dbName: "gymManagementMock",
       },
     });
-    await connect("mongodb://localhost:27017/gymManagement");
+    await connect("mongodb://localhost:27017/gymManagementMock");
   }
   async clearDatabase() {
     try {

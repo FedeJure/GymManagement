@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getOrders, getPayments, payOrder } from ".";
+import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { MockDb } from "../test/db";
 import { InitOrderOnDb, MockOrderId, MockOrderPayload } from "../test/mocks";
 
@@ -35,7 +36,7 @@ describe("Payments", () => {
 
   it("try to do a payment to a existent completed order", async () => {
     const amountToPay = 1000;
-    await InitOrderOnDb({...MockOrderPayload, completed: true});
+    await InitOrderOnDb({ ...MockOrderPayload, completed: true });
 
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
@@ -44,7 +45,7 @@ describe("Payments", () => {
 
   it("try to do a payment to a existent cancelled order", async () => {
     const amountToPay = 1000;
-    await InitOrderOnDb({...MockOrderPayload, cancelled: true});
+    await InitOrderOnDb({ ...MockOrderPayload, cancelled: true });
 
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
@@ -53,7 +54,7 @@ describe("Payments", () => {
 
   it("try to do a payment with excedent amount", async () => {
     const amountToPay = MockOrderPayload.amount + 0.0001;
-    await InitOrderOnDb({...MockOrderPayload});
+    await InitOrderOnDb({ ...MockOrderPayload });
 
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
@@ -73,7 +74,7 @@ describe("Payments", () => {
     await payOrder(MockOrderId.toString(), amountToPay);
 
     orders = await getOrders({ page: 0, step: 10 });
-    expect(orders[0].amountPayed).toEqual(amountToPay*2);
+    expect(orders[0].amountPayed).toEqual(amountToPay * 2);
     payments = await getPayments({ page: 0, step: 10 });
     expect(payments[0].amount).toEqual(amountToPay);
     expect(payments[1].amount).toEqual(amountToPay);
@@ -90,6 +91,47 @@ describe("Payments", () => {
     expect(orders[0].completed).toEqual(true);
     let payments = await getPayments({ page: 0, step: 10 });
     expect(payments[0].amount).toEqual(amountToPay);
+  });
 
+  it("set pending pay to false on user", async () => {
+    const userModel = getUserModel();
+
+    const amountToPay = MockOrderPayload.amount / 3;
+    await InitOrderOnDb(MockOrderPayload);
+    await payOrder(MockOrderId.toString(), amountToPay);
+    await payOrder(MockOrderId.toString(), amountToPay);
+
+    let user = await userModel.findById(MockOrderPayload.userId);
+    if (user) {
+      expect(user.pendingPay).toBeTruthy();
+    }
+
+    await payOrder(MockOrderId.toString(), amountToPay);
+
+    user = await userModel.findById(MockOrderPayload.userId);
+    if (user) {
+      expect(user.pendingPay).toBeFalsy();
+    }
+  });
+
+  it("set pending pay to false on subscription", async () => {
+    const subscriptionModel = getSubscriptionModel();
+
+    const amountToPay = MockOrderPayload.amount / 3;
+    await InitOrderOnDb(MockOrderPayload);
+    await payOrder(MockOrderId.toString(), amountToPay);
+    await payOrder(MockOrderId.toString(), amountToPay);
+
+    let subscription = await subscriptionModel.findById(MockOrderPayload.subscriptionId);
+    if (subscription) {
+      expect(subscription.pendingPay).toBeTruthy();
+    }
+
+    await payOrder(MockOrderId.toString(), amountToPay);
+
+    subscription = await subscriptionModel.findById(MockOrderPayload.subscriptionId);
+    if (subscription) {
+      expect(subscription.pendingPay).toBeFalsy();
+    }
   });
 });

@@ -111,12 +111,13 @@ const createSchemas = () => {
 
   return [];
 };
+createSchemas();
 
 if (mocked) {
   mockMongoose
     .prepareStorage()
     .then(function () {
-      mongoose.connect(url);
+      mongoose.connect(url + "mock");
       mongoose.connection.on("connected", () => {
         console.log("CONNECTED MOCK DB");
       });
@@ -124,6 +125,7 @@ if (mocked) {
     })
     .catch(console.log);
 } else {
-  mongoose.connect(url);
-  createSchemas();
+  if (process.env.NODE_ENV !== "test") {
+    mongoose.connect(url);
+  }
 }
