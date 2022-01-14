@@ -17,7 +17,14 @@ export const getOrdersAction = ({
   completed?: boolean;
 }) => {
   return (dispatch: Dispatch) => {
-    fetchOrders({ page, step, cancelled, completed, contentFilter }).then(
+    // fetchOrders({ page, step, cancelled, completed, contentFilter }).then(
+    //   (orders) =>
+    //     dispatch({
+    //       type: append ? "APPEND_ORDERS" : "REPLACE_ORDERS",
+    //       orders,
+    //     })
+    // );
+    fetchOrders({ page, step}).then(
       (orders) =>
         dispatch({
           type: append ? "APPEND_ORDERS" : "REPLACE_ORDERS",

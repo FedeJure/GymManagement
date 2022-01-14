@@ -1,4 +1,5 @@
 import { getOptionsWithBody, url } from ".";
+import { IListableFetchPayload } from "../../hooks/useListable";
 import { Order } from "../../modules/order/Order";
 
 const mapToOrder = (data: Order) => {
@@ -12,22 +13,15 @@ const mapToOrder = (data: Order) => {
 export const fetchOrders = ({
   page,
   step,
-  cancelled,
-  completed,
-  contentFilter,
-}: {
-  page: number;
-  step: number;
-  cancelled?: boolean;
-  completed?: boolean;
-  contentFilter?: string[];
-}) => {
+  filterByContent,
+  filterByTag
+}: IListableFetchPayload) => {
   let urlWithQueries = `${url}/orders?page=${page}&step=${step}`;
-  urlWithQueries += cancelled !== undefined ? `&cancelled=${cancelled}` : "";
-  urlWithQueries += completed !== undefined ? `&completed=${completed}` : "";
+  // urlWithQueries += cancelled !== undefined ? `&cancelled=${cancelled}` : "";
+  // urlWithQueries += completed !== undefined ? `&completed=${completed}` : "";
   urlWithQueries +=
-    contentFilter !== undefined
-      ? `&contentFilter=${contentFilter.join(",")}`
+  filterByContent !== undefined
+      ? `&contentFilter=${filterByContent.join(",")}`
       : "";
   return fetch(urlWithQueries)
     .then((response) => response.json())

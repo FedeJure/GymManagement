@@ -1,6 +1,7 @@
 import { UserPayload } from "../../modules/users/UserPayload";
 import { User } from "../../modules/users/User";
 import { getOptionsWithBody, getOptionWithForm, url } from ".";
+import { IListableFetchPayload } from "../../hooks/useListable";
 
 const mapToUser = (data: any) => {
   return {
@@ -15,12 +16,7 @@ export const fetchUsers = async ({
   step,
   filterByTag = [],
   filterByContent = [],
-}: {
-  page: number;
-  step: number;
-  filterByTag?: string[];
-  filterByContent?: string[];
-}): Promise<User[]> => {
+}: IListableFetchPayload): Promise<User[]> => {
   return fetch(
     `${url}/users?page=${page}&step=${step}${
       filterByTag.length > 0 ? `&tagFilter=${filterByTag.join(",")}` : ""

@@ -1,4 +1,4 @@
-import { Schema, Types, Model } from "mongoose";
+import { Schema, Types, Model, Collection, SchemaTypes } from "mongoose";
 import mongoose from "mongoose";
 import { MockMongoose } from "mock-mongoose";
 import { User } from "../../src/modules/users/User";
@@ -7,6 +7,8 @@ import { Subscription } from "../../src/modules/subscription/Subscription";
 import { PayRecipe } from "../../src/modules/payRecipe/PayRecipe";
 import { Order } from "../../src/modules/order/Order";
 import { getNowDate } from "./utils/date";
+import { ObjectId } from "mongodb";
+import { UserType } from "../../src/modules/users/UserType";
 
 const mocked = false; // This actually is not working if true, I dont know why
 
@@ -67,12 +69,13 @@ const createSchemas = () => {
     fourSubscriptionsDiscount: Number,
     fiveOrMoreSubscriptionsDiscount: Number,
     creationDate: { type: Date, default: getNowDate },
+    owners: [{ type: [Types.ObjectId], ref: "User" }],
   });
   mongoose.model("Product", ProductSchema);
 
   const SubscriptionSchema = new Schema<Subscription>({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    user: { type: Types.ObjectId, ref: "User" },
+    product: { type: SchemaTypes.ObjectId, ref: "Product" },
     initialTime: Date,
     endTime: Date,
     specialDiscount: Number,

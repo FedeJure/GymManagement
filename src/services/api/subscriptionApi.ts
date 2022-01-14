@@ -1,4 +1,5 @@
 import { getOptionsWithBody, url } from ".";
+import { IListableFetchPayload } from "../../hooks/useListable";
 import { Subscription } from "../../modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload";
 
@@ -23,11 +24,8 @@ export const fetchSubscriptions = ({
   page,
   step,
   filterByContent = [],
-}: {
-  page: number;
-  step: number;
-  filterByContent?: string[];
-}): Promise<Subscription[]> => {
+  filterByTag= []
+}: IListableFetchPayload): Promise<Subscription[]> => {
   return fetch(
     `${url}/subscriptions?page=${page}&step=${step}${
       filterByContent.length > 0
