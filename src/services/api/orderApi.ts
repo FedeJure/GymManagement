@@ -13,16 +13,16 @@ const mapToOrder = (data: Order) => {
 export const fetchOrders = ({
   page,
   step,
-  filterByContent,
-  filterByTag
+  filterByContent = [],
+  filterByTag = [],
 }: IListableFetchPayload) => {
   let urlWithQueries = `${url}/orders?page=${page}&step=${step}`;
-  // urlWithQueries += cancelled !== undefined ? `&cancelled=${cancelled}` : "";
-  // urlWithQueries += completed !== undefined ? `&completed=${completed}` : "";
   urlWithQueries +=
-  filterByContent !== undefined
+    filterByContent.length > 0
       ? `&contentFilter=${filterByContent.join(",")}`
       : "";
+  urlWithQueries +=
+    filterByTag.length > 0 ? `&tagFilter=${filterByTag.join(",")}` : "";
   return fetch(urlWithQueries)
     .then((response) => response.json())
     .then((response) => response.map(mapToOrder));

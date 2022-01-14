@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { useAlert } from 'react-alert'
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { List, Grid, Container } from "semantic-ui-react";
 import { StoreState } from "../../store";
@@ -13,25 +13,28 @@ import { OrderStateEnum } from "../../modules/order/OrderStateEnum";
 import { OrderCard } from "../../components/orderCard/OrderCard";
 import { cancelOrder, generatePayment } from "../../services/api/orderApi";
 import { GeneratePayModal } from "../../components/generatePayModal/generatePayModal";
+import { useOrders } from "../../hooks/useOrders";
 
 const Orders = ({
-  orders,
   fetchOrders,
 }: {
-  orders: Order[];
   fetchOrders: Function;
 }) => {
-  const [page, setPage] = useState(0);
-  const [filter, setFilter] = useState<string[]>([]);
-  const [tagFilter, setTagFilter] = useState({
-    cancelled: false,
-    completed: undefined,
-  });
   const [confirmModal, setConfirmModal] = useState(false);
   const [generateModal, setGenerateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const alert = useAlert()
-
+  const {
+    items: orders,
+    setPage,
+    page,
+    setFilterByTag,
+    setFilterByContent,
+  } = useOrders();
+  const defaultFilter = [OrderStateEnum.AVAILABLE]
+  useEffect(() => {
+    setFilterByTag(defaultFilter)
+  }, [])
   const handlePay = (value: number) => {
     if (!selectedOrder) return;
     setGenerateModal(false)
@@ -49,14 +52,6 @@ const Orders = ({
       .then(() => {
         setConfirmModal(false);
         alert.success("Orden cancelada")
-        setPage(0);
-        fetchOrders({
-          page: 0,
-          append: false,
-          contentFilter: filter,
-          cancelled: tagFilter.cancelled,
-          completed: tagFilter.completed,
-        });
       })
       .catch((err) => {
         setConfirmModal(false);
@@ -64,51 +59,6 @@ const Orders = ({
       });
   };
 
-  const handleTagFilterChange = useCallback((filters: string[]) => {
-    let newFilter: { cancelled: any; completed: any } = {
-      cancelled: undefined,
-      completed: undefined,
-    };
-    filters.forEach((f) => {
-      if (f === OrderStateEnum.CANCELLED) newFilter.cancelled = true;
-      if (f === OrderStateEnum.COMPLETE) newFilter.completed = true;
-      if (f === OrderStateEnum.INCOMPLETE) newFilter.completed = false;
-      if (f === OrderStateEnum.AVAILABLE) newFilter.cancelled = false;
-    });
-    setTagFilter(newFilter);
-  }, []);
-
-  useEffect(() => {
-    fetchOrders({
-      page: 0,
-      append: false,
-      contentFilter: filter,
-      cancelled: tagFilter.cancelled,
-      completed: tagFilter.completed,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (page > 0)
-      fetchOrders({
-        page,
-        append: true,
-        contentFilter: filter,
-        cancelled: tagFilter.cancelled,
-        completed: tagFilter.completed,
-      });
-  }, [page, filter, tagFilter]);
-
-  useEffect(() => {
-    fetchOrders({
-      page: 0,
-      append: false,
-      contentFilter: filter,
-      cancelled: tagFilter.cancelled,
-      completed: tagFilter.completed,
-    });
-    setPage(0);
-  }, [filter, tagFilter]);
   return (
     <div>
       {confirmModal && (
@@ -138,7 +88,7 @@ const Orders = ({
       </Container>
 
       <FilterInput
-        defaultTagFilters={[OrderStateEnum.AVAILABLE]}
+        defaultTagFilters={defaultFilter}
         tagOptions={[
           {
             key: OrderStateEnum.INCOMPLETE,
@@ -165,13 +115,8 @@ const Orders = ({
             label: { color: "yellow", empty: true, circular: true },
           },
         ]}
-        onUserTypeFilterChange={(f: string[]) => {
-          handleTagFilterChange(f);
-        }}
-        onCustomChange={(f: string[]) => {
-          setPage(0);
-          setFilter(f);
-        }}
+        onUserTypeFilterChange={setFilterByTag}
+        onCustomChange={setFilterByContent}
       />
       <List
         verticalAlign="middle"
@@ -179,7 +124,7 @@ const Orders = ({
       >
         <InfiniteScroll
           as={List.Item}
-          onLoadMore={() => setPage((page) => page + 1)}
+          onLoadMore={() => setPage(page+1)}
           data={orders.map((s) => (
             <OrderCard
               key={s.id}
@@ -208,7 +153,6 @@ const mapStateToProps = (state: StoreState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    // deleteOrder: (order: Order) => deleteOrderAction(order)(dispatch),
     fetchOrders: ({
       page,
       contentFilter,

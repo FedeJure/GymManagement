@@ -8,6 +8,9 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Button, Header, Icon, Segment } from "semantic-ui-react";
 import { UserProvider } from "./hooks/useUsers";
+import { OrderProvider } from "./hooks/useOrders";
+import { SubscriptionProvider } from "./hooks/useSubscriptions";
+import { ProductProvider } from "./hooks/useProducts";
 
 const OurFallbackComponent = ({
   error,
@@ -42,9 +45,15 @@ function App() {
       <AlertProvider template={AlertTemplate} {...options}>
         <Provider store={store}>
           <UserProvider>
-            <div className="App">
-              <Home />
-            </div>
+            <OrderProvider>
+              <SubscriptionProvider>
+                <ProductProvider>
+                  <div className="App">
+                    <Home />
+                  </div>
+                </ProductProvider>
+              </SubscriptionProvider>
+            </OrderProvider>
           </UserProvider>
         </Provider>
       </AlertProvider>
