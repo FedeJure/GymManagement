@@ -9,10 +9,10 @@ import { ProductPayload } from "../../modules/product/ProductPayload"
 import { Product } from "../../modules/product/Product"
 import { StoreState } from "../../store"
 import { Dispatch } from "redux"
+import { useProducts } from "../../hooks/useProducts"
 
-const Products = ({ products, createProduct, removeProduct, editProduct, fetchProducts }:
+const Products = ({ createProduct, removeProduct, editProduct, fetchProducts }:
     {
-        products: Product[],
         createProduct: Function,
         removeProduct: Function,
         editProduct: Function,
@@ -23,9 +23,11 @@ const Products = ({ products, createProduct, removeProduct, editProduct, fetchPr
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    useEffect(() => {
-        fetchProducts(0)
-    }, [])
+    const {
+        items: products,
+        setPage,
+        page,
+      } = useProducts();
 
     const handleCreation = (creationData: ProductPayload) => {
         createProduct(creationData)

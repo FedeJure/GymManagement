@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAlert } from "react-alert";
 import { Dispatch } from "redux";
 import { Button, List, Grid, Container } from "semantic-ui-react";
