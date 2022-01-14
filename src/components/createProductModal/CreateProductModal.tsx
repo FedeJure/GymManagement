@@ -17,7 +17,8 @@ export const CreateProductModal = ({ onClose, onSubmit, initialData }:
             fourSubscriptionsDiscount: 20,
             fiveOrMoreSubscriptionsDiscount: 20,
             payType: PayType.MONTHLY,
-            daysInWeek: []
+            daysInWeek: [],
+            ownerIds: []
         })
     const [submitted, setSubmitted] = useState(false)
     const handleSubmit = () => {
