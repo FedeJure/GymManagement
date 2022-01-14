@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Dropdown, SemanticShorthandItem, LabelProps, Icon, Menu } from 'semantic-ui-react'
 
-export const FilterInput = ({ onUserTypeFilterChange, onCustomChange, tagOptions, defaultTagFilters=[] }
-    : { onUserTypeFilterChange: Function, onCustomChange: Function, tagOptions: any[], defaultTagFilters?: string[] }) => {
+export const FilterInput = ({ onTagFilterChange, onCustomFilterChange, tagOptions, defaultTagFilters=[] }
+    : { onTagFilterChange: Function, onCustomFilterChange: Function, tagOptions: any[], defaultTagFilters?: string[] }) => {
     const [selections, setSelections] = useState<string[]>([])
     const [options, setOptions] = useState<{ key: string, value: string, text: string, label: SemanticShorthandItem<LabelProps> }[]>(tagOptions)
 
@@ -15,8 +15,8 @@ export const FilterInput = ({ onUserTypeFilterChange, onCustomChange, tagOptions
         const userTypesSelections = value.filter(s => types.includes(s))
         const customSelections = value.filter(s => !types.includes(s))
         if (value.length === 0) setOptions(options.filter(o => !selections.includes(o.value)))
-        onCustomChange(customSelections)
-        onUserTypeFilterChange(userTypesSelections)
+        onCustomFilterChange(customSelections)
+        onTagFilterChange(userTypesSelections)
     }
     return (<Menu fluid>
         <Menu.Item><Icon name="filter" /></Menu.Item>

@@ -163,10 +163,10 @@ const Users = ({
             label: { color: "orange", empty: true, circular: true },
           },
         ]}
-        onCustomChange={(f: string[]) =>
+        onCustomFilterChange={(f: string[]) =>
           setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
         }
-        onUserTypeFilterChange={(v: string[]) => setFilterByTag(v)}
+        onTagFilterChange={(v: string[]) => setFilterByTag(v)}
       />
 
       {usersToShow.length > 0 && (
