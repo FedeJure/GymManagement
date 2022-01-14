@@ -20,29 +20,34 @@ import { ConfirmationModal } from "../../components/confirmationModal/Confirmati
 import Orders from "../orders/Orders";
 import { createOrderAction } from "../../modules/order/order.actions";
 import { SubscriptionDetailModal } from "../../components/SubscriptionDetailModal";
+import { useSubscriptions } from "../../hooks/useSubscriptions";
 
 const Subscriptions = ({
-  subscriptions,
   createSubscription,
-  fetchSubscriptions,
   deleteSubscription,
   createOrder,
 }: {
-  subscriptions: Subscription[];
   createSubscription: Function;
-  fetchSubscriptions: Function;
   deleteSubscription: Function;
   createOrder: Function;
 }) => {
   const alert = useAlert();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
-  const [page, setPage] = useState(0);
-  const [filter, setFilter] = useState<string[]>([]);
   const [confirmModal, setConfirmModal] = useState(false);
   const [detailModal, setDetailModal] = useState(false);
   const [confirmOrderModal, setConfirmOrderModal] = useState(false);
   const [selectedSubscription, setSelectedSubscription] =
     useState<Subscription | null>(null);
+
+    const {
+      items: subscriptions,
+      setPage,
+      page,
+      filterByContent,
+      filterByTag,
+      setFilterByTag,
+      setFilterByContent,
+    } = useSubscriptions();
 
   const handleSubmit = (data: SubscriptionPayload) => {
     createSubscription(data);
@@ -59,30 +64,6 @@ const Subscriptions = ({
     createOrder(selectedSubscription.id);
   };
 
-  useEffect(() => {
-    fetchSubscriptions({
-      page: 0,
-      append: false,
-    });
-  }, [fetchSubscriptions]);
-
-  useEffect(() => {
-    if (page > 0)
-      fetchSubscriptions({
-        page,
-        append: true,
-        filterByContent: filter,
-      });
-  }, [page, fetchSubscriptions, filter]);
-
-  useEffect(() => {
-    fetchSubscriptions({
-      page: 0,
-      append: false,
-      filterByContent: filter,
-    });
-    setPage(0);
-  }, [filter, fetchSubscriptions]);
 
   const SubscriptionSection = (
     <>
@@ -122,11 +103,8 @@ const Subscriptions = ({
             label: { color: "green", empty: true, circular: true },
           },
         ]}
-        onUserTypeFilterChange={(f: string[]) => {}}
-        onCustomChange={(f: string[]) => {
-          setPage(0);
-          setFilter((fi) => f);
-        }}
+        onTagFilterChange={setFilterByTag}
+        onCustomFilterChange={setFilterByContent}
       />
       <List
         verticalAlign="middle"
@@ -134,7 +112,7 @@ const Subscriptions = ({
       >
         <InfiniteScroll
           as={List.Item}
-          onLoadMore={() => setPage((page) => page + 1)}
+          onLoadMore={() => setPage(page)}
           data={subscriptions.map((s) => (
             <SubscriptionCard
               key={s.id}

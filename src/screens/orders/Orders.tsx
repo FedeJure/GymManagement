@@ -115,8 +115,8 @@ const Orders = ({
             label: { color: "yellow", empty: true, circular: true },
           },
         ]}
-        onUserTypeFilterChange={setFilterByTag}
-        onCustomChange={setFilterByContent}
+        onTagFilterChange={setFilterByTag}
+        onCustomFilterChange={setFilterByContent}
       />
       <List
         verticalAlign="middle"
