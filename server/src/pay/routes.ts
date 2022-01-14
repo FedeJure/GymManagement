@@ -56,13 +56,12 @@ export const initPaymentRoutes = (app: Express) => {
   });
 
   app.get("/orders", (req: Request, res: Response) => {
-    const { page, step, cancelled, completed, contentFilter } = req.query;
+    const { page, step, tagFilter, contentFilter } = req.query;
 
     getOrders({
       page: parseInt(page as string, 10),
       step: parseInt(step as string, 10),
-      cancelled: cancelled !== undefined ? cancelled === "true" : undefined,
-      completed: completed !== undefined ? completed === "true" : undefined,
+      tagFilter: tagFilter?.toString(),
       contentFilter: contentFilter?.toString(),
     })
       .then((orders) => {

@@ -7,6 +7,7 @@ import {
   getUserModel,
 } from "../mongoClient";
 import { Order } from "../../../src/modules/order/Order";
+import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
 import { getNowDate } from "../utils/date";
 
 export const tryGenerateOrder = async (
@@ -56,15 +57,13 @@ export const tryGenerateOrder = async (
 export const getOrders = async ({
   page,
   step,
-  contentFilter,
-  completed,
-  cancelled,
+  contentFilter = "",
+  tagFilter = "",
 }: {
   page: number;
   step: number;
   contentFilter?: string;
-  completed?: Boolean;
-  cancelled?: Boolean;
+  tagFilter?: string;
 }) => {
   const orderModel = getOrderModel();
   let queries: any[] = [];
@@ -80,15 +79,25 @@ export const getOrders = async ({
       ];
     });
   }
+  const tagFilters = tagFilter.split(",");
+
+  let completed = undefined;
+  if (tagFilters.includes(OrderStateEnum.COMPLETE)) completed = true;
+  if (tagFilters.includes(OrderStateEnum.INCOMPLETE)) completed = false;
   if (completed !== undefined) {
-    withQueries = true;
     queries = [...queries, { completed }];
+    withQueries = true;
   }
 
+  let cancelled = undefined;
+  if (tagFilters.includes(OrderStateEnum.CANCELLED)) cancelled = true;
+  if (tagFilters.includes(OrderStateEnum.AVAILABLE)) cancelled = false;
+
   if (cancelled !== undefined) {
-    withQueries = true;
     queries = [...queries, { cancelled }];
+    withQueries = true;
   }
+
   const orders = await orderModel
     .find(withQueries ? { $and: queries } : {}, null, {
       skip: step * page,
@@ -118,7 +127,7 @@ export const payOrder = async (orderId: string, amount: number) => {
   const orderModel = getOrderModel();
   const payRecipeModel = getPayRecipeModel();
   const userModel = getUserModel();
-  const subscriptionModel = getSubscriptionModel()
+  const subscriptionModel = getSubscriptionModel();
   const order = await orderModel.findOne({
     _id: orderId,
     cancelled: false,
@@ -143,11 +152,14 @@ export const payOrder = async (orderId: string, amount: number) => {
   await payment.save();
 
   if (order.completed) {
-    await subscriptionModel.updateOne({
-      _id: order.subscriptionId
-    }, {
-      pendingPay: false
-    })
+    await subscriptionModel.updateOne(
+      {
+        _id: order.subscriptionId,
+      },
+      {
+        pendingPay: false,
+      }
+    );
     const haveAnotherOrdersOpen = await orderModel.exists({
       userId: order.userId,
       completed: false,
@@ -163,7 +175,6 @@ export const payOrder = async (orderId: string, amount: number) => {
         }
       );
     }
-      
   }
   return payment;
 };

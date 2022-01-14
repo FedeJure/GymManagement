@@ -41,8 +41,8 @@ export const useListable = <T,>(
   const [filterByContent, setFilterByContent] = useState<string[]>([]);
 
   const getKey = (page: number, previousPageData: T[]) => {
-    if (previousPageData && !previousPageData.length) return null; // reached the end
-    return [page, filterByContent, filterByTag, key]; // SWR key
+    if (previousPageData && !previousPageData.length) return null;
+    return [page, filterByContent, filterByTag, key];
   };
   const {
     data: items,
@@ -52,13 +52,10 @@ export const useListable = <T,>(
   } = useSWRInfinite<T[]>(
     getKey,
     (index) => {
-      console.log(index);
       return fetcher({ page: index, step, filterByContent, filterByTag });
     },
     { revalidateOnFocus: false, revalidateFirstPage: false }
   );
-
-  console.log(items);
 
   const handleSetPage = (newPage: number) => {
     setSize(newPage);
