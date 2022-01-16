@@ -24,9 +24,7 @@ const Products = ({ createProduct, removeProduct, editProduct, fetchProducts }:
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const {
-        items: products,
-        setPage,
-        page,
+        items: products
       } = useProducts();
 
     const handleCreation = (creationData: ProductPayload) => {

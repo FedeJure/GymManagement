@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 import { getOrders, getPayments, payOrder } from ".";
+import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
 import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { MockDb } from "../test/db";
 import { InitOrderOnDb, MockOrderId, MockOrderPayload } from "../test/mocks";
 
 const db = new MockDb();
 beforeAll(async () => await db.connect());
-beforeEach(async () => {});
+beforeEach(async () => await db.clearDatabase());
 afterEach(async () => await db.clearDatabase());
 afterAll(async () => await db.closeDatabase());
 
@@ -36,7 +37,7 @@ describe("Payments", () => {
 
   it("try to do a payment to a existent completed order", async () => {
     const amountToPay = 1000;
-    await InitOrderOnDb({ ...MockOrderPayload, completed: true });
+    await InitOrderOnDb({ ...MockOrderPayload, state: OrderStateEnum.COMPLETE });
 
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
@@ -45,7 +46,7 @@ describe("Payments", () => {
 
   it("try to do a payment to a existent cancelled order", async () => {
     const amountToPay = 1000;
-    await InitOrderOnDb({ ...MockOrderPayload, cancelled: true });
+    await InitOrderOnDb({ ...MockOrderPayload, state: OrderStateEnum.CANCELLED });
 
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
@@ -53,11 +54,11 @@ describe("Payments", () => {
   });
 
   it("try to do a payment with excedent amount", async () => {
-    const amountToPay = MockOrderPayload.amount + 0.0001;
+    const amountToPay = MockOrderPayload.amount + 1;
     await InitOrderOnDb({ ...MockOrderPayload });
-
     expect(async () => {
       await payOrder(MockOrderId.toString(), amountToPay);
+
     }).rejects.toThrowError();
   });
 
@@ -88,7 +89,7 @@ describe("Payments", () => {
 
     let orders = await getOrders({ page: 0, step: 10 });
     expect(orders[0].amountPayed).toEqual(amountToPay);
-    expect(orders[0].completed).toEqual(true);
+    expect(orders[0].state).toEqual(OrderStateEnum.COMPLETE);
     let payments = await getPayments({ page: 0, step: 10 });
     expect(payments[0].amount).toEqual(amountToPay);
   });

@@ -91,12 +91,6 @@ const Orders = ({
         defaultTagFilters={defaultFilter}
         tagOptions={[
           {
-            key: OrderStateEnum.INCOMPLETE,
-            text: OrderStateEnum.INCOMPLETE,
-            value: OrderStateEnum.INCOMPLETE,
-            label: { color: "orange", empty: true, circular: true },
-          },
-          {
             key: OrderStateEnum.COMPLETE,
             text: OrderStateEnum.COMPLETE,
             value: OrderStateEnum.COMPLETE,

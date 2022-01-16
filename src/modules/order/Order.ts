@@ -1,3 +1,5 @@
+import { OrderStateEnum } from "./OrderStateEnum";
+
 export interface Order {
     id: string
     userId: string,
@@ -9,8 +11,7 @@ export interface Order {
     totalDiscount: number,
     amount: number,
     emittedDate: Date,
-    completed: boolean,
-    cancelled: boolean
     subscriptionId: string
     periodPayed: Date
+    state: OrderStateEnum
 }
