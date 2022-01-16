@@ -1,38 +1,27 @@
-import { connect } from "react-redux";
 import { useState } from "react";
 import { useAlert } from "react-alert";
-import { Dispatch } from "redux";
-import { Button, List, Grid, Container, Divider } from "semantic-ui-react";
-import { StoreState } from "../../store";
+import { Button, Grid, Container, Divider } from "semantic-ui-react";
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal";
 import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
-import {
-  createSubscriptionAction,
-  deleteSubscriptionAction,
-  fetchSubscriptionsAction,
-} from "../../domain/subscription/subscription.actions";
+
 import { Subscription } from "../../domain/subscription/Subscription";
 import { SubscriptionCard } from "../../components/subscriptionCard/SubscriptionCard";
 import { PayState } from "../../domain/subscription/PayState";
-import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll";
 import { FilterInput } from "../../components/filterInput/FilterInput";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import Orders from "../orders/Orders";
-import { createOrderAction } from "../../domain/order/order.actions";
 import { SubscriptionDetailModal } from "../../components/SubscriptionDetailModal";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
-import { getSubscriptionConfig } from "../../services/api";
-
-const Subscriptions = ({
+import {
   createSubscription,
   deleteSubscription,
-  createOrder,
-}: {
-  createSubscription: Function;
-  deleteSubscription: Function;
-  createOrder: Function;
-}) => {
+  getSubscriptionConfig,
+} from "../../services/api";
+import { createOrder } from "../../services/api/orderApi";
+import { useOrders } from "../../hooks/useOrders";
+
+const Subscriptions = ({}) => {
   const alert = useAlert();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -48,21 +37,46 @@ const Subscriptions = ({
     setFilterByTag,
     setFilterByContent,
     step,
+    refresh,
   } = useSubscriptions();
 
-  const handleSubmit = (data: SubscriptionPayload) => {
-    createSubscription(data);
+  const {refresh: refreshOrders} = useOrders()
+
+  const handleSubmit = async (data: SubscriptionPayload) => {
+    try {
+      await createSubscription(data);
+
+      refresh();
+      refreshOrders()
+      alert.success("Suscripcion creada");
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
     setCreationModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!selectedSubscription) return;
+    try {
+      await deleteSubscription({ subscriptionId: selectedSubscription.id });
+      refresh();
+      alert.success("Suscripcion eliminada");
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
     setConfirmModal(false);
-    deleteSubscription(selectedSubscription);
   };
 
-  const handleCreateOrder = () => {
+  const handleCreateOrder = async () => {
     if (!selectedSubscription) return;
-    createOrder(selectedSubscription.id);
+    try {
+      await createOrder(selectedSubscription.id);
+      refresh();
+      refreshOrders()
+      alert.success("Orden creada");
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
   };
 
   const subscriptionElements = subscriptions.map((s) => (
@@ -179,7 +193,7 @@ const Subscriptions = ({
 
       <Grid.Row columns={1}>
         <Grid.Column>
-          <Divider hidden/>
+          <Divider hidden />
           <Orders />
         </Grid.Column>
       </Grid.Row>
@@ -187,30 +201,4 @@ const Subscriptions = ({
   );
 };
 
-const mapStateToProps = (state: StoreState) => {
-  return {
-    subscriptions: state.subscription.subscriptions,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    deleteSubscription: (subscription: Subscription) =>
-      deleteSubscriptionAction(subscription)(dispatch),
-    createSubscription: (data: SubscriptionPayload) =>
-      createSubscriptionAction(data)(dispatch),
-    fetchSubscriptions: ({
-      page,
-      filterByContent,
-      append,
-    }: {
-      page: number;
-      filterByContent: string[];
-      append: boolean;
-    }) => fetchSubscriptionsAction({ page, filterByContent, append })(dispatch),
-    createOrder: (subscriptionId: string) =>
-      createOrderAction(subscriptionId)(dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Subscriptions);
+export default Subscriptions;
