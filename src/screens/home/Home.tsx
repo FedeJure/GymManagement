@@ -1,16 +1,16 @@
-import { connect } from 'react-redux'
 import { Menu, Segment, Icon, Sidebar } from 'semantic-ui-react'
 import "./Home.css"
 import { Screens } from "../../domain/navigation/screens"
 import Users from "../users/Users"
 import Products from "../products/Products"
 import { Reports } from "../reports/Reports"
-import { navigateTo } from "../../domain/navigation/navigation.actions"
 import Subscriptions from '../subscriptions/Subscriptions'
+import { useNavigation } from '../../hooks/useNavigation'
 
-const Home = ({ screen, navigateToScreen }) => {
+const Home = () => {
+    const {currentScreen, navigateTo} = useNavigation()
     const getCurrentScreenElement = () => {
-        switch (screen) {
+        switch (currentScreen) {
             case Screens.Users:
                 return <Users />
             case Screens.Products:
@@ -34,26 +34,26 @@ const Home = ({ screen, navigateToScreen }) => {
                 width="thin"
             >
                 <Menu.Item as='a'
-                    onClick={() => navigateToScreen(Screens.Users)}
-                    active={screen === Screens.Users}>
+                    onClick={() => navigateTo(Screens.Users)}
+                    active={currentScreen === Screens.Users}>
                     <Icon name='users' />
                     Personas
                 </Menu.Item>
                 <Menu.Item as='a'
-                    onClick={() => navigateToScreen(Screens.Subscriptions)}
-                    active={screen === Screens.Subscriptions}>
+                    onClick={() => navigateTo(Screens.Subscriptions)}
+                    active={currentScreen === Screens.Subscriptions}>
                     <Icon name='table' />
                     Suscripciones
                 </Menu.Item>
                 <Menu.Item as='a'
-                    onClick={() => navigateToScreen(Screens.Products)}
-                    active={screen === Screens.Products}>
+                    onClick={() => navigateTo(Screens.Products)}
+                    active={currentScreen === Screens.Products}>
                     <Icon name='shopping cart' />
                     Productos
                 </Menu.Item>
                 <Menu.Item as='a'
-                    onClick={() => navigateToScreen(Screens.Reports)}
-                    active={screen === Screens.Reports}>
+                    onClick={() => navigateTo(Screens.Reports)}
+                    active={currentScreen === Screens.Reports}>
                     <Icon name='dashboard' />
                     Reportes
                 </Menu.Item>
@@ -68,13 +68,4 @@ const Home = ({ screen, navigateToScreen }) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        screen: state.navigation.currentScreen
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return { navigateToScreen: (screen) => dispatch(navigateTo(screen)) }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default Home

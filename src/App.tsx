@@ -11,6 +11,7 @@ import { UserProvider } from "./hooks/useUsers";
 import { OrderProvider } from "./hooks/useOrders";
 import { SubscriptionProvider } from "./hooks/useSubscriptions";
 import { ProductProvider } from "./hooks/useProducts";
+import { NavigationProvider } from "./hooks/useNavigation";
 
 const OurFallbackComponent = ({
   error,
@@ -44,17 +45,19 @@ function App() {
     <ErrorBoundary FallbackComponent={OurFallbackComponent}>
       <AlertProvider template={AlertTemplate} {...options}>
         <Provider store={store}>
-          <UserProvider>
-            <OrderProvider>
-              <SubscriptionProvider>
-                <ProductProvider>
-                  <div className="App">
-                    <Home />
-                  </div>
-                </ProductProvider>
-              </SubscriptionProvider>
-            </OrderProvider>
-          </UserProvider>
+          <NavigationProvider>
+            <UserProvider>
+              <OrderProvider>
+                <SubscriptionProvider>
+                  <ProductProvider>
+                    <div className="App">
+                      <Home />
+                    </div>
+                  </ProductProvider>
+                </SubscriptionProvider>
+              </OrderProvider>
+            </UserProvider>
+          </NavigationProvider>
         </Provider>
       </AlertProvider>
     </ErrorBoundary>
