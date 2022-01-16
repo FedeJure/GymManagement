@@ -1,7 +1,7 @@
 import { Express, Request, Response, static as Static } from "express";
 import multer from "multer";
-import { User } from "../../../src/modules/users/User";
-import { UserPayload } from "../../../src/modules/users/UserPayload";
+import { User } from "../../../src/domain/users/User";
+import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { ORIGIN, STATIC_DIR } from "../configs";
 import { getNowDate } from "../utils/date";
 import {
@@ -12,6 +12,7 @@ import {
   removeUser,
   getImageRoute,
   updateImagePath,
+  getConfig,
 } from "./index";
 
 export const initUsersRoutes = (app: Express) => {
@@ -36,6 +37,16 @@ export const initUsersRoutes = (app: Express) => {
         }
       },
     }),
+  });
+
+  app.get("/user/config", (req: Request, res: Response) => {
+    getConfig()
+      .then((config) => {
+        res.status(200).send(config);
+      })
+      .catch((error) => {
+        res.status(500).send({ ok: false, message: error.message });
+      });
   });
 
   app.get("/users", (req: Request, res: Response) => {

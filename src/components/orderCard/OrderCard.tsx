@@ -1,6 +1,6 @@
 import { Button, Card, Icon, Label, List } from "semantic-ui-react";
-import { Order } from "../../modules/order/Order";
-import { OrderStateEnum } from "../../modules/order/OrderStateEnum";
+import { Order } from "../../domain/order/Order";
+import { OrderStateEnum } from "../../domain/order/OrderStateEnum";
 import { getMonth } from "../../utils/date";
 
 export const OrderCard = ({

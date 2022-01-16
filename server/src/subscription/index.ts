@@ -1,8 +1,8 @@
 import { Document } from "mongodb";
-import { Order } from "../../../src/modules/order/Order";
-import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
-import { Subscription } from "../../../src/modules/subscription/Subscription";
-import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
+import { Order } from "../../../src/domain/order/Order";
+import { OrderStateEnum } from "../../../src/domain/order/OrderStateEnum";
+import { Subscription } from "../../../src/domain/subscription/Subscription";
+import { SubscriptionPayload } from "../../../src/domain/subscription/SubscriptionPayload";
 import { getSubscriptionModel } from "../mongoClient";
 import { tryGenerateOrder } from "../pay";
 import { getNowDate } from "../utils/date";
@@ -104,3 +104,11 @@ const generateOrderAndUpdateSubscription = async (
   }
   return generatedOrder;
 };
+
+export const getConfig = async () => {
+  const subscriptionsModel = getSubscriptionModel()
+  const size = await subscriptionsModel.count()
+  return {
+    totalCount: size
+  }
+}

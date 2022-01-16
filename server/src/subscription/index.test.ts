@@ -10,7 +10,7 @@ import {
   InitUserOnDb,
   MockSubscriptionPayload,
 } from "../test/mocks";
-import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
+import { SubscriptionPayload } from "../../../src/domain/subscription/SubscriptionPayload";
 import { getOrders } from "../pay";
 import { mockNextDate, resetMockDate } from "../utils/date";
 

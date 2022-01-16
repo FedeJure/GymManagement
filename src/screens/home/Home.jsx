@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { Menu, Segment, Icon, Sidebar } from 'semantic-ui-react'
 import "./Home.css"
-import { Screens } from "../../modules/navigation/screens"
+import { Screens } from "../../domain/navigation/screens"
 import Users from "../users/Users"
 import Products from "../products/Products"
 import { Reports } from "../reports/Reports"
-import { navigateTo } from "../../modules/navigation/navigation.actions"
+import { navigateTo } from "../../domain/navigation/navigation.actions"
 import Subscriptions from '../subscriptions/Subscriptions'
 
 const Home = ({ screen, navigateToScreen }) => {

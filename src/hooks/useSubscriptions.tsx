@@ -1,5 +1,5 @@
 import React from "react";
-import { Subscription } from "../modules/subscription/Subscription";
+import { Subscription } from "../domain/subscription/Subscription";
 import { fetchSubscriptions } from "../services/api";
 import { GetListableContext, useListable } from "./useListable";
 

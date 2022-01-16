@@ -1,7 +1,8 @@
-import { UserPayload } from "../../modules/users/UserPayload";
-import { User } from "../../modules/users/User";
+import { UserPayload } from "../../domain/users/UserPayload";
+import { User } from "../../domain/users/User";
 import { getOptionsWithBody, getOptionWithForm, url } from ".";
 import { IListableFetchPayload } from "../../hooks/useListable";
+import { EntityConfigResponse } from "../../domain/EntityConfig";
 
 const mapToUser = (data: any) => {
   return {
@@ -83,3 +84,8 @@ export const getBrothersOfUser = (userId: string): Promise<User[]> => {
     .then((response) => response.json())
     .then((response) => response.map(mapToUser));
 };
+
+export const getUserConfig = () : Promise<EntityConfigResponse> => {
+  return fetch(`${url}/user/config`)
+  .then((response) => response.json())
+}

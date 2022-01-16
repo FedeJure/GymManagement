@@ -1,7 +1,8 @@
 import { getOptionsWithBody, url } from ".";
 import { IListableFetchPayload } from "../../hooks/useListable";
-import { Product } from "../../modules/product/Product";
-import { ProductPayload } from "../../modules/product/ProductPayload";
+import { Product } from "../../domain/product/Product";
+import { ProductPayload } from "../../domain/product/ProductPayload";
+import { EntityConfigResponse } from "../../domain/EntityConfig";
 
 function mapToProduct(product: any): Product {
   return {
@@ -45,3 +46,8 @@ export const deleteProduct = (productId: string) => {
   const options = getOptionsWithBody({ productId }, "DELETE");
   return fetch(`${url}/product`, options).then((response) => response.json());
 };
+
+export const getProductConfig = () : Promise<EntityConfigResponse> => {
+  return fetch(`${url}/product/config`)
+  .then((response) => response.json())
+}

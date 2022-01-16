@@ -1,13 +1,13 @@
-import { Subscription } from "../../../src/modules/subscription/Subscription";
-import { PayRecipePayload } from "../../../src/modules/payRecipe/PayRecipePayload";
+import { Subscription } from "../../../src/domain/subscription/Subscription";
+import { PayRecipePayload } from "../../../src/domain/payRecipe/PayRecipePayload";
 import {
   getOrderModel,
   getPayRecipeModel,
   getSubscriptionModel,
   getUserModel,
 } from "../mongoClient";
-import { Order } from "../../../src/modules/order/Order";
-import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
+import { Order } from "../../../src/domain/order/Order";
+import { OrderStateEnum } from "../../../src/domain/order/OrderStateEnum";
 import { getNowDate } from "../utils/date";
 
 export const tryGenerateOrder = async (
@@ -195,3 +195,11 @@ const calculateDiscount = (subscription: Subscription) => {
 const getFinalAmount = (base: number, discount: number) => {
   return Math.max(base - (discount / 100) * base, 0);
 };
+
+export const getConfig = async () => {
+  const orderModel = getOrderModel()
+  const size = await orderModel.count()
+  return {
+    totalCount: size
+  }
+}

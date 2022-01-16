@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import {  getUsers, saveUser, updateUser } from ".";
-import { UserPayload } from "../../../src/modules/users/UserPayload";
+import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { MockDb } from "../test/db";
 import {
   InitBrothersOnDb,

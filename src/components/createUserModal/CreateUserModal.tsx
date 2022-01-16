@@ -1,8 +1,8 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { Button, Modal, Form, Grid, Divider, Segment, Icon, Header, Image, Dropdown, TextArea } from 'semantic-ui-react'
-import { User } from "../../modules/users/User"
-import { UserPayload } from "../../modules/users/UserPayload"
-import { UserType } from "../../modules/users/UserType"
+import { User } from "../../domain/users/User"
+import { UserPayload } from "../../domain/users/UserPayload"
+import { UserType } from "../../domain/users/UserType"
 import { fetchUsers, getBrothersOfUser } from "../../services/api"
 
 const defaultDate = new Date(0)
