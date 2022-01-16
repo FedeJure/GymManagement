@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import { useAlert } from 'react-alert'
-import {  useEffect, useState } from "react";
+import { useAlert } from "react-alert";
+import { useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { List, Grid, Container } from "semantic-ui-react";
 import { StoreState } from "../../store";
@@ -11,39 +11,42 @@ import { ConfirmationModal } from "../../components/confirmationModal/Confirmati
 import { getOrdersAction } from "../../domain/order/order.actions";
 import { OrderStateEnum } from "../../domain/order/OrderStateEnum";
 import { OrderCard } from "../../components/orderCard/OrderCard";
-import { cancelOrder, generatePayment } from "../../services/api/orderApi";
+import {
+  cancelOrder,
+  generatePayment,
+  getOrderConfig,
+} from "../../services/api/orderApi";
 import { GeneratePayModal } from "../../components/generatePayModal/generatePayModal";
 import { useOrders } from "../../hooks/useOrders";
+import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
-const Orders = ({
-  fetchOrders,
-}: {
-  fetchOrders: Function;
-}) => {
+const Orders = ({ fetchOrders }: { fetchOrders: Function }) => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [generateModal, setGenerateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const alert = useAlert()
+  const alert = useAlert();
   const {
     items: orders,
     setPage,
     page,
     setFilterByTag,
     setFilterByContent,
+    step,
   } = useOrders();
-  const defaultFilter = [OrderStateEnum.AVAILABLE]
+  const defaultFilter = [OrderStateEnum.AVAILABLE];
   useEffect(() => {
-    setFilterByTag(defaultFilter)
-  }, [])
+    setFilterByTag(defaultFilter);
+  }, []);
   const handlePay = (value: number) => {
     if (!selectedOrder) return;
-    setGenerateModal(false)
-    generatePayment(selectedOrder.id, value).then((updatedResponse) => {
-      alert.success("Pago guardado")
-    })
-    .catch(error => {
-      alert.error("Ocurrio un problema")
-    })
+    setGenerateModal(false);
+    generatePayment(selectedOrder.id, value)
+      .then((updatedResponse) => {
+        alert.success("Pago guardado");
+      })
+      .catch((error) => {
+        alert.error("Ocurrio un problema");
+      });
   };
 
   const handleDelete = () => {
@@ -51,11 +54,11 @@ const Orders = ({
     cancelOrder(selectedOrder.id)
       .then(() => {
         setConfirmModal(false);
-        alert.success("Orden cancelada")
+        alert.success("Orden cancelada");
       })
       .catch((err) => {
         setConfirmModal(false);
-        alert.error("Ocurrio un problema")
+        alert.error("Ocurrio un problema");
       });
   };
 
@@ -114,12 +117,12 @@ const Orders = ({
       />
       <List
         verticalAlign="middle"
-        style={{ height: "30vh", width: "100%", overflowY: "auto" }}
+        style={{ height: "35vh", width: "100%", overflowY: "auto" }}
       >
-        <InfiniteScroll
-          as={List.Item}
-          onLoadMore={() => setPage(page+1)}
-          data={orders.map((s) => (
+        <PaginatedGridPage
+          step={step}
+          fetchCountOfItems={getOrderConfig}
+          elements={orders.map((s) => (
             <OrderCard
               key={s.id}
               handleCancel={() => {
@@ -133,6 +136,8 @@ const Orders = ({
               }}
             />
           ))}
+          maxHeight="30vh"
+          onPageChange={setPage}
         />
       </List>
     </div>

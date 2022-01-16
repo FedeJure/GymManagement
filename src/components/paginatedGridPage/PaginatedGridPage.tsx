@@ -7,13 +7,15 @@ interface IPaginatedGridPage {
   step: number
   onPageChange: (page: number) => void
   elements: JSX.Element[]
+  maxHeight?: string 
 }
 
 export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
   fetchCountOfItems,
   step,
   onPageChange,
-  elements
+  elements,
+  maxHeight
 }) => {
   const [maxPages, setMaxPages] = useState(0);
   useEffect(() => {
@@ -23,8 +25,8 @@ export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
   }, [elements]);
 
   return (
-    <div>
-      <div style={{ height: "80vh", overflowY: "auto", overflowX: "hidden" }}>
+    <div >
+      <div style={{ height: maxHeight ?? "80vh", overflowY: "auto", overflowX: "hidden" }}>
         {elements.length > 0 && (
           <CardGroup centered>{elements}</CardGroup>
         )}
@@ -35,8 +37,6 @@ export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
         style={{
           width: "90%",
           justifyContent: "center",
-          position: "fixed",
-          bottom: "3%",
         }}
       >
         {maxPages > 1 && (
