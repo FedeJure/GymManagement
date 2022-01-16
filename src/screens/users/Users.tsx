@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
-import {
-  Button,
-  Container,
-  Grid,
-} from "semantic-ui-react";
+import { Button, Container, Grid } from "semantic-ui-react";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
 import {
@@ -81,22 +77,23 @@ const Users = ({
     data.map((d) => mapFromExcel(d)).forEach((data) => createUser(data));
   };
 
-  const usersToShow = users.filter((u) => mustShowUser(u));
-  const usersMapped = usersToShow.map((user: User) => (
-    <UserCard
-      key={user.id}
-      user={user}
-      onDelete={() => {
-        setSelectedUser(user);
-        setDeleteModal(true);
-      }}
-      onEdit={() => {
-        setSelectedUser(user);
-        setEditModalOpen(true);
-      }}
-      onInfo={() => {}}
-    />
-  ));
+  const usersMapped = users
+    .filter((u) => mustShowUser(u))
+    .map((user: User) => (
+      <UserCard
+        key={user.id}
+        user={user}
+        onDelete={() => {
+          setSelectedUser(user);
+          setDeleteModal(true);
+        }}
+        onEdit={() => {
+          setSelectedUser(user);
+          setEditModalOpen(true);
+        }}
+        onInfo={() => {}}
+      />
+    ));
 
   return (
     <div>

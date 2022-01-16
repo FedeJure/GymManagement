@@ -18,7 +18,7 @@ export const fetchProducts = ({
   filterByTag = [],
 }: IListableFetchPayload): Promise<Product[]> => {
   return fetch(
-    `${url}/products?page=${page}&step=9999${
+    `${url}/products?page=${page}&step=${step}${
       filterByContent.length > 0
         ? `&contentFilter=${filterByContent.join(",")}`
         : ""

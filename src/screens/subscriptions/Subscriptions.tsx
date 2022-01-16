@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { useState } from "react";
 import { useAlert } from "react-alert";
 import { Dispatch } from "redux";
-import { Button, List, Grid, Container } from "semantic-ui-react";
+import { Button, List, Grid, Container, Divider } from "semantic-ui-react";
 import { StoreState } from "../../store";
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal";
 import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
@@ -21,6 +21,8 @@ import Orders from "../orders/Orders";
 import { createOrderAction } from "../../domain/order/order.actions";
 import { SubscriptionDetailModal } from "../../components/SubscriptionDetailModal";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
+import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
+import { getSubscriptionConfig } from "../../services/api";
 
 const Subscriptions = ({
   createSubscription,
@@ -39,15 +41,14 @@ const Subscriptions = ({
   const [selectedSubscription, setSelectedSubscription] =
     useState<Subscription | null>(null);
 
-    const {
-      items: subscriptions,
-      setPage,
-      page,
-      filterByContent,
-      filterByTag,
-      setFilterByTag,
-      setFilterByContent,
-    } = useSubscriptions();
+  const {
+    items: subscriptions,
+    setPage,
+    page,
+    setFilterByTag,
+    setFilterByContent,
+    step,
+  } = useSubscriptions();
 
   const handleSubmit = (data: SubscriptionPayload) => {
     createSubscription(data);
@@ -64,77 +65,24 @@ const Subscriptions = ({
     createOrder(selectedSubscription.id);
   };
 
-
-  const SubscriptionSection = (
-    <>
-      <Container>
-        <Grid columns="equal" verticalAlign="middle" style={{ width: "100%" }}>
-          <Grid.Row>
-            <Grid.Column textAlign="left">
-              <h2>Subscripciones</h2>
-            </Grid.Column>
-            <Grid.Column floated="right">
-              <h4>
-                Crear nueva{" "}
-                <Button
-                  color="blue"
-                  circular
-                  icon="plus"
-                  onClick={() => setCreationModalOpen(true)}
-                />
-              </h4>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
-
-      <FilterInput
-        tagOptions={[
-          {
-            key: PayState.DEBT,
-            text: PayState.DEBT,
-            value: PayState.DEBT,
-            label: { color: "orange", empty: true, circular: true },
-          },
-          {
-            key: PayState.ON_DAY,
-            text: PayState.ON_DAY,
-            value: PayState.ON_DAY,
-            label: { color: "green", empty: true, circular: true },
-          },
-        ]}
-        onTagFilterChange={setFilterByTag}
-        onCustomFilterChange={setFilterByContent}
-      />
-      <List
-        verticalAlign="middle"
-        style={{ height: "30vh", width: "100%", overflowY: "auto" }}
-      >
-        <InfiniteScroll
-          as={List.Item}
-          onLoadMore={() => setPage(page)}
-          data={subscriptions.map((s) => (
-            <SubscriptionCard
-              key={s.id}
-              handleDelete={() => {
-                setSelectedSubscription(s);
-                setConfirmModal(true);
-              }}
-              subscription={s}
-              handleCreateOrder={() => {
-                setSelectedSubscription(s);
-                setConfirmOrderModal(true);
-              }}
-              handleDetails={() => {
-                setSelectedSubscription(s);
-                setDetailModal(true);
-              }}
-            />
-          ))}
-        />
-      </List>
-    </>
-  );
+  const subscriptionElements = subscriptions.map((s) => (
+    <SubscriptionCard
+      key={s.id}
+      handleDelete={() => {
+        setSelectedSubscription(s);
+        setConfirmModal(true);
+      }}
+      subscription={s}
+      handleCreateOrder={() => {
+        setSelectedSubscription(s);
+        setConfirmOrderModal(true);
+      }}
+      handleDetails={() => {
+        setSelectedSubscription(s);
+        setDetailModal(true);
+      }}
+    />
+  ));
 
   return (
     <div>
@@ -176,15 +124,65 @@ const Subscriptions = ({
         />
       )}
 
-      <Grid celled="internally" divided="vertically" style={{ width: "100%" }}>
-        <Grid.Row columns={1}>{SubscriptionSection}</Grid.Row>
+      <>
+        <Container>
+          <Grid
+            columns="equal"
+            verticalAlign="middle"
+            style={{ width: "100%" }}
+          >
+            <Grid.Row>
+              <Grid.Column textAlign="left">
+                <h2>Subscripciones</h2>
+              </Grid.Column>
+              <Grid.Column floated="right">
+                <h4>
+                  Crear nueva{" "}
+                  <Button
+                    color="blue"
+                    circular
+                    icon="plus"
+                    onClick={() => setCreationModalOpen(true)}
+                  />
+                </h4>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Container>
 
-        <Grid.Row columns={1}>
-          <Grid.Column>
-            <Orders />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+        <FilterInput
+          tagOptions={[
+            {
+              key: PayState.DEBT,
+              text: PayState.DEBT,
+              value: PayState.DEBT,
+              label: { color: "orange", empty: true, circular: true },
+            },
+            {
+              key: PayState.ON_DAY,
+              text: PayState.ON_DAY,
+              value: PayState.ON_DAY,
+              label: { color: "green", empty: true, circular: true },
+            },
+          ]}
+          onTagFilterChange={setFilterByTag}
+          onCustomFilterChange={setFilterByContent}
+        />
+        <PaginatedGridPage
+          step={step}
+          elements={subscriptionElements}
+          onPageChange={setPage}
+          fetchCountOfItems={getSubscriptionConfig}
+          maxHeight="35vh"
+        />
+      </>
+
+      <Grid.Row columns={1}>
+        <Grid.Column>
+          <Divider hidden/>
+          <Orders />
+        </Grid.Column>
+      </Grid.Row>
     </div>
   );
 };
