@@ -9,6 +9,7 @@ import { Order } from "../../src/modules/order/Order";
 import { getNowDate } from "./utils/date";
 import { ObjectId } from "mongodb";
 import { UserType } from "../../src/modules/users/UserType";
+import { OrderStateEnum } from "../../src/modules/order/OrderStateEnum";
 
 const mocked = false; // This actually is not working if true, I dont know why
 
@@ -97,8 +98,7 @@ const createSchemas = () => {
     amount: Number,
     emittedDate: Date,
     periodPayed: Date,
-    completed: Boolean,
-    cancelled: Boolean,
+    state: { type: String, default: OrderStateEnum.AVAILABLE},
     amountPayed: Number,
     subscriptionId: Types.ObjectId,
   });

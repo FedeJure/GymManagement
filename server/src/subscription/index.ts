@@ -1,5 +1,6 @@
 import { Document } from "mongodb";
 import { Order } from "../../../src/modules/order/Order";
+import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
 import { Subscription } from "../../../src/modules/subscription/Subscription";
 import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
 import { getSubscriptionModel } from "../mongoClient";
@@ -86,7 +87,7 @@ const generateOrderAndUpdateSubscription = async (
 ) => {
   const subscriptionModel = getSubscriptionModel();
   const generatedOrder = await tryGenerateOrder(subscription.id);
-  if (generatedOrder && !generatedOrder.completed) {
+  if (generatedOrder && !(generatedOrder.state === OrderStateEnum.COMPLETE)) {
 
     await subscriptionModel.updateOne(
       { _id: subscription.id },

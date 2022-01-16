@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 
 export interface IListableContext<T> {
@@ -44,6 +44,7 @@ export const useListable = <T,>(
     if (previousPageData && !previousPageData.length) return null;
     return [page, filterByContent, filterByTag, key];
   };
+
   const {
     data: items,
     error,
@@ -54,7 +55,7 @@ export const useListable = <T,>(
     (index) => {
       return fetcher({ page: index, step, filterByContent, filterByTag });
     },
-    { revalidateOnFocus: false, revalidateFirstPage: false }
+    { revalidateOnFocus: false, revalidateFirstPage: true }
   );
 
   const handleSetPage = (newPage: number) => {

@@ -67,9 +67,7 @@ export const getOrders = async ({
 }) => {
   const orderModel = getOrderModel();
   let queries: any[] = [];
-  let withQueries = false;
   if (contentFilter) {
-    withQueries = true;
     const filters = contentFilter.split(",");
     filters.forEach((f) => {
       queries = [
@@ -81,25 +79,9 @@ export const getOrders = async ({
   }
   const tagFilters = tagFilter.split(",");
 
-  let completed = undefined;
-  if (tagFilters.includes(OrderStateEnum.COMPLETE)) completed = true;
-  if (tagFilters.includes(OrderStateEnum.INCOMPLETE)) completed = false;
-  if (completed !== undefined) {
-    queries = [...queries, { completed }];
-    withQueries = true;
-  }
-
-  let cancelled = undefined;
-  if (tagFilters.includes(OrderStateEnum.CANCELLED)) cancelled = true;
-  if (tagFilters.includes(OrderStateEnum.AVAILABLE)) cancelled = false;
-
-  if (cancelled !== undefined) {
-    queries = [...queries, { cancelled }];
-    withQueries = true;
-  }
-
+  queries = (tagFilter.length > 0) ? [...queries, {state: {$in: tagFilters}}] : queries
   const orders = await orderModel
-    .find(withQueries ? { $and: queries } : {}, null, {
+    .find(queries.length > 0 ? { $and: queries } : {}, null, {
       skip: step * page,
       limit: step,
     })
@@ -130,11 +112,10 @@ export const payOrder = async (orderId: string, amount: number) => {
   const subscriptionModel = getSubscriptionModel();
   const order = await orderModel.findOne({
     _id: orderId,
-    cancelled: false,
-    completed: false,
+    state: OrderStateEnum.AVAILABLE
   });
   if (!order) throw new Error("Valid order not found");
-  if (order.amountPayed > order.amount) throw new Error("Amount exceed debt");
+  if (order.amountPayed + amount > order.amount) throw new Error("Amount exceed debt");
 
   const newPay: PayRecipePayload = {
     order,
@@ -146,12 +127,12 @@ export const payOrder = async (orderId: string, amount: number) => {
   const amountPayed = order.amountPayed + amount;
 
   order.amountPayed = amountPayed;
-  order.completed = amountPayed >= order.amount;
+  order.state = amountPayed >= order.amount ? OrderStateEnum.COMPLETE : order.state;
   await order.save();
   payment.order = order;
   await payment.save();
 
-  if (order.completed) {
+  if (order.state === OrderStateEnum.COMPLETE) {
     await subscriptionModel.updateOne(
       {
         _id: order.subscriptionId,
@@ -183,7 +164,7 @@ export const cancelOrder = async (orderId: string) => {
   const orderModel = getOrderModel();
   const order = await orderModel.findById(orderId);
   if (!order) throw Error("valid order not found");
-  order.cancelled = true;
+  order.state = OrderStateEnum.CANCELLED
   await order.save();
   return order;
 };

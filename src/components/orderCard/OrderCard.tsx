@@ -1,5 +1,6 @@
 import { Button, Card, Icon, Label, List } from "semantic-ui-react";
 import { Order } from "../../modules/order/Order";
+import { OrderStateEnum } from "../../modules/order/OrderStateEnum";
 import { getMonth } from "../../utils/date";
 
 export const OrderCard = ({
@@ -15,8 +16,7 @@ export const OrderCard = ({
     <Card fluid color="teal">
       <Card.Content>
         {order.amountPayed < order.amount &&
-          !order.cancelled &&
-          !order.completed && (
+          order.state === OrderStateEnum.AVAILABLE && (
             <List.Content floated="right">
               <Button icon compact primary onClick={() => handleGenerate()}>
                 <Icon name="payment"></Icon> Generar pago
@@ -28,7 +28,7 @@ export const OrderCard = ({
             <Icon name="trash"></Icon>Cancelar orden
           </Button>
         </List.Content>
-        {order.cancelled && (
+        {order.state === OrderStateEnum.CANCELLED && (
           <List.Content floated="right">
             <Label>Cancelado</Label>
           </List.Content>
