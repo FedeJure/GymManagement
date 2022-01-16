@@ -1,52 +1,61 @@
 import { useState } from "react";
-import { connect } from "react-redux";
+import { useAlert } from "react-alert";
 import { ProductCard } from "../../components/productCard/ProductCard";
 import { Divider, Button, Grid, Container } from "semantic-ui-react";
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal";
-import {
-  addProduct,
-  editProduct,
-  getProductsAction,
-  removeProduct,
-} from "../../domain/product/product.actions";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import { ProductPayload } from "../../domain/product/ProductPayload";
 import { Product } from "../../domain/product/Product";
-import { StoreState } from "../../store";
-import { Dispatch } from "redux";
 import { useProducts } from "../../hooks/useProducts";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
-import { getProductConfig } from "../../services/api";
-
-const Products = ({
+import {
   createProduct,
-  removeProduct,
-  editProduct,
-}: {
-  createProduct: Function;
-  removeProduct: Function;
-  editProduct: Function;
-}) => {
+  deleteProduct,
+  getProductConfig,
+  updateProduct,
+} from "../../services/api";
+
+const Products = ({}: {}) => {
+  const alert = useAlert();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const { items: products, step, setPage } = useProducts();
+  const { items: products, step, setPage, refresh } = useProducts();
 
-  const handleCreation = (creationData: ProductPayload) => {
-    createProduct(creationData);
+  const handleCreation = async (creationData: ProductPayload) => {
+    try {
+      await createProduct(creationData);
+      refresh();
+      alert.success("Producto creado");
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
     setCreationModalOpen(false);
   };
-  const handleDelete = (productId: string) => {
-    removeProduct(productId);
+  const handleDelete = async (productId: string) => {
+    try {
+      await deleteProduct(productId);
+      refresh()
+      alert.success("Producto eliminado");
+    } catch (error) {
+      alert.error("Ocurrio un error");
+    }
     setDeleteModal(false);
   };
 
-  const handleEdit = (editData: ProductPayload) => {
+  const handleEdit = async (editData: ProductPayload) => {
     if (!selectedProduct) return;
+    try {
+      await updateProduct({ ...selectedProduct, ...editData });
+      refresh()
+      alert.success("Producto editado");
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
+
     setEditModalOpen(false);
-    editProduct({ ...selectedProduct, ...editData });
   };
 
   const productElements = products.map((product) => (
@@ -121,19 +130,4 @@ const Products = ({
   );
 };
 
-const mapStateToProps = (state: StoreState) => {
-  return {
-    products: state.product.products,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    fetchProducts: (page: number) => getProductsAction({ page })(dispatch),
-    createProduct: (data: ProductPayload) => addProduct(data)(dispatch),
-    removeProduct: (productId: string) => removeProduct(productId)(dispatch),
-    editProduct: (product: Product) => editProduct(product)(dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Products);
+export default Products;

@@ -1,14 +1,9 @@
-import { connect } from "react-redux";
 import { useAlert } from "react-alert";
 import { useEffect, useState } from "react";
-import { Dispatch } from "redux";
 import { List, Grid, Container } from "semantic-ui-react";
-import { StoreState } from "../../store";
 import { Order } from "../../domain/order/Order";
-import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll";
 import { FilterInput } from "../../components/filterInput/FilterInput";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
-import { getOrdersAction } from "../../domain/order/order.actions";
 import { OrderStateEnum } from "../../domain/order/OrderStateEnum";
 import { OrderCard } from "../../components/orderCard/OrderCard";
 import {
@@ -20,7 +15,7 @@ import { GeneratePayModal } from "../../components/generatePayModal/generatePayM
 import { useOrders } from "../../hooks/useOrders";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
-const Orders = ({ fetchOrders }: { fetchOrders: Function }) => {
+const Orders = () => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [generateModal, setGenerateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -32,34 +27,35 @@ const Orders = ({ fetchOrders }: { fetchOrders: Function }) => {
     setFilterByTag,
     setFilterByContent,
     step,
+    refresh,
   } = useOrders();
   const defaultFilter = [OrderStateEnum.AVAILABLE];
   useEffect(() => {
     setFilterByTag(defaultFilter);
   }, []);
-  const handlePay = (value: number) => {
+
+  const handlePay = async (value: number) => {
     if (!selectedOrder) return;
     setGenerateModal(false);
-    generatePayment(selectedOrder.id, value)
-      .then((updatedResponse) => {
-        alert.success("Pago guardado");
-      })
-      .catch((error) => {
-        alert.error("Ocurrio un problema");
-      });
+    try {
+      await generatePayment(selectedOrder.id, value);
+      alert.success("Pago guardado");
+      refresh();
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selectedOrder) return setConfirmModal(false);
-    cancelOrder(selectedOrder.id)
-      .then(() => {
-        setConfirmModal(false);
-        alert.success("Orden cancelada");
-      })
-      .catch((err) => {
-        setConfirmModal(false);
-        alert.error("Ocurrio un problema");
-      });
+    try {
+      await cancelOrder(selectedOrder.id);
+      alert.success("Orden eliminada");
+      refresh();
+    } catch (error) {
+      alert.error("Ocurrio un problema");
+    }
+    setConfirmModal(false);
   };
 
   return (
@@ -144,31 +140,4 @@ const Orders = ({ fetchOrders }: { fetchOrders: Function }) => {
   );
 };
 
-const mapStateToProps = (state: StoreState) => {
-  return {
-    orders: state.order.orders,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    fetchOrders: ({
-      page,
-      contentFilter,
-      append,
-      cancelled,
-      completed,
-    }: {
-      page: number;
-      contentFilter: string[];
-      append: boolean;
-      cancelled?: boolean;
-      completed?: boolean;
-    }) =>
-      getOrdersAction({ page, contentFilter, append, cancelled, completed })(
-        dispatch
-      ),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Orders);
+export default Orders;
