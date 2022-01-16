@@ -4,8 +4,6 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import "./App.css";
 import "semantic-ui-css/semantic.min.css";
 import Home from "./screens/home/Home";
-import { Provider } from "react-redux";
-import { store } from "./store";
 import { Button, Header, Icon, Segment } from "semantic-ui-react";
 import { UserProvider } from "./hooks/useUsers";
 import { OrderProvider } from "./hooks/useOrders";
@@ -44,7 +42,6 @@ function App() {
   return (
     <ErrorBoundary FallbackComponent={OurFallbackComponent}>
       <AlertProvider template={AlertTemplate} {...options}>
-        <Provider store={store}>
           <NavigationProvider>
             <UserProvider>
               <OrderProvider>
@@ -58,7 +55,6 @@ function App() {
               </OrderProvider>
             </UserProvider>
           </NavigationProvider>
-        </Provider>
       </AlertProvider>
     </ErrorBoundary>
   );
