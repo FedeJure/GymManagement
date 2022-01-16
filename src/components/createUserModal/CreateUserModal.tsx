@@ -259,6 +259,7 @@ export const CreateUserModal = ({ onClose, onSubmit, initialData }:
                     positive
                     type="submit"
                     onClick={handleSubmit}
+                    loading={submitted}
                 />
             </Modal.Actions>
 
