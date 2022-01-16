@@ -2,13 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import {
   Button,
-  Card,
-  CardGroup,
   Container,
-  Divider,
   Grid,
 } from "semantic-ui-react";
-import { Pagination } from "semantic-ui-react";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
 import {
@@ -27,10 +23,10 @@ import { FilterInput } from "../../components/filterInput/FilterInput";
 import { ExcelUploader } from "../../components/excelUploader/excelUploader";
 import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader";
 import { mapToExcel, mapFromExcel } from "../../domain/users/UserMapper";
-import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll";
 import { UserType } from "../../domain/users/UserType";
 import { useUsers } from "../../hooks/useUsers";
 import { getUserConfig } from "../../services/api";
+import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
 const Users = ({
   createUser,
@@ -55,13 +51,6 @@ const Users = ({
     updateOne: updateUser,
     step,
   } = useUsers();
-
-  const [maxPages, setMaxPages] = useState(0);
-  useEffect(() => {
-    getUserConfig().then((config) => {
-      setMaxPages(Math.ceil(config.totalCount / step));
-    });
-  }, [users]);
 
   const handleCreation = (creationData: UserPayload, image: File | null) => {
     createUser(creationData, image);
@@ -187,28 +176,12 @@ const Users = ({
         onTagFilterChange={(v: string[]) => setFilterByTag(v)}
       />
 
-      <div style={{ height: "80vh", overflowY: "auto", overflowX: "hidden" }}>
-        {usersToShow.length > 0 && (
-          <CardGroup centered>{usersMapped}</CardGroup>
-        )}
-        <Divider />
-      </div>
-
-      <div
-        style={{
-          width: "90%",
-          justifyContent: "center",
-          position: "fixed",
-          bottom: "3%",
-        }}
-      >
-        {maxPages > 1 && (
-          <Pagination
-            totalPages={maxPages}
-            onPageChange={(_, d) => setPage(Number(d.activePage))}
-          />
-        )}
-      </div>
+      <PaginatedGridPage
+        fetchCountOfItems={getUserConfig}
+        step={step}
+        onPageChange={(newPage) => setPage(newPage)}
+        elements={usersMapped}
+      />
     </div>
   );
 };
