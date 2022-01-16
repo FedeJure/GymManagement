@@ -1,14 +1,14 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk"
-import { product } from "./modules/product/product.reducer"
-import { ProductState } from "./modules/product/ProductState";
-import { navigation, NavigationState } from "./modules/navigation/navigation.reducer"
-import { user } from "./modules/users/users.reducer"
-import { order } from "./modules/order/order.reducer"
-import { UserState } from "./modules/users/UserState";
-import { subscription } from "./modules/subscription/subscription.reducer"
-import { SubscriptionState } from "./modules/subscription/SubscriptionState";
-import { OrderState } from "./modules/order/OrderState";
+import { product } from "./domain/product/product.reducer"
+import { ProductState } from "./domain/product/ProductState";
+import { navigation, NavigationState } from "./domain/navigation/navigation.reducer"
+import { user } from "./domain/users/users.reducer"
+import { order } from "./domain/order/order.reducer"
+import { UserState } from "./domain/users/UserState";
+import { subscription } from "./domain/subscription/subscription.reducer"
+import { SubscriptionState } from "./domain/subscription/SubscriptionState";
+import { OrderState } from "./domain/order/OrderState";
 
 export interface StoreState {
     product: ProductState,

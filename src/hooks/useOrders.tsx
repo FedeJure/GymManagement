@@ -1,5 +1,5 @@
 import React from "react";
-import { Order } from "../modules/order/Order";
+import { Order } from "../domain/order/Order";
 import { fetchOrders } from "../services/api/orderApi";
 import { GetListableContext, useListable } from "./useListable";
 

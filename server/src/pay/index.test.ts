@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getOrders, getPayments, payOrder } from ".";
-import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
+import { OrderStateEnum } from "../../../src/domain/order/OrderStateEnum";
 import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { MockDb } from "../test/db";
 import { InitOrderOnDb, MockOrderId, MockOrderPayload } from "../test/mocks";

@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
 import { Weekdays } from "../../../src/components/createProductModal/Weekdays";
-import { Order } from "../../../src/modules/order/Order";
-import { OrderStateEnum } from "../../../src/modules/order/OrderStateEnum";
-import { PayType } from "../../../src/modules/product/PayType";
-import { ProductPayload } from "../../../src/modules/product/ProductPayload";
-import { SubscriptionPayload } from "../../../src/modules/subscription/SubscriptionPayload";
-import { UserPayload } from "../../../src/modules/users/UserPayload";
-import { UserType } from "../../../src/modules/users/UserType";
+import { Order } from "../../../src/domain/order/Order";
+import { OrderStateEnum } from "../../../src/domain/order/OrderStateEnum";
+import { PayType } from "../../../src/domain/product/PayType";
+import { ProductPayload } from "../../../src/domain/product/ProductPayload";
+import { SubscriptionPayload } from "../../../src/domain/subscription/SubscriptionPayload";
+import { UserPayload } from "../../../src/domain/users/UserPayload";
+import { UserType } from "../../../src/domain/users/UserType";
 import { getOrderModel, getProductModel, getUserModel } from "../mongoClient";
 import { getNowDate } from "../utils/date";
 

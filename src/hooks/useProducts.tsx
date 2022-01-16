@@ -1,5 +1,5 @@
 import React from "react";
-import { Product } from "../modules/product/Product";
+import { Product } from "../domain/product/Product";
 import { fetchProducts } from "../services/api";
 import { GetListableContext, useListable } from "./useListable";
 

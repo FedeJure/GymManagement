@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react"
 import { Button, Card } from "semantic-ui-react"
-import { Product } from "../../modules/product/Product"
+import { Product } from "../../domain/product/Product"
 
 export const ProductCard = ({ interactable=true, product, onDelete=() => {}, onEdit=() => {} }: {
     interactable?: boolean,

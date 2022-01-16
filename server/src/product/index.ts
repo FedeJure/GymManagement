@@ -1,5 +1,5 @@
-import { Product } from "../../../src/modules/product/Product"
-import { ProductPayload } from "../../../src/modules/product/ProductPayload"
+import { Product } from "../../../src/domain/product/Product"
+import { ProductPayload } from "../../../src/domain/product/ProductPayload"
 import { getProductModel } from "../mongoClient"
 
 export const getProducts = async ({ page, step, contentFilter }
@@ -35,3 +35,11 @@ export const updateProduct = async (product: Product) => {
     return productModel.updateOne({ _id: product.id, ...product })
         .then(() => productModel.findOne({ _id: product.id }))
 }
+
+export const getConfig = async () => {
+    const productModel = getProductModel()
+    const size = await productModel.count()
+    return {
+      totalCount: size
+    }
+  }

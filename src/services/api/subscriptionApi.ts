@@ -1,7 +1,8 @@
 import { getOptionsWithBody, url } from ".";
 import { IListableFetchPayload } from "../../hooks/useListable";
-import { Subscription } from "../../modules/subscription/Subscription";
-import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload";
+import { Subscription } from "../../domain/subscription/Subscription";
+import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
+import { EntityConfigResponse } from "../../domain/EntityConfig";
 
 const mapToSubscription = (data: any): Subscription => {
   return {
@@ -47,3 +48,8 @@ export const deleteSubscription = ({
     response.json()
   );
 };
+
+export const getSubscriptionConfig = () : Promise<EntityConfigResponse> => {
+  return fetch(`${url}/subscription/config`)
+  .then((response) => response.json())
+}

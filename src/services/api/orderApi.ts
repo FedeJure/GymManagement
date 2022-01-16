@@ -1,6 +1,7 @@
 import { getOptionsWithBody, url } from ".";
 import { IListableFetchPayload } from "../../hooks/useListable";
-import { Order } from "../../modules/order/Order";
+import { Order } from "../../domain/order/Order";
+import { EntityConfigResponse } from "../../domain/EntityConfig";
 
 const mapToOrder = (data: Order) => {
   return {
@@ -44,3 +45,8 @@ export const cancelOrder = (orderId: string) => {
   const options = getOptionsWithBody({ orderId }, "DELETE");
   return fetch(`${url}/order`, options).then((response) => response.json());
 };
+
+export const getOrderConfig = () : Promise<EntityConfigResponse> => {
+  return fetch(`${url}/order/config`)
+  .then((response) => response.json())
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../modules/users/User";
+import { User } from "../domain/users/User";
 import { fetchUsers } from "../services/api";
 import { GetListableContext, useListable } from "./useListable";
 

@@ -1,15 +1,15 @@
 import { Schema, Types, Model, Collection, SchemaTypes } from "mongoose";
 import mongoose from "mongoose";
 import { MockMongoose } from "mock-mongoose";
-import { User } from "../../src/modules/users/User";
-import { Product } from "../../src/modules/product/Product";
-import { Subscription } from "../../src/modules/subscription/Subscription";
-import { PayRecipe } from "../../src/modules/payRecipe/PayRecipe";
-import { Order } from "../../src/modules/order/Order";
+import { User } from "../../src/domain/users/User";
+import { Product } from "../../src/domain/product/Product";
+import { Subscription } from "../../src/domain/subscription/Subscription";
+import { PayRecipe } from "../../src/domain/payRecipe/PayRecipe";
+import { Order } from "../../src/domain/order/Order";
 import { getNowDate } from "./utils/date";
 import { ObjectId } from "mongodb";
-import { UserType } from "../../src/modules/users/UserType";
-import { OrderStateEnum } from "../../src/modules/order/OrderStateEnum";
+import { UserType } from "../../src/domain/users/UserType";
+import { OrderStateEnum } from "../../src/domain/order/OrderStateEnum";
 
 const mocked = false; // This actually is not working if true, I dont know why
 

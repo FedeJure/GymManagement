@@ -1,7 +1,7 @@
 import { static as Static } from "express";
 import { getOrderModel, getSubscriptionModel, getUserModel } from "../mongoClient";
-import { UserPayload } from "../../../src/modules/users/UserPayload";
-import { User } from "../../../src/modules/users/User";
+import { UserPayload } from "../../../src/domain/users/UserPayload";
+import { User } from "../../../src/domain/users/User";
 import { Model } from "mongoose";
 import { promisify } from "util";
 import { unlink } from "fs";
@@ -199,3 +199,11 @@ export const setPendingPayed = async (userId: string) => {
     }
   );
 };
+
+export const getConfig = async () => {
+  const usersModel = getUserModel()
+  const size = await usersModel.count()
+  return {
+    totalCount: size
+  }
+}

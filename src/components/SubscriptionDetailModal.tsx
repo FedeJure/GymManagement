@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Grid, GridRow, Modal, GridColumn } from "semantic-ui-react";
-import { Subscription } from "../modules/subscription/Subscription";
+import { Subscription } from "../domain/subscription/Subscription";
 
 interface ISubscriptionDetailModal {
     subscription: Subscription

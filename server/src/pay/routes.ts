@@ -5,8 +5,9 @@ import {
   getOrders,
   getPayments,
   payOrder,
+  getConfig,
 } from ".";
-import { Order } from "../../../src/modules/order/Order";
+import { Order } from "../../../src/domain/order/Order";
 
 export const initPaymentRoutes = (app: Express) => {
   app.post("/pay", (req: Request, res: Response) => {
@@ -28,12 +29,10 @@ export const initPaymentRoutes = (app: Express) => {
       .then((order: Order | null) => {
         if (order) res.status(200).send({ ok: true, order });
         else
-          res
-            .status(501)
-            .send({
-              ok: false,
-              message: "Already submitted order for this period",
-            });
+          res.status(501).send({
+            ok: false,
+            message: "Already submitted order for this period",
+          });
       })
       .catch((error: Error) => {
         res
@@ -88,5 +87,14 @@ export const initPaymentRoutes = (app: Express) => {
           .status(503)
           .send({ ok: false, message: error.message, stacktrace: error.stack });
       });
+  });
+
+  app.get("/order/config", (req: Request, res: Response) => {
+    getConfig().then((config) => {
+      res.status(200).send(config);
+    })
+    .catch((error) => {
+      res.status(500).send({ok: false, message: error.message})
+  });
   });
 };

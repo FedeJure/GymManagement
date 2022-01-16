@@ -8,10 +8,10 @@ import {
   Segment,
   Input,
 } from "semantic-ui-react";
-import { User } from "../../modules/users/User";
-import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload";
+import { User } from "../../domain/users/User";
+import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
 import { fetchProducts, fetchUsers } from "../../services/api";
-import { Product } from "../../modules/product/Product";
+import { Product } from "../../domain/product/Product";
 import { DateInput } from "../inputComponent/DateInputComponent";
 
 const defaultDate = new Date(0);

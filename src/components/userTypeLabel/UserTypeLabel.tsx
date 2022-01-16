@@ -1,6 +1,6 @@
 import { Label } from "semantic-ui-react"
-import { UserPayload } from "../../modules/users/UserPayload"
-import { UserType } from "../../modules/users/UserType";
+import { UserPayload } from "../../domain/users/UserPayload"
+import { UserType } from "../../domain/users/UserType";
 
 export const UserTypeLabel = ({ user }: { user: UserPayload }) => (
     <Label size="tiny" color={(() => {

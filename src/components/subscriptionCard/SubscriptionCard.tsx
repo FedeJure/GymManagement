@@ -1,5 +1,5 @@
 import { Button, Card, Icon, Label, List } from "semantic-ui-react"
-import { Subscription } from "../../modules/subscription/Subscription"
+import { Subscription } from "../../domain/subscription/Subscription"
 
 interface ISubscriptionCard {
     subscription: Subscription

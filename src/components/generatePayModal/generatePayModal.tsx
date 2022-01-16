@@ -6,7 +6,7 @@ import {
   Segment,
   Divider,
 } from "semantic-ui-react";
-import { Order } from "../../modules/order/Order";
+import { Order } from "../../domain/order/Order";
 
 interface IGeneratePayModal {
   order: Order;

@@ -1,7 +1,7 @@
 import { MouseEventHandler, useState } from "react"
 import { Button, Modal, Form, Dropdown, Input, Grid } from 'semantic-ui-react'
-import { PayType } from "../../modules/product/PayType"
-import { ProductPayload } from "../../modules/product/ProductPayload"
+import { PayType } from "../../domain/product/PayType"
+import { ProductPayload } from "../../domain/product/ProductPayload"
 import { Weekdays } from "./Weekdays"
 
 

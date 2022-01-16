@@ -5,20 +5,20 @@ import { Dispatch } from "redux";
 import { Button, List, Grid, Container } from "semantic-ui-react";
 import { StoreState } from "../../store";
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal";
-import { SubscriptionPayload } from "../../modules/subscription/SubscriptionPayload";
+import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
 import {
   createSubscriptionAction,
   deleteSubscriptionAction,
   fetchSubscriptionsAction,
-} from "../../modules/subscription/subscription.actions";
-import { Subscription } from "../../modules/subscription/Subscription";
+} from "../../domain/subscription/subscription.actions";
+import { Subscription } from "../../domain/subscription/Subscription";
 import { SubscriptionCard } from "../../components/subscriptionCard/SubscriptionCard";
-import { PayState } from "../../modules/subscription/PayState";
+import { PayState } from "../../domain/subscription/PayState";
 import { InfiniteScroll } from "../../components/infiniteScroll/InfiniteScroll";
 import { FilterInput } from "../../components/filterInput/FilterInput";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import Orders from "../orders/Orders";
-import { createOrderAction } from "../../modules/order/order.actions";
+import { createOrderAction } from "../../domain/order/order.actions";
 import { SubscriptionDetailModal } from "../../components/SubscriptionDetailModal";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
 
