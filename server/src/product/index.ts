@@ -25,7 +25,7 @@ export const saveProduct = async (product: ProductPayload) => {
     return productModel.create(newProduct)
 }
 
-export const removeProduct = async (productId: number) => {
+export const removeProduct = async (productId: string) => {
     const productModel = getProductModel()
     return productModel.deleteOne({ _id: productId })
 }

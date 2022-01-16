@@ -45,7 +45,7 @@ export const initProductsRoutes = (app: Express) => {
   app.delete("/product", (req: Request, res: Response) => {
     const { productId } = req.body;
 
-    removeProduct(parseInt(productId as string, 10))
+    removeProduct(productId)
       .then((product) => {
         res.status(200).send({ ok: true, product });
       })
