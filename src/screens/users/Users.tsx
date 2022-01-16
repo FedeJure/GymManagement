@@ -1,18 +1,9 @@
 import { useState } from "react";
-import { connect } from "react-redux";
 import { Button, Container, Grid } from "semantic-ui-react";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
-import {
-  addUser,
-  editUser,
-  getUsersAction,
-  removeUser,
-} from "../../domain/users/users.actions";
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal";
 import { UserCard } from "../../components/userCard/userCard";
-import { Dispatch } from "redux";
-import { StoreState } from "../../store";
 import { UserPayload } from "../../domain/users/UserPayload";
 import { User } from "../../domain/users/User";
 import { FilterInput } from "../../components/filterInput/FilterInput";
@@ -21,18 +12,10 @@ import { ExcelDownloader } from "../../components/excelDownloader/excelDownloade
 import { mapToExcel, mapFromExcel } from "../../domain/users/UserMapper";
 import { UserType } from "../../domain/users/UserType";
 import { useUsers } from "../../hooks/useUsers";
-import { getUserConfig } from "../../services/api";
+import { createUser, deleteUser, getUserConfig, updateUser } from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
-const Users = ({
-  createUser,
-  removeUser,
-  editUser,
-}: {
-  createUser: Function;
-  removeUser: Function;
-  editUser: Function;
-}) => {
+const Users = ({}) => {
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -44,25 +27,30 @@ const Users = ({
     filterByTag,
     setFilterByTag,
     setFilterByContent,
-    updateOne: updateUser,
     step,
+    refresh,
   } = useUsers();
 
-  const handleCreation = (creationData: UserPayload, image: File | null) => {
-    createUser(creationData, image);
+  const handleCreation = async (
+    creationData: UserPayload,
+    image: File | undefined
+  ) => {
+    await createUser(creationData, image);
     setCreationModalOpen(false);
+    refresh();
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedUser === null) return;
-    removeUser(selectedUser.id);
+    await deleteUser(selectedUser.id);
     setDeleteModal(false);
+    refresh()
   };
 
-  const handleEdit = (editData: UserPayload, image: File | null) => {
+  const handleEdit = async (editData: UserPayload, image: File | null) => {
     if (selectedUser === null) return;
+    await updateUser({ ...selectedUser, ...editData }, image);
     setEditModalOpen(false);
-    editUser({ ...selectedUser, ...editData }, image);
-    updateUser(selectedUser.id, editData);
+    refresh()
   };
 
   const mustShowUser = (user: User) => {
@@ -74,7 +62,10 @@ const Users = ({
   };
 
   const handleExcelLoad = (data: any[]) => {
-    data.map((d) => mapFromExcel(d)).forEach((data) => createUser(data));
+    data
+      .map((d) => mapFromExcel(d))
+      .forEach(async (data) => await createUser(data));
+    refresh();
   };
 
   const usersMapped = users
@@ -183,32 +174,4 @@ const Users = ({
   );
 };
 
-const mapStateToProps = (state: StoreState) => {
-  return {
-    users: state.user.users,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    fetchUsers: ({
-      page,
-      append,
-      filterByTag,
-      filterByContent,
-    }: {
-      page: number;
-      append: boolean;
-      filterByTag: string[];
-      filterByContent: [];
-    }) =>
-      getUsersAction({ page, append, filterByTag, filterByContent })(dispatch),
-    createUser: (data: UserPayload, image: File | undefined) =>
-      addUser(data, image)(dispatch),
-    removeUser: (userId: string) => removeUser(userId)(dispatch),
-    editUser: (user: User, image: File | null) =>
-      editUser(user, image)(dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default Users;

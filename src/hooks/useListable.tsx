@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import useSWR from "swr";
-import useSWRInfinite from "swr/infinite";
 
 export interface IListableContext<T> {
   items: T[];
@@ -12,6 +11,7 @@ export interface IListableContext<T> {
   setPage: (page: number) => void;
   updateOne: (id: string, payload: Partial<T>) => void;
   step: number
+  refresh: () => void
 }
 
 export interface IListableFetchPayload {
@@ -34,7 +34,8 @@ export const DefaultListableContent: IListableContext<any> = {
   page: 0,
   setPage: () => {},
   updateOne: () => {},
-  step: 0
+  step: 0,
+  refresh: () => {}
 };
 
 export const useListable = <T extends { id: string }>(
@@ -69,6 +70,10 @@ export const useListable = <T extends { id: string }>(
     }, true);
   };
 
+  const refresh = () => {
+    mutate()
+  }
+
   const handleSetPage = (newPage: number) => {
     setPage(newPage - 1);
   };
@@ -86,6 +91,7 @@ export const useListable = <T extends { id: string }>(
     page,
     setPage: handleSetPage,
     updateOne,
-    step
+    step,
+    refresh
   };
 };
