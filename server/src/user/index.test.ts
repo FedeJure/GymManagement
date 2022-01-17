@@ -58,8 +58,10 @@ describe("Users", () => {
     });
     const user = await saveUser({
       ...MockUserPayload,
-      familiars: [brother._id.toString()],
+      familiars: [brother.id.toString()],
     });
+
+    console.log(brother, user)
 
     const users = await getUsers({ page: 0, step: 10 });
     brother = users.find((u) => u.id === brother.id) || brother;

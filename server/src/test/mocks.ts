@@ -90,7 +90,7 @@ export const MockProductPayload: ProductPayload = {
   fourSubscriptionsDiscount: 15,
   fiveOrMoreSubscriptionsDiscount: 20,
   daysInWeek: [Weekdays.Monday],
-  ownerIds: []
+  owners: []
 };
 
 export const MockSubscriptionPayload: SubscriptionPayload = {

@@ -9,5 +9,5 @@ export interface ProductPayload {
     fourSubscriptionsDiscount: number,
     fiveOrMoreSubscriptionsDiscount: number,
     daysInWeek: Weekdays[]
-    ownerIds: string[]
+    owners: string[]
 }

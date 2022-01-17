@@ -1,5 +1,4 @@
-import { static as Static } from "express";
-import { getOrderModel, getSubscriptionModel, getUserModel } from "../mongoClient";
+import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { User } from "../../../src/domain/users/User";
 import { Model } from "mongoose";
@@ -41,8 +40,9 @@ export const getUsers = async ({
       ];
     });
   }
+
   const withQueries = tagFilter != undefined || contentFilter != undefined;
-  return userModel.find(withQueries ? { $or: queries } : {}, null, {
+  return userModel.find(withQueries ? { $and: queries } : {}, null, {
     skip: step * page,
     limit: step,
   });
@@ -61,6 +61,9 @@ export const saveUser = async (user: UserPayload) => {
 
   // const newUser = new userModel({ ...user });
   const createdUser = await userModel.create({ ...user });
+  createdUser.id = createdUser._id.toString()
+  await userModel.updateOne({_id: createdUser._id}, {id: createdUser._id})
+  
   if (user.familiars.length > 0) {
     await updateSelfToBrothers(
       createdUser.familiars,
@@ -69,7 +72,8 @@ export const saveUser = async (user: UserPayload) => {
       []
     );
   }
-  return createdUser;
+
+  return createdUser
 };
 
 export const removeUser = async (userId: string): Promise<User> => {
@@ -84,7 +88,7 @@ export const removeUser = async (userId: string): Promise<User> => {
   return user;
 };
 
-export const updateUser = async (user: User): Promise<User> => {
+export const updateUser = async (user: Partial<User> & Pick<User, 'familiars'>): Promise<User> => {
   const userModel = getUserModel();
   const oldUser = await userModel.findOne({ _id: user.id });
   if (!oldUser) throw Error("User not found");
@@ -121,6 +125,7 @@ export const updateUser = async (user: User): Promise<User> => {
       profilePicture: user.profilePicture,
       comment: user.comment,
       address: user.address,
+      type: user.type
     }
   );
   return (await userModel.findById(user.id)) || oldUser;

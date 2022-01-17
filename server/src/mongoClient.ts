@@ -43,6 +43,7 @@ export const getPayRecipeModel = (): Model<PayRecipe> => {
 
 const createSchemas = () => {
   const UserSchema = new Schema<User>({
+    id: String,
     type: String,
     name: String,
     lastname: String,

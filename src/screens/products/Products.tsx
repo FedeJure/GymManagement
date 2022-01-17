@@ -37,7 +37,7 @@ const Products = ({}: {}) => {
   const handleDelete = async (productId: string) => {
     try {
       await deleteProduct(productId);
-      refresh()
+      refresh();
       alert.success("Producto eliminado");
     } catch (error) {
       alert.error("Ocurrio un error");
@@ -49,7 +49,7 @@ const Products = ({}: {}) => {
     if (!selectedProduct) return;
     try {
       await updateProduct({ ...selectedProduct, ...editData });
-      refresh()
+      refresh();
       alert.success("Producto editado");
     } catch (error) {
       alert.error("Ocurrio un problema");
@@ -86,12 +86,14 @@ const Products = ({}: {}) => {
       )}
       {creationModalOpen && (
         <CreateProductModal
+          initialOwners={[]}
           onClose={() => setCreationModalOpen(false)}
           onSubmit={handleCreation}
         />
       )}
       {editModalOpen && (
         <CreateProductModal
+          initialOwners={selectedProduct?.owners}
           onClose={() => setEditModalOpen(false)}
           onSubmit={handleEdit}
           initialData={selectedProduct}
