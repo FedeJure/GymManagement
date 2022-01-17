@@ -35,7 +35,7 @@ export const createProduct = (product: ProductPayload): Promise<Product> => {
     .then((response) => mapToProduct(response.product));
 };
 
-export const updateProduct = (product: Product) => {
+export const updateProduct = (product: ProductPayload & { id: string }) => {
   const options = getOptionsWithBody({ product }, "PUT");
   return fetch(`${url}/product`, options)
     .then((response) => response.json())
@@ -47,7 +47,6 @@ export const deleteProduct = (productId: string) => {
   return fetch(`${url}/product`, options).then((response) => response.json());
 };
 
-export const getProductConfig = () : Promise<EntityConfigResponse> => {
-  return fetch(`${url}/product/config`)
-  .then((response) => response.json())
-}
+export const getProductConfig = (): Promise<EntityConfigResponse> => {
+  return fetch(`${url}/product/config`).then((response) => response.json());
+};
