@@ -65,7 +65,6 @@ const _CreateProductModal: React.FC<ICreateProductModal> = ({
     const newValue = parsed >= 0 ? Math.min(parsed, 100) : 0;
     setFormData((form) => ({ ...form, [key]: newValue }));
   };
-  console.log(initialOwners)
   return (
     <Modal onClose={onClose} open>
       <Modal.Header>
@@ -177,7 +176,6 @@ const _CreateProductModal: React.FC<ICreateProductModal> = ({
                     multiple
                     defaultValue={initialOwners.map((u) => u.id)}
                     onChange={(e, data) =>{
-                      console.log(data.value)
                       return setFormData({
                         ...formData,
                         owners: (data.value as string[]).filter(s => s),
