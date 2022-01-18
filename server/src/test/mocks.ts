@@ -62,7 +62,7 @@ export const InitBrothersOnDb = async (brothersCount: 1 | 2 | 3 | 4 | 5) => {
     if (!user) return;
     await userModel.updateOne({
       _id: MockUserId,
-      familiars: [...user.familiars, brother._id],
+      familiarIds: [...user.familiars.map(f => f.id), brother._id],
     });
   }
 };
@@ -76,7 +76,7 @@ export const MockUserPayload: UserPayload = {
   address: "Fake address 123",
   birthDate: getNowDate(),
   comment: "Fake comment",
-  familiars: [],
+  familiarIds: [],
   profilePicture: "",
   dni: "112333232",
 };

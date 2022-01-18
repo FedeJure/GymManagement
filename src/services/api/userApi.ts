@@ -7,7 +7,6 @@ import { EntityConfigResponse } from "../../domain/EntityConfig";
 const mapToUser = (data: any) => {
   return {
     ...data,
-    id: data._id,
     birthDate: new Date(data.birthDate),
   };
 };
@@ -47,17 +46,18 @@ export const createUser = async (
 };
 
 export const updateUser = async (
-  user: User,
+  userId: string,
+  user: Partial<UserPayload>,
   image: File | null
 ): Promise<User> => {
-  const options = getOptionsWithBody({ user }, "PUT");
+  const options = getOptionsWithBody({ user, userId }, "PUT");
 
   const updated = await fetch(`${url}/user`, options)
     .then((response) => response.json())
     .then((response) => response.user)
     .then(mapToUser);
   if (image != null) {
-    await sendImage(image, user.id);
+    await sendImage(image, userId);
   }
 
   return updated;

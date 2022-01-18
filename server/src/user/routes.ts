@@ -111,8 +111,8 @@ export const initUsersRoutes = (app: Express) => {
   });
 
   app.put("/user", (req: Request, res: Response) => {
-    const { user }: { user: User } = req.body;
-    updateUser(user)
+    const { userId, user }: {userId: string, user: Partial<UserPayload> } = req.body;
+    updateUser(userId, user)
       .then((updatedUser) => {
         res.status(200).send({ ok: true, user: updatedUser });
       })

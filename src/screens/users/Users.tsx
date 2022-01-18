@@ -12,7 +12,12 @@ import { ExcelDownloader } from "../../components/excelDownloader/excelDownloade
 import { mapToExcel, mapFromExcel } from "../../domain/users/UserMapper";
 import { UserType } from "../../domain/users/UserType";
 import { useUsers } from "../../hooks/useUsers";
-import { createUser, deleteUser, getUserConfig, updateUser } from "../../services/api";
+import {
+  createUser,
+  deleteUser,
+  getUserConfig,
+  updateUser,
+} from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
 const Users = ({}) => {
@@ -43,14 +48,14 @@ const Users = ({}) => {
     if (selectedUser === null) return;
     await deleteUser(selectedUser.id);
     setDeleteModal(false);
-    refresh()
+    refresh();
   };
 
   const handleEdit = async (editData: UserPayload, image: File | null) => {
     if (selectedUser === null) return;
-    await updateUser({ ...selectedUser, ...editData }, image);
+    await updateUser(selectedUser.id, editData, image);
     setEditModalOpen(false);
-    refresh()
+    refresh();
   };
 
   const mustShowUser = (user: User) => {

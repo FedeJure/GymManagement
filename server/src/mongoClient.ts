@@ -52,7 +52,7 @@ const createSchemas = () => {
     address: String,
     birthDate: Date,
     comment: String,
-    familiars: [Types.ObjectId], //refactorizar y referenciar user directamente
+    familiars: [{ type: [mongoose.Schema.Types.ObjectId], ref: "User" }], //refactorizar y referenciar user directamente
     profilePicture: String,
     dni: String,
     creationDate: { type: Date, default: getNowDate },

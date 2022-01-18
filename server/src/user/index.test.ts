@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import {  getUsers, saveUser, updateUser } from ".";
+import { getUsers, saveUser, updateUser } from ".";
 import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { MockDb } from "../test/db";
 import {
@@ -34,7 +34,7 @@ describe("Users", () => {
     expect(async () => {
       await saveUser({
         ...MockUserPayload,
-        familiars: [new ObjectId().toString()],
+        familiarIds: [new ObjectId().toString()],
       });
     }).rejects.toThrowError();
     done();
@@ -46,27 +46,27 @@ describe("Users", () => {
     });
     const user = await saveUser({
       ...MockUserPayload,
-      familiars: [brother._id.toString()],
+      familiarIds: [brother.id.toString()],
     });
     expect(user.name).toEqual(MockUserPayload.name);
     done();
   });
 
-  it("update familiar user when another asignit like familiar", async (done) => {
+  it("update familiar user when another asign as like familiar", async (done) => {
     let brother = await saveUser({
       ...MockUserPayload,
     });
     const user = await saveUser({
       ...MockUserPayload,
-      familiars: [brother.id.toString()],
+      familiarIds: [brother.id.toString()],
     });
 
-    console.log(brother, user)
+    console.log(brother, user);
 
     const users = await getUsers({ page: 0, step: 10 });
     brother = users.find((u) => u.id === brother.id) || brother;
     expect(brother.familiars.length).toEqual(1);
-    expect(brother.familiars[0] == user.id.toString()).toBeTruthy();
+    expect(brother.familiars[0].id == user.id.toString()).toBeTruthy();
     done();
   });
 
@@ -83,10 +83,8 @@ describe("Users", () => {
       birthDate: new Date(),
     };
 
-    const newUser = await updateUser({
-      ...user,
+    const newUser = await updateUser(MockUserId.toString(), {
       ...newData,
-      id: MockUserId.toString(),
     });
 
     expect(newUser.name).toEqual(newData.name);
@@ -103,25 +101,23 @@ describe("Users", () => {
     let brother = await saveUser({
       ...MockUserPayload,
       name: "Brother",
-      familiars: [],
+      familiarIds: [],
     });
     let user = await saveUser({
       ...MockUserPayload,
-      familiars: [],
+      familiarIds: [],
     });
-    await updateUser({
-      ...user,
-      id: user._id.toString(),
-      familiars: [brother._id.toString()],
+    await updateUser(user.id, {
+      familiarIds: [brother.id],
     });
     const users = await getUsers({ page: 0, step: 10 });
     brother = users.find((u) => u.id === brother.id.toString()) || brother;
     expect(brother.familiars.length).toEqual(1);
-    expect(brother.familiars[0] == user.id.toString()).toBeTruthy();
+    expect(brother.familiars[0].id == user.id.toString()).toBeTruthy();
 
     user = users.find((u) => u.id === user.id) || user;
     expect(user.familiars.length).toEqual(1);
-    expect(user.familiars[0] == brother.id.toString()).toBeTruthy();
+    expect(user.familiars[0].id == brother.id.toString()).toBeTruthy();
     done();
   });
 
@@ -129,17 +125,15 @@ describe("Users", () => {
     let user = await InitUserOnDb();
     await InitBrothersOnDb(1);
 
-    await updateUser({
-      ...user,
-      id: MockUserId.toString(),
-      familiars: [],
+    await updateUser(user.id, {
+      familiarIds: [],
     });
     const users = await getUsers({ page: 0, step: 10 });
     const brother = users.find((u) => u.id === MockBrotherIds[0].toString());
 
     if (brother === undefined) {
-        done()
-        return
+      done();
+      return;
     }
     expect(brother.familiars.length).toEqual(0);
 
