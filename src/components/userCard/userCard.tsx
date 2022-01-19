@@ -1,6 +1,7 @@
 import { MouseEventHandler } from "react"
 import { Card, Image, Button } from "semantic-ui-react"
 import { User } from "../../domain/users/User"
+import { getUserPayload } from "../../domain/users/UserPayload"
 import { UserTypeLabel } from "../userTypeLabel/UserTypeLabel"
 
 const UserCard = ({ user, onEdit, onDelete, onInfo }: {
@@ -18,7 +19,7 @@ const UserCard = ({ user, onEdit, onDelete, onInfo }: {
                 src={user.profilePicture}
             />}
             <Card.Header textAlign="left">
-                <UserTypeLabel user={user} />
+                <UserTypeLabel user={getUserPayload(user)} />
             </Card.Header>
             <Card.Header textAlign="center">
                 {user.lastname}, {user.name}

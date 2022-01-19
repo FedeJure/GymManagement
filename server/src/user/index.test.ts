@@ -55,13 +55,12 @@ describe("Users", () => {
   it("update familiar user when another asign as like familiar", async (done) => {
     let brother = await saveUser({
       ...MockUserPayload,
+      name: 'Brother'
     });
     const user = await saveUser({
       ...MockUserPayload,
       familiarIds: [brother.id.toString()],
     });
-
-    console.log(brother, user);
 
     const users = await getUsers({ page: 0, step: 10 });
     brother = users.find((u) => u.id === brother.id) || brother;
@@ -141,4 +140,30 @@ describe("Users", () => {
     expect(user.familiars.length).toEqual(0);
     done();
   });
+
+  it("update brothers of user (removing brothers)", async (done) => {
+    let brother = await saveUser({
+      ...MockUserPayload,
+      name: "Brother",
+      familiarIds: [],
+    });
+    let user = await saveUser({
+      ...MockUserPayload,
+      familiarIds: [brother.id],
+    });
+
+    await updateUser(user.id, {
+      familiarIds: [],
+    });
+
+
+    const users = await getUsers({ page: 0, step: 10 });
+    brother = users.find((u) => u.id === brother.id.toString()) || brother;
+    expect(brother.familiars.length).toEqual(0);
+
+    user = users.find((u) => u.id === user.id) || user;
+    expect(user.familiars.length).toEqual(0);
+    done();
+  });
+
 });
