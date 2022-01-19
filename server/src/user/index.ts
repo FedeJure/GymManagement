@@ -1,11 +1,9 @@
 import { getSubscriptionModel, getUserModel } from "../mongoClient";
 import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { User } from "../../../src/domain/users/User";
-import { Model } from "mongoose";
 import { promisify } from "util";
 import { unlink } from "fs";
 import { STATIC_DIR } from "../configs";
-import { ObjectId } from "mongodb";
 
 export const getUsers = async ({
   page,
@@ -52,6 +50,7 @@ export const getUsers = async ({
 
 export const saveUser = async (user: UserPayload) => {
   const userModel = getUserModel();
+
   const familiars = await userModel.find({
     _id: { $in: user.familiarIds },
   });
@@ -61,15 +60,10 @@ export const saveUser = async (user: UserPayload) => {
     );
   }
 
-  // const createdUser = new userModel({ ...user });
-
-  const createdUser = await userModel.create({ ...user });
+  const createdUser = await (await userModel.create({ ...user, familiars })).populate('familiars');
   createdUser.id = createdUser._id.toString();
-  await userModel.updateOne({ _id: createdUser._id }, { id: createdUser._id });
-
-  if (user.familiarIds.length > 0) {
-    await updateSelfToBrothers(user.familiarIds, userModel, createdUser.id, []);
-  }
+  await userModel.updateOne({ _id: createdUser._id }, { id: createdUser._id , familiars});
+  await updateSelfToBrothers(user.familiarIds, createdUser.id, []);
 
   return createdUser;
 };
@@ -83,7 +77,6 @@ export const removeUser = async (userId: string): Promise<User> => {
   if (user.profilePicture) removeImage(user.profilePicture);
   await updateSelfToBrothers(
     [],
-    userModel,
     user.id,
     user.familiars.map((f) => f.id)
   );
@@ -95,37 +88,33 @@ export const updateUser = async (
   userId: string,
   payload: Partial<UserPayload>
 ): Promise<User> => {
-  console.log("DSDSD");
   const userModel = getUserModel();
   const oldUser = await userModel
     .findOne({ _id: userId })
     .populate("familiars");
   if (!oldUser) throw Error("User not found");
-  if (
-    (payload.familiarIds !== undefined &&
-      payload.familiarIds.length > 0 &&
-      oldUser.familiars.length === 0) ||
-    !oldUser.familiars.every((f) =>
-      payload.familiarIds?.find((u) => u === f.id)
-    )
-  ) {
+  // if (
+  //   (payload.familiarIds !== undefined &&
+  //     payload.familiarIds.length > 0 &&
+  //     oldUser.familiars.length === 0) ||
+  //   !oldUser.familiars.every((f) =>
+  //     payload.familiarIds?.find((u) => u === f.id)
+  //   )
+  // ) {
+  if (payload.familiarIds !== undefined) {
+    const oldFamiliarIds = oldUser.familiars.map((f) => f.id)
     const allFamiliars = [
-      ...oldUser.familiars.map((f) => f.id),
+      ...oldFamiliarIds,
       ...(payload.familiarIds ?? []),
     ];
     const newFamiliars = allFamiliars.filter(
-      (f) => !oldUser.familiars.map((f) => f.id).includes(f)
+      (f) => !oldFamiliarIds.includes(f)
     );
     const removedFamiliars = allFamiliars.filter(
-      (f) => !payload.familiarIds?.includes(f)
+      (f) => !newFamiliars.includes(f)
     );
 
-    await updateSelfToBrothers(
-      newFamiliars,
-      userModel,
-      oldUser.id,
-      removedFamiliars
-    );
+    await updateSelfToBrothers(newFamiliars, userId, removedFamiliars);
   }
 
   const familiarsToUpdate = await userModel.find({
@@ -137,19 +126,12 @@ export const updateUser = async (
       _id: userId,
     },
     {
-      name: payload.name,
-      lastname: payload.lastname,
-      dni: payload.dni,
+      ...payload,
       familiars: familiarsToUpdate,
-      birthDate: payload.birthDate,
-      contactEmail: payload.contactEmail,
-      contactPhone: payload.contactPhone,
-      profilePicture: payload.profilePicture,
-      comment: payload.comment,
-      address: payload.address,
-      type: payload.type,
     }
   );
+
+
 
   return (await userModel.findById(userId)) || oldUser;
 };
@@ -181,20 +163,20 @@ export const updateImagePath = async (userId: string, path: string) => {
 
 async function updateSelfToBrothers(
   newFamiliars: string[],
-  userModel: Model<User, {}, {}>,
   userId: string,
   removedFamiliars: string[]
 ) {
+  const userModel = getUserModel();
   const user = await userModel.findById(userId);
   if (!user) return;
   for (let i = 0; i < newFamiliars.length; i++) {
     const familiarId = newFamiliars[i];
-    const familiar = await userModel.findById(familiarId);
+    const familiar = await userModel.findById(familiarId).populate('familiars');
     if (!familiar)
       throw new Error(
         `Non existent familiar with id: ${familiarId}. Please create that user before assing it as familair`
       );
-    return userModel.updateOne(
+    await userModel.updateOne(
       { _id: familiarId },
       { familiars: [...familiar.familiars, user] }
     );
@@ -202,15 +184,15 @@ async function updateSelfToBrothers(
 
   for (let i = 0; i < removedFamiliars.length; i++) {
     const familiarId = removedFamiliars[i];
-    const familiar = await userModel.findById(familiarId);
-    if (!familiar) return;
-    return userModel.updateOne(
-      {
-        _id: familiarId,
-      },
-      {
-        familiars: familiar.familiars.filter((f) => f.id != userId),
-      }
+    const familiar = await userModel.findById(familiarId).populate('familiars');
+    if (!familiar)
+      throw new Error(
+        `Non existent familiar with id: ${familiarId}. Please create that user before assing it as familair`
+      );
+
+    await userModel.updateOne(
+      { _id: familiarId },
+      { familiars: familiar.familiars.filter((f) => f.id !== userId) }
     );
   }
 }

@@ -46,23 +46,19 @@ export const _CreateUserModal: React.FC<ICreateUserModal> = ({
     };
   }, [image]);
 
-  const [formData, setFormData] = useState<UserPayload>(
-    initialData
-      ? initialData
-      : {
-          name: "",
-          lastname: "",
-          birthDate: defaultDate,
-          address: "",
-          contactEmail: "",
-          comment: "",
-          contactPhone: "",
-          familiarIds: [],
-          profilePicture: "",
-          type: UserType.STUDENT,
-          dni: "",
-        }
-  );
+  const [formData, setFormData] = useState<UserPayload>({
+    name: initialData?.name ?? "",
+    lastname: initialData?.lastname ?? "",
+    birthDate: initialData?.birthDate ?? defaultDate,
+    address: initialData?.address ?? "",
+    contactEmail: initialData?.contactEmail ?? "",
+    comment: initialData?.comment ?? "",
+    contactPhone: initialData?.contactPhone ?? "",
+    familiarIds: initialData?.familiars.map((f) => f.id) ?? [],
+    profilePicture: initialData?.profilePicture ?? "",
+    type: initialData?.type ?? UserType.STUDENT,
+    dni: initialData?.dni ?? "",
+  });
   const handleSubmit = () => {
     setSubmitted(true);
     if (
@@ -297,7 +293,7 @@ export const _CreateUserModal: React.FC<ICreateUserModal> = ({
                           : []
                       }
                       onChange={(e, data) =>
-                        handleChange(data.value, "familiars")
+                        handleChange(data.value, "familiarIds")
                       }
                       options={[...familiars]
                         .filter((user) => user.id !== initialData?.id)

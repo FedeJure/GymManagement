@@ -75,21 +75,23 @@ const Users = ({}) => {
 
   const usersMapped = users
     .filter((u) => mustShowUser(u))
-    .map((user: User) => (
-      <UserCard
-        key={user.id}
-        user={user}
-        onDelete={() => {
-          setSelectedUser(user);
-          setDeleteModal(true);
-        }}
-        onEdit={() => {
-          setSelectedUser(user);
-          setEditModalOpen(true);
-        }}
-        onInfo={() => {}}
-      />
-    ));
+    .map((user: User) => {
+      return (
+        <UserCard
+          key={user.id}
+          user={user}
+          onDelete={() => {
+            setSelectedUser(user);
+            setDeleteModal(true);
+          }}
+          onEdit={() => {
+            setSelectedUser(user);
+            setEditModalOpen(true);
+          }}
+          onInfo={() => {}}
+        />
+      )
+    });
 
   return (
     <div>

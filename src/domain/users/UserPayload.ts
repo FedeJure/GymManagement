@@ -1,3 +1,4 @@
+import { User } from "./User"
 import {UserType} from "./UserType"
 export interface UserPayload {
     type: UserType,
@@ -13,4 +14,18 @@ export interface UserPayload {
     dni: string
 }
 
-type User = UserPayload & {id: number}
+export const getUserPayload = (user: User) : UserPayload=> {
+    return {
+                type: user.type,
+                name: user.name,
+                lastname: user.lastname,
+                contactEmail: user.contactEmail,
+                contactPhone: user.contactPhone,
+                address: user.address,
+                birthDate: user.birthDate,
+                comment: user.comment,
+                familiarIds: user.familiars.map(f => f.id),
+                profilePicture: user.profilePicture,
+                dni: user.dni
+              }
+}
