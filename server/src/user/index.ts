@@ -56,10 +56,7 @@ export const saveUser = async (user: UserPayload) => {
     await userModel.create({ ...user })
   ).populate("familiars");
   createdUser.id = createdUser._id.toString();
-  await userModel.updateOne(
-    { _id: createdUser._id },
-    { id: createdUser._id }
-  );
+  await userModel.updateOne({ _id: createdUser._id }, { id: createdUser._id });
 
   if (user.familiarIds.length > 0) {
     const familiars = await userModel.find({
@@ -72,8 +69,6 @@ export const saveUser = async (user: UserPayload) => {
     }
     await setFamiliarsToUser(createdUser.id, user.familiarIds);
   }
-
-  // await updateSelfToBrothers(user.familiarIds, createdUser.id, []);
 
   return createdUser;
 };
@@ -103,42 +98,15 @@ export const updateUser = async (
     .findOne({ _id: userId })
     .populate("familiars");
   if (!oldUser) throw Error("User not found");
-  // if (
-  //   (payload.familiarIds !== undefined &&
-  //     payload.familiarIds.length > 0 &&
-  //     oldUser.familiars.length === 0) ||
-  //   !oldUser.familiars.every((f) =>
-  //     payload.familiarIds?.find((u) => u === f.id)
-  //   )
-  // ) {
+
   if (payload.familiarIds !== undefined)
     await setFamiliarsToUser(userId, payload.familiarIds);
-  // if (payload.familiarIds !== undefined) {
-  //   const oldFamiliarIds = oldUser.familiars.map((f) => f.id);
-  //   const allFamiliars = [...oldFamiliarIds, ...(payload.familiarIds ?? [])];
-  //   const newFamiliars = allFamiliars.filter(
-  //     (f) => !oldFamiliarIds.includes(f)
-  //   );
-  //   const removedFamiliars = allFamiliars.filter(
-  //     (f) => !newFamiliars.includes(f)
-  //   );
 
-  //   await updateSelfToBrothers(newFamiliars, userId, removedFamiliars);
-  // }
+  // const familiarsToUpdate = await userModel.find({
+  //   _id: { $in: payload.familiarIds }
+  // });
 
-  const familiarsToUpdate = await userModel.find({
-    _id: { $in: payload.familiarIds },
-  });
-
-  await userModel.updateOne(
-    {
-      _id: userId,
-    },
-    {
-      ...payload,
-      familiars: familiarsToUpdate,
-    }
-  );
+  await userModel.updateOne({ _id: userId }, { ...payload });
 
   return (await userModel.findById(userId)) || oldUser;
 };
@@ -233,11 +201,13 @@ export const setFamiliarsToUser = async (
   familiars: string[]
 ) => {
   const userModel = getUserModel();
-  const user = await userModel.findById(userId);
+  const user = await userModel.findById(userId).populate("familiars");
 
-  const oldFamilies = await getFamiliarsOfUsers(
-    user?.familiars.map((f) => f.id) || []
-  );
+  const oldFamilies =
+    user && user.familiars.length > 0
+      ? await getFamiliarsOfUsers(user?.familiars.map((f) => f.id))
+      : [];
+
   if (oldFamilies.length > 0)
     await userModel.updateMany(
       { _id: { $in: oldFamilies } },
@@ -245,13 +215,15 @@ export const setFamiliarsToUser = async (
     );
 
   const family = await getFamiliarsOfUsers([userId, ...familiars]);
-  const ff = await userModel.find({_id: {$in: family}})
-  await Promise.all(ff.map(async familiar => {
-    return await userModel.updateOne(
-      { _id: familiar.id },
-      { familiars: ff.filter((f) => f.id !== familiar.id) }
-    );
-  }))
+  const ff = await userModel.find({ _id: { $in: family } });
+  await Promise.all(
+    ff.map(async (familiar) => {
+      return await userModel.updateOne(
+        { _id: familiar.id },
+        { familiars: ff.filter((f) => f.id !== familiar.id) }
+      );
+    })
+  );
 };
 
 export const getFamiliarsOfUsers = async (
@@ -271,6 +243,6 @@ export const getFamiliarsOfUsers = async (
         .map((f) => f.id),
     ];
   });
-  if (familiars.length === 0) return users.map(u => u.id);
+  if (familiars.length === 0) return users.map((u) => u.id);
   return await getFamiliarsOfUsers([...users.map((u) => u.id), ...familiars]);
 };

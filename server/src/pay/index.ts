@@ -33,7 +33,7 @@ export const tryGenerateOrder = async (
   });
   if (existentOrder) return null;
 
-  const discount = calculateDiscount(subscription);
+  const discount = await calculateDiscount(subscription);
 
   const order = await orderModel.create({
     userId: subscription.user.id,
@@ -169,7 +169,7 @@ export const cancelOrder = async (orderId: string) => {
   return order;
 };
 
-const calculateDiscount = (subscription: Subscription) => {
+const calculateDiscount = async (subscription: Subscription) => {
   let discount = 0;
   switch (subscription.user.familiars.length) {
     case 0:

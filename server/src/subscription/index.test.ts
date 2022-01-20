@@ -9,10 +9,12 @@ import {
   InitProductOnDb,
   InitUserOnDb,
   MockSubscriptionPayload,
+  MockUserPayload,
 } from "../test/mocks";
 import { SubscriptionPayload } from "../../../src/domain/subscription/SubscriptionPayload";
 import { getOrders } from "../pay";
 import { mockNextDate, resetMockDate } from "../utils/date";
+import { saveUser } from "../user";
 
 const db = new MockDb();
 beforeAll(async () => await db.connect());
@@ -105,10 +107,12 @@ describe("Subscriptions", () => {
   });
 
   it("create order with one brother", async (done) => {
-    await InitBrothersOnDb(1);
+    const user = await saveUser(MockUserPayload)
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
 
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
+      userId: user.id,
       initialTime: new Date(Date.now()),
     };
     const subscription = await saveSubscription(mockSubscriptionPayload);
@@ -118,9 +122,12 @@ describe("Subscriptions", () => {
   });
 
   it("create order with two brothers", async (done) => {
-    await InitBrothersOnDb(2);
+    const user = await saveUser(MockUserPayload)
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
+      userId: user.id,
       initialTime: new Date(Date.now()),
     };
 
@@ -131,12 +138,15 @@ describe("Subscriptions", () => {
   });
 
   it("create order with three brothers", async (done) => {
-    await InitBrothersOnDb(3);
+    const user = await saveUser(MockUserPayload)
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
+      userId: user.id,
       initialTime: new Date(Date.now()),
     };
-
     const subscription = await saveSubscription(mockSubscriptionPayload);
     const orders = await getOrders({ page: 0, step: 10 });
 
@@ -145,9 +155,14 @@ describe("Subscriptions", () => {
   });
 
   it("create order with four brothers", async (done) => {
-    await InitBrothersOnDb(4);
+    const user = await saveUser(MockUserPayload)
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
+    await saveUser({...MockUserPayload, familiarIds: [user.id]})
     const mockSubscriptionPayload: SubscriptionPayload = {
       ...MockSubscriptionPayload,
+      userId: user.id,
       initialTime: new Date(Date.now()),
     };
 
