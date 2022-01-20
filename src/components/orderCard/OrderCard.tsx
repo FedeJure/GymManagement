@@ -23,14 +23,21 @@ export const OrderCard = ({
               </Button>
             </List.Content>
           )}
-        <List.Content floated="right">
-          <Button icon compact onClick={() => handleCancel()}>
-            <Icon name="trash"></Icon>Cancelar orden
-          </Button>
-        </List.Content>
+        {order.state !== OrderStateEnum.CANCELLED && (
+          <List.Content floated="right">
+            <Button icon compact onClick={() => handleCancel()}>
+              <Icon name="trash"></Icon>Cancelar orden
+            </Button>
+          </List.Content>
+        )}
         {order.state === OrderStateEnum.CANCELLED && (
           <List.Content floated="right">
             <Label>Cancelado</Label>
+          </List.Content>
+        )}
+        {order.state === OrderStateEnum.COMPLETE && (
+          <List.Content floated="right">
+            <Label>Completado</Label>
           </List.Content>
         )}
         <List.Content floated="left">
