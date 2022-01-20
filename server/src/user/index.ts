@@ -80,11 +80,7 @@ export const removeUser = async (userId: string): Promise<User> => {
   if (!user) throw new Error("User not found");
   await subscriptionModel.deleteMany({ user: user });
   if (user.profilePicture) removeImage(user.profilePicture);
-  await updateSelfToBrothers(
-    [],
-    user.id,
-    user.familiars.map((f) => f.id)
-  );
+  await removeUserAsFamiliar(userId);
   await userModel.deleteOne({ _id: userId });
   return user;
 };
@@ -99,12 +95,9 @@ export const updateUser = async (
     .populate("familiars");
   if (!oldUser) throw Error("User not found");
 
-  if (payload.familiarIds !== undefined)
+  if (payload.familiarIds !== undefined) {
     await setFamiliarsToUser(userId, payload.familiarIds);
-
-  // const familiarsToUpdate = await userModel.find({
-  //   _id: { $in: payload.familiarIds }
-  // });
+  }
 
   await userModel.updateOne({ _id: userId }, { ...payload });
 
@@ -136,43 +129,6 @@ export const updateImagePath = async (userId: string, path: string) => {
   return user.save();
 };
 
-async function updateSelfToBrothers(
-  newFamiliars: string[],
-  userId: string,
-  removedFamiliars: string[]
-) {
-  const userModel = getUserModel();
-  const user = await userModel.findById(userId);
-  if (!user) return;
-  for (let i = 0; i < newFamiliars.length; i++) {
-    const familiarId = newFamiliars[i];
-    const familiar = await userModel.findById(familiarId).populate("familiars");
-    if (!familiar)
-      throw new Error(
-        `Non existent familiar with id: ${familiarId}. Please create that user before assing it as familair`
-      );
-
-    await userModel.updateOne(
-      { _id: familiarId },
-      { familiars: [...familiar.familiars, user] }
-    );
-  }
-
-  for (let i = 0; i < removedFamiliars.length; i++) {
-    const familiarId = removedFamiliars[i];
-    const familiar = await userModel.findById(familiarId).populate("familiars");
-    if (!familiar)
-      throw new Error(
-        `Non existent familiar with id: ${familiarId}. Please create that user before assing it as familair`
-      );
-
-    await userModel.updateOne(
-      { _id: familiarId },
-      { familiars: familiar.familiars.filter((f) => f.id !== userId) }
-    );
-  }
-}
-
 export const setPendingPayed = async (userId: string) => {
   console.log("Set payed on update");
   const userModel = getUserModel();
@@ -196,12 +152,38 @@ export const getConfig = async () => {
   };
 };
 
+export const removeUserAsFamiliar = async (userId: string) => {
+  const userModel = getUserModel();
+  const user = await userModel.findById(userId).populate("familiars");
+  const familiarIds =
+    user && user.familiars.length > 0
+      ? await getFamiliarsOfUsers(user.familiars.map((u) => u.id))
+      : [];
+  const familiars = await userModel
+    .find({ _id: { $in: familiarIds } })
+    .populate("familiars");
+  await Promise.all(
+    familiars.map(async (familiar) => {
+      return userModel.updateOne(
+        { _id: familiar.id },
+        { familiars: familiar.familiars.filter((f) => f.id !== userId) }
+      );
+    })
+  );
+};
+
 export const setFamiliarsToUser = async (
   userId: string,
   familiars: string[]
 ) => {
   const userModel = getUserModel();
   const user = await userModel.findById(userId).populate("familiars");
+
+  if (user && familiars.length === 0 && user.familiars.length > 0) {
+      await removeUserAsFamiliar(userId);
+      await userModel.updateOne({_id: userId}, {familiars: []})
+      return
+  }
 
   const oldFamilies =
     user && user.familiars.length > 0
