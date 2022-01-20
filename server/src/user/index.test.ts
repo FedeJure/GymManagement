@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getFamiliarsOfUsers, getUsers, saveUser, updateUser } from ".";
+import { getFamiliarsOfUsers, getUsers, removeUser, saveUser, updateUser } from ".";
 import { UserPayload } from "../../../src/domain/users/UserPayload";
 import { MockDb } from "../test/db";
 import {
@@ -194,6 +194,63 @@ describe("Users", () => {
     done();
   });
 
+  it("remove user from familiars when delete", async (done) => {
+    let brother = await saveUser({
+      ...MockUserPayload,
+      name: "Brother",
+      familiarIds: [],
+    });
+    let brother1 = await saveUser({
+      ...MockUserPayload,
+      name: "Brother1",
+      familiarIds: [brother.id],
+    });
+    let user = await saveUser({
+      ...MockUserPayload,
+      familiarIds: [brother1.id],
+    });
+
+    await removeUser(user.id)
+    const users = await getUsers({ page: 0, step: 10 });
+
+    brother = users.find((u) => u.id === brother.id.toString()) || brother;
+    expect(brother.familiars.length).toEqual(1);
+
+    brother1 = users.find((u) => u.id === brother1.id.toString()) || brother1;
+    expect(brother1.familiars.length).toEqual(1);
+    done();
+  });
+
+  it("take out of the family when remove all familiars from user", async (done) => {
+    let brother = await saveUser({
+      ...MockUserPayload,
+      name: "Brother",
+      familiarIds: [],
+    });
+    let brother1 = await saveUser({
+      ...MockUserPayload,
+      name: "Brother1",
+      familiarIds: [brother.id],
+    });
+    let user = await saveUser({
+      ...MockUserPayload,
+      familiarIds: [brother1.id],
+    });
+
+    await updateUser(user.id, {familiarIds: []})
+    const users = await getUsers({ page: 0, step: 10 });
+
+    brother = users.find((u) => u.id === brother.id.toString()) || brother;
+    expect(brother.familiars.length).toEqual(1);
+
+    brother1 = users.find((u) => u.id === brother1.id.toString()) || brother1;
+    expect(brother1.familiars.length).toEqual(1);
+
+    user = users.find((u) => u.id === user.id) || user;
+    expect(user.familiars.length).toEqual(0);
+    done();
+  });
+
   it("update sub-brothers when adding so many", async (done) => {
     let brother = await saveUser({
       ...MockUserPayload,
@@ -248,10 +305,7 @@ describe("Users", () => {
       familiarIds: [brother1.id],
     });
 
-    const familiars = await getFamiliarsOfUsers([
-      brother1.id,
-      user.id,
-    ]);
+    const familiars = await getFamiliarsOfUsers([brother1.id, user.id]);
     expect(familiars.length).toEqual(3);
     done();
   });
