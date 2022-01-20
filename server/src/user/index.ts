@@ -30,11 +30,11 @@ export const getUsers = async ({
       queries = [
         ...queries,
         ...[
-          { name: { $regex: f, $options: "i" } },
-          { lastname: { $regex: f, $options: "i" } },
-          { dni: { $regex: f, $options: "i" } },
-          { contactEmail: { $regex: f, $options: "i" } },
-          { contactPhone: { $regex: f, $options: "i" } },
+          { name: { $regex: f, $options: "^Ci" } },
+          { lastname: { $regex: f, $options: "^Ci" } },
+          { dni: { $regex: f, $options: "^Ci" } },
+          { contactEmail: { $regex: f, $options: "^Ci" } },
+          { contactPhone: { $regex: f, $options: "^Ci" } },
         ],
       ];
     });
@@ -42,7 +42,7 @@ export const getUsers = async ({
 
   const withQueries = tagFilter != undefined || contentFilter != undefined;
   return userModel
-    .find(withQueries ? { $and: queries } : {}, null, {
+    .find(withQueries ? { $or: queries } : {}, null, {
       skip: step * page,
       limit: step,
     })

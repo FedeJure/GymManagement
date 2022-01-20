@@ -81,7 +81,7 @@ export const getOrders = async ({
 
   queries = (tagFilter.length > 0) ? [...queries, {state: {$in: tagFilters}}] : queries
   const orders = await orderModel
-    .find(queries.length > 0 ? { $and: queries } : {}, null, {
+    .find(queries.length > 0 ? { $or: queries } : {}, null, {
       skip: step * page,
       limit: step,
     })
