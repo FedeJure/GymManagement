@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAlert } from "react-alert";
 import { Button, Container, Grid } from "semantic-ui-react";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
@@ -21,6 +22,7 @@ import {
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
 const Users = ({}) => {
+  const alert = useAlert();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -40,20 +42,35 @@ const Users = ({}) => {
     creationData: UserPayload,
     image: File | undefined
   ) => {
-    await createUser(creationData, image);
+    try {
+      await createUser(creationData, image);
+      alert.success("Usuario creado");
+    } catch (error) {
+      alert.error("Ocurrio un error");
+    }
     setCreationModalOpen(false);
     refresh();
   };
   const handleDelete = async () => {
     if (selectedUser === null) return;
-    await deleteUser(selectedUser.id);
+    try {
+      await deleteUser(selectedUser.id);
+      alert.success("Usuario eliminado");
+    } catch (error) {
+      alert.error("Ocurrio un error");
+    }
     setDeleteModal(false);
     refresh();
   };
 
   const handleEdit = async (editData: UserPayload, image: File | null) => {
     if (selectedUser === null) return;
-    await updateUser(selectedUser.id, editData, image);
+    try {
+      await updateUser(selectedUser.id, editData, image);
+      alert.success("Usuario editado");
+    } catch (error) {
+      alert.error("Ocurrio un error");
+    }
     setEditModalOpen(false);
     refresh();
   };
@@ -90,7 +107,7 @@ const Users = ({}) => {
           }}
           onInfo={() => {}}
         />
-      )
+      );
     });
 
   return (
