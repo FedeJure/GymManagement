@@ -12,8 +12,20 @@ import { ExcelDownloader } from "../../components/excelDownloader/excelDownloade
 import { mapToExcel, mapFromExcel } from "../../domain/users/UserMapper";
 import { UserType } from "../../domain/users/UserType";
 import { useUsers } from "../../hooks/useUsers";
-import {Container,Tooltip, Flex, Box,Heading, Button, ButtonGroup, Spacer, IconButton, Wrap, WrapItem} from "@chakra-ui/react"
-import {AddIcon} from "@chakra-ui/icons"
+import {
+  Container,
+  Tooltip,
+  Flex,
+  Box,
+  Heading,
+  Button,
+  ButtonGroup,
+  Spacer,
+  IconButton,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 import {
   createUser,
   deleteUser,
@@ -111,7 +123,7 @@ const Users = ({}) => {
         />
       );
     });
-   
+
   return (
     <Container maxWidth="none" p="3">
       <Flex minWidth="max-content" alignItems="center" gap="2">
@@ -131,11 +143,37 @@ const Users = ({}) => {
 
           <ExcelUploader onLoad={handleExcelLoad} />
           <ExcelDownloader
-                data={users.map((u) => mapToExcel(u))}
-                name="Users Database"
-              />
+            data={users.map((u) => mapToExcel(u))}
+            name="Users Database"
+          />
         </ButtonGroup>
       </Flex>
+      <FilterInput
+        tagOptions={[
+          {
+            key: UserType.ADMIN,
+            text: UserType.ADMIN,
+            value: UserType.ADMIN,
+            label: { color: "green", empty: true, circular: true },
+          },
+          {
+            key: UserType.STUDENT,
+            text: UserType.STUDENT,
+            value: UserType.STUDENT,
+            label: { color: "yellow", empty: true, circular: true },
+          },
+          {
+            key: UserType.TRAINER,
+            text: UserType.TRAINER,
+            value: UserType.TRAINER,
+            label: { color: "orange", empty: true, circular: true },
+          },
+        ]}
+        onCustomFilterChange={(f: string[]) =>
+          setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
+        }
+        onTagFilterChange={(v: string[]) => setFilterByTag(v)}
+      />
       <PaginatedGridPage
         fetchCountOfItems={getUserConfig}
         step={step}

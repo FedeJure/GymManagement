@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { MultiSelect , Option} from "chakra-multiselect";
 
 export const FilterInput = ({ onTagFilterChange, onCustomFilterChange, tagOptions, defaultTagFilters=[] }
     : { onTagFilterChange: Function, onCustomFilterChange: Function, tagOptions: any[], defaultTagFilters?: string[] }) => {
@@ -17,7 +18,10 @@ export const FilterInput = ({ onTagFilterChange, onCustomFilterChange, tagOption
         onCustomFilterChange(customSelections)
         onTagFilterChange(userTypesSelections)
     }
-    return <></>
+    return (
+      <>
+      </>
+    );
     // return (<Menu fluid>
     //     <Menu.Item><Icon name="filter" /></Menu.Item>
 
