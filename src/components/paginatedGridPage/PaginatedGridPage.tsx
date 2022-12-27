@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {Wrap, WrapItem, Center} from "@chakra-ui/react"
 import useSWR from "swr";
 import { EntityConfigResponse } from "../../domain/EntityConfig";
 
@@ -23,30 +24,26 @@ export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
       setMaxPages(Math.ceil(config.totalCount / step));
     });
   }, [elements]);
-    return <></>;
-
-  // return (
-  //   <div >
-  //     <div style={{ height: maxHeight ?? "80vh", overflowY: "auto", overflowX: "hidden" }}>
-  //       {elements.length > 0 && (
-  //         <CardGroup centered>{elements}</CardGroup>
-  //       )}
-  //       <Divider />
-  //     </div>
-
-  //     <div
-  //       style={{
-  //         width: "90%",
-  //         justifyContent: "center",
-  //       }}
-  //     >
-  //       {maxPages > 1 && (
-  //         <Pagination
-  //           totalPages={maxPages}
-  //           onPageChange={(_, d) => onPageChange(Number(d.activePage))}
-  //         />
-  //       )}
-  //     </div>
-  //   </div>
-  // );
+    return (
+      <>
+        <Wrap
+          m="5"
+          spacing="30px"
+          align="center"
+          placeContent={"center"}
+          justify={"center"}
+        >
+          {elements.length > 0 &&
+            elements.map((element) => <WrapItem>{element}</WrapItem>)}
+        </Wrap>
+        {/* <Center>
+          {maxPages > 1 && (
+            <Pagination
+              totalPages={maxPages}
+              onPageChange={(_, d) => onPageChange(Number(d.activePage))}
+            />
+          )}
+        </Center> */}
+      </>
+    );
 };

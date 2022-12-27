@@ -108,19 +108,19 @@ const Users = ({}) => {
     .filter((u) => mustShowUser(u))
     .map((user: User) => {
       return (
-        <UserCard
-          key={user.id}
-          user={user}
-          onDelete={() => {
-            setSelectedUser(user);
-            setDeleteModal(true);
-          }}
-          onEdit={() => {
-            setSelectedUser(user);
-            setEditModalOpen(true);
-          }}
-          onInfo={() => {}}
-        />
+          <UserCard
+            key={user.id}
+            user={user}
+            onDelete={() => {
+              setSelectedUser(user);
+              setDeleteModal(true);
+            }}
+            onEdit={() => {
+              setSelectedUser(user);
+              setEditModalOpen(true);
+            }}
+            onInfo={() => {}}
+          />
       );
     });
 
