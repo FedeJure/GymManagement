@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAlert } from "react-alert";
-import { Button, Container, Grid } from "semantic-ui-react";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal";
@@ -13,6 +12,8 @@ import { ExcelDownloader } from "../../components/excelDownloader/excelDownloade
 import { mapToExcel, mapFromExcel } from "../../domain/users/UserMapper";
 import { UserType } from "../../domain/users/UserType";
 import { useUsers } from "../../hooks/useUsers";
+import {Container,Tooltip, Flex, Box,Heading, Button, ButtonGroup, Spacer, IconButton, Wrap, WrapItem} from "@chakra-ui/react"
+import {AddIcon} from "@chakra-ui/icons"
 import {
   createUser,
   deleteUser,
@@ -20,6 +21,7 @@ import {
   updateUser,
 } from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
+import { Grid } from "semantic-ui-react";
 
 const Users = ({}) => {
   const alert = useAlert();
@@ -109,93 +111,126 @@ const Users = ({}) => {
         />
       );
     });
-
+   
   return (
-    <div>
-      {deleteModal && (
-        <ConfirmationModal
-          open={deleteModal}
-          onCancel={() => setDeleteModal(false)}
-          onAccept={() => handleDelete()}
-          message="Confirma eliminación de este usuario? Esta acción no puede deshacerse."
-        />
-      )}
-      {creationModalOpen && (
-        <CreateUserModal
-          onClose={() => setCreationModalOpen(false)}
-          onSubmit={handleCreation}
-        />
-      )}
-      {editModalOpen && (
-        <CreateUserModal
-          onClose={() => setEditModalOpen(false)}
-          onSubmit={handleEdit}
-          initialData={selectedUser}
-        />
-      )}
-      <Container>
-        <Grid>
-          <Grid.Row columns="equal">
-            <Grid.Column width="10" textAlign="left">
-              <h2>Personas</h2>
-            </Grid.Column>
-            <Grid.Column>
-              <h4>
-                Crear nueva{" "}
-                <Button
-                  color="blue"
-                  circular
-                  icon="plus"
-                  onClick={() => setCreationModalOpen(true)}
-                />
-              </h4>
-            </Grid.Column>
-            <Grid.Column>
-              <ExcelUploader onLoad={handleExcelLoad} />
-              <ExcelDownloader
+    <Container maxWidth="none" p="3">
+      <Flex minWidth="max-content" alignItems="center" gap="2">
+        <Spacer />
+
+        <Box p="2">
+          <Heading size="md">Alumnos y Profesores</Heading>
+        </Box>
+        <Spacer />
+        <ButtonGroup gap="2">
+          <Tooltip label="Agregar usuario manualmente">
+            <IconButton
+              aria-label="agregar usuario manualmente"
+              icon={<AddIcon />}
+            />
+          </Tooltip>
+
+          <ExcelUploader onLoad={handleExcelLoad} />
+          <ExcelDownloader
                 data={users.map((u) => mapToExcel(u))}
                 name="Users Database"
               />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
-
-      <FilterInput
-        tagOptions={[
-          {
-            key: UserType.ADMIN,
-            text: UserType.ADMIN,
-            value: UserType.ADMIN,
-            label: { color: "green", empty: true, circular: true },
-          },
-          {
-            key: UserType.STUDENT,
-            text: UserType.STUDENT,
-            value: UserType.STUDENT,
-            label: { color: "yellow", empty: true, circular: true },
-          },
-          {
-            key: UserType.TRAINER,
-            text: UserType.TRAINER,
-            value: UserType.TRAINER,
-            label: { color: "orange", empty: true, circular: true },
-          },
-        ]}
-        onCustomFilterChange={(f: string[]) =>
-          setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
-        }
-        onTagFilterChange={(v: string[]) => setFilterByTag(v)}
-      />
-
+        </ButtonGroup>
+      </Flex>
       <PaginatedGridPage
         fetchCountOfItems={getUserConfig}
         step={step}
         onPageChange={(newPage) => setPage(newPage)}
         elements={usersMapped}
       />
-    </div>
+    </Container>
   );
+
+  // return (
+  //   <div>
+  //     {deleteModal && (
+  //       <ConfirmationModal
+  //         open={deleteModal}
+  //         onCancel={() => setDeleteModal(false)}
+  //         onAccept={() => handleDelete()}
+  //         message="Confirma eliminación de este usuario? Esta acción no puede deshacerse."
+  //       />
+  //     )}
+  //     {creationModalOpen && (
+  //       <CreateUserModal
+  //         onClose={() => setCreationModalOpen(false)}
+  //         onSubmit={handleCreation}
+  //       />
+  //     )}
+  //     {editModalOpen && (
+  //       <CreateUserModal
+  //         onClose={() => setEditModalOpen(false)}
+  //         onSubmit={handleEdit}
+  //         initialData={selectedUser}
+  //       />
+  //     )}
+  //     <Container>
+  //       <Grid>
+  //         <Grid.Row columns="equal">
+  //           <Grid.Column width="10" textAlign="left">
+  //             <h2>Personas</h2>
+  //           </Grid.Column>
+  //           <Grid.Column>
+  //             <h4>
+  //               Crear nueva{" "}
+  //               <Button
+  //                 color="blue"
+  //                 circular
+  //                 icon="plus"
+  //                 onClick={() => setCreationModalOpen(true)}
+  //               />
+  //             </h4>
+  //           </Grid.Column>
+  //           <Grid.Column>
+  //             <ExcelUploader onLoad={handleExcelLoad} />
+  //             <ExcelDownloader
+  //               data={users.map((u) => mapToExcel(u))}
+  //               name="Users Database"
+  //             />
+  //           </Grid.Column>
+  //         </Grid.Row>
+  //       </Grid>
+  //     </Container>
+
+  //     <FilterInput
+  //       tagOptions={[
+  //         {
+  //           key: UserType.ADMIN,
+  //           text: UserType.ADMIN,
+  //           value: UserType.ADMIN,
+  //           label: { color: "green", empty: true, circular: true },
+  //         },
+  //         {
+  //           key: UserType.STUDENT,
+  //           text: UserType.STUDENT,
+  //           value: UserType.STUDENT,
+  //           label: { color: "yellow", empty: true, circular: true },
+  //         },
+  //         {
+  //           key: UserType.TRAINER,
+  //           text: UserType.TRAINER,
+  //           value: UserType.TRAINER,
+  //           label: { color: "orange", empty: true, circular: true },
+  //         },
+  //       ]}
+  //       onCustomFilterChange={(f: string[]) =>
+  //         setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
+  //       }
+  //       onTagFilterChange={(v: string[]) => setFilterByTag(v)}
+  //     />
+
+  //     <PaginatedGridPage
+  //       fetchCountOfItems={getUserConfig}
+  //       step={step}
+  //       onPageChange={(newPage) => setPage(newPage)}
+  //       elements={usersMapped}
+  //     />
+  //   </div>
+  // );
 };
 
 export default Users;

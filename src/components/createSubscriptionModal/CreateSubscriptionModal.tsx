@@ -1,13 +1,4 @@
 import { useState } from "react";
-import {
-  Button,
-  Modal,
-  Form,
-  Grid,
-  Divider,
-  Segment,
-  Input,
-} from "semantic-ui-react";
 import { User } from "../../domain/users/User";
 import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
 import { fetchProducts, fetchUsers } from "../../services/api";
@@ -85,134 +76,137 @@ export const CreateSubscriptionModal = ({
     setFormData((form) => ({ ...form, [key]: newValue }));
   };
 
-  return (
-    <Modal onClose={onClose} open>
-      <Modal.Header>{"Creación de suscripción"}</Modal.Header>
-      <Modal.Content>
-        <Segment placeholder>
-          <Grid columns={2} stackable>
-            <Divider vertical />
-            <Grid.Row>
-              <Grid.Column verticalAlign="middle">
-                <Form onSubmit={handleSubmit}>
-                  <Form.Field
-                    error={
-                      submitted && formData.initialTime != defaultDate
-                        ? {
-                            content: "Ingresar Fecha de inicio",
-                            pointing: "below",
-                          }
-                        : false
-                    }
-                  >
-                    <label>Fecha de inicio de suscripción</label>
-                    <DateInput
-                      onChange={(value) => handleChange(value, "initialTime")}
-                    />
-                  </Form.Field>
-                  <Form.Field>
-                    <label>
-                      Fecha de finalizacion de suscripción (Opcional)
-                    </label>
-                    <DateInput
-                      onChange={(value) => handleChange(value, "endTime")}
-                    />
-                  </Form.Field>
-                  <button type="submit" hidden={true} />
-                </Form>
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field>
-                  <label>Alumno</label>
-                  <Form.Dropdown
-                    fluid
-                    selection
-                    search
-                    error={
-                      submitted && formData.userId.length == 0
-                        ? {
-                            content: "Ingresar un Alumno",
-                            pointing: "below",
-                          }
-                        : false
-                    }
-                    onSearchChange={(_, value) =>
-                      handleUserSearch(value.searchQuery)
-                    }
-                    onChange={(e, data) => handleChange(data.value, "userId")}
-                    options={[...users].map((p) => ({
-                      key: p.name,
-                      text: `${p.lastname}, ${p.name}, ${p.dni}`,
-                      value: p.id,
-                    }))}
-                  />
-                </Form.Field>
+    return <></>;
 
-                <Form.Field>
-                  <label>Producto</label>
-                  <Form.Dropdown
-                    fluid
-                    selection
-                    search
-                    error={
-                      submitted && formData.productId.length == 0
-                        ? {
-                            content: "Ingresar un Producto",
-                            pointing: "below",
-                          }
-                        : false
-                    }
-                    onSearchChange={(_, value) =>
-                      handleProductSearch(value.searchQuery)
-                    }
-                    onChange={(e, data) =>
-                      handleChange(data.value, "productId")
-                    }
-                    options={[...products].map((p) => ({
-                      key: p.name,
-                      text: `${p.name},$${p.price} ${p.payType}(${p.daysInWeek
-                        .map((d) => d.slice(0, 2))
-                        .join(", ")})`,
-                      value: p.id,
-                    }))}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Descuento especial</label>
-                  <Input
-                    label="%"
-                    labelPosition="right"
-                    input={
-                      <input
-                        onChange={(target) =>
-                          handleDiscountChange(
-                            target.currentTarget.value,
-                            "specialDiscount"
-                          )
-                        }
-                        value={formData.specialDiscount}
-                      />
-                    }
-                  />
-                </Form.Field>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button color="black" onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button
-          content={"Crear"}
-          labelPosition="right"
-          icon="checkmark"
-          positive
-          type="submit"
-          onClick={handleSubmit}
-        />
-      </Modal.Actions>
-    </Modal>
-  );
+
+  // return (
+  //   <Modal onClose={onClose} open>
+  //     <Modal.Header>{"Creación de suscripción"}</Modal.Header>
+  //     <Modal.Content>
+  //       <Segment placeholder>
+  //         <Grid columns={2} stackable>
+  //           <Divider vertical />
+  //           <Grid.Row>
+  //             <Grid.Column verticalAlign="middle">
+  //               <Form onSubmit={handleSubmit}>
+  //                 <Form.Field
+  //                   error={
+  //                     submitted && formData.initialTime != defaultDate
+  //                       ? {
+  //                           content: "Ingresar Fecha de inicio",
+  //                           pointing: "below",
+  //                         }
+  //                       : false
+  //                   }
+  //                 >
+  //                   <label>Fecha de inicio de suscripción</label>
+  //                   <DateInput
+  //                     onChange={(value) => handleChange(value, "initialTime")}
+  //                   />
+  //                 </Form.Field>
+  //                 <Form.Field>
+  //                   <label>
+  //                     Fecha de finalizacion de suscripción (Opcional)
+  //                   </label>
+  //                   <DateInput
+  //                     onChange={(value) => handleChange(value, "endTime")}
+  //                   />
+  //                 </Form.Field>
+  //                 <button type="submit" hidden={true} />
+  //               </Form>
+  //             </Grid.Column>
+  //             <Grid.Column>
+  //               <Form.Field>
+  //                 <label>Alumno</label>
+  //                 <Form.Dropdown
+  //                   fluid
+  //                   selection
+  //                   search
+  //                   error={
+  //                     submitted && formData.userId.length == 0
+  //                       ? {
+  //                           content: "Ingresar un Alumno",
+  //                           pointing: "below",
+  //                         }
+  //                       : false
+  //                   }
+  //                   onSearchChange={(_, value) =>
+  //                     handleUserSearch(value.searchQuery)
+  //                   }
+  //                   onChange={(e, data) => handleChange(data.value, "userId")}
+  //                   options={[...users].map((p) => ({
+  //                     key: p.name,
+  //                     text: `${p.lastname}, ${p.name}, ${p.dni}`,
+  //                     value: p.id,
+  //                   }))}
+  //                 />
+  //               </Form.Field>
+
+  //               <Form.Field>
+  //                 <label>Producto</label>
+  //                 <Form.Dropdown
+  //                   fluid
+  //                   selection
+  //                   search
+  //                   error={
+  //                     submitted && formData.productId.length == 0
+  //                       ? {
+  //                           content: "Ingresar un Producto",
+  //                           pointing: "below",
+  //                         }
+  //                       : false
+  //                   }
+  //                   onSearchChange={(_, value) =>
+  //                     handleProductSearch(value.searchQuery)
+  //                   }
+  //                   onChange={(e, data) =>
+  //                     handleChange(data.value, "productId")
+  //                   }
+  //                   options={[...products].map((p) => ({
+  //                     key: p.name,
+  //                     text: `${p.name},$${p.price} ${p.payType}(${p.daysInWeek
+  //                       .map((d) => d.slice(0, 2))
+  //                       .join(", ")})`,
+  //                     value: p.id,
+  //                   }))}
+  //                 />
+  //               </Form.Field>
+  //               <Form.Field>
+  //                 <label>Descuento especial</label>
+  //                 <Input
+  //                   label="%"
+  //                   labelPosition="right"
+  //                   input={
+  //                     <input
+  //                       onChange={(target) =>
+  //                         handleDiscountChange(
+  //                           target.currentTarget.value,
+  //                           "specialDiscount"
+  //                         )
+  //                       }
+  //                       value={formData.specialDiscount}
+  //                     />
+  //                   }
+  //                 />
+  //               </Form.Field>
+  //             </Grid.Column>
+  //           </Grid.Row>
+  //         </Grid>
+  //       </Segment>
+  //     </Modal.Content>
+  //     <Modal.Actions>
+  //       <Button color="black" onClick={onClose}>
+  //         Cancelar
+  //       </Button>
+  //       <Button
+  //         content={"Crear"}
+  //         labelPosition="right"
+  //         icon="checkmark"
+  //         positive
+  //         type="submit"
+  //         onClick={handleSubmit}
+  //       />
+  //     </Modal.Actions>
+  //   </Modal>
+  // );
 };

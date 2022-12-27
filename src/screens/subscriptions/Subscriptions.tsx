@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAlert } from "react-alert";
-import { Button, Grid, Container, Divider } from "semantic-ui-react";
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal";
 import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
 
@@ -98,107 +97,110 @@ const Subscriptions = ({}) => {
     />
   ));
 
-  return (
-    <div>
-      {confirmModal && (
-        <ConfirmationModal
-          open={confirmModal}
-          onCancel={() => setConfirmModal(false)}
-          onAccept={() => handleDelete()}
-          message="Confirma eliminación? Esta acción no puede deshacerse."
-        />
-      )}
-      {confirmOrderModal && (
-        <ConfirmationModal
-          open={confirmOrderModal}
-          onCancel={() => setConfirmOrderModal(false)}
-          onAccept={() => {
-            setConfirmOrderModal(false);
-            handleCreateOrder();
-          }}
-          message={
-            <>
-              <h2>Crear orden de cobro?</h2>
-              <br /> Tenga en cuenta que las ordenes de cobro son generadas
-              automaticamente cuando es requerido
-            </>
-          }
-        />
-      )}
-      {creationModalOpen && (
-        <CreateSubscriptionModal
-          onClose={() => setCreationModalOpen(false)}
-          onSubmit={handleSubmit}
-        />
-      )}
-      {detailModal && selectedSubscription && (
-        <SubscriptionDetailModal
-          subscription={selectedSubscription}
-          onClose={() => setDetailModal(false)}
-        />
-      )}
+    return <></>;
 
-      <>
-        <Container>
-          <Grid
-            columns="equal"
-            verticalAlign="middle"
-            style={{ width: "100%" }}
-          >
-            <Grid.Row>
-              <Grid.Column textAlign="left">
-                <h2>Subscripciones</h2>
-              </Grid.Column>
-              <Grid.Column floated="right">
-                <h4>
-                  Crear nueva{" "}
-                  <Button
-                    color="blue"
-                    circular
-                    icon="plus"
-                    onClick={() => setCreationModalOpen(true)}
-                  />
-                </h4>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Container>
 
-        <FilterInput
-          tagOptions={[
-            {
-              key: PayState.DEBT,
-              text: PayState.DEBT,
-              value: PayState.DEBT,
-              label: { color: "orange", empty: true, circular: true },
-            },
-            {
-              key: PayState.ON_DAY,
-              text: PayState.ON_DAY,
-              value: PayState.ON_DAY,
-              label: { color: "green", empty: true, circular: true },
-            },
-          ]}
-          onTagFilterChange={setFilterByTag}
-          onCustomFilterChange={setFilterByContent}
-        />
-        <PaginatedGridPage
-          step={step}
-          elements={subscriptionElements}
-          onPageChange={setPage}
-          fetchCountOfItems={getSubscriptionConfig}
-          maxHeight="35vh"
-        />
-      </>
+  // return (
+  //   <div>
+  //     {confirmModal && (
+  //       <ConfirmationModal
+  //         open={confirmModal}
+  //         onCancel={() => setConfirmModal(false)}
+  //         onAccept={() => handleDelete()}
+  //         message="Confirma eliminación? Esta acción no puede deshacerse."
+  //       />
+  //     )}
+  //     {confirmOrderModal && (
+  //       <ConfirmationModal
+  //         open={confirmOrderModal}
+  //         onCancel={() => setConfirmOrderModal(false)}
+  //         onAccept={() => {
+  //           setConfirmOrderModal(false);
+  //           handleCreateOrder();
+  //         }}
+  //         message={
+  //           <>
+  //             <h2>Crear orden de cobro?</h2>
+  //             <br /> Tenga en cuenta que las ordenes de cobro son generadas
+  //             automaticamente cuando es requerido
+  //           </>
+  //         }
+  //       />
+  //     )}
+  //     {creationModalOpen && (
+  //       <CreateSubscriptionModal
+  //         onClose={() => setCreationModalOpen(false)}
+  //         onSubmit={handleSubmit}
+  //       />
+  //     )}
+  //     {detailModal && selectedSubscription && (
+  //       <SubscriptionDetailModal
+  //         subscription={selectedSubscription}
+  //         onClose={() => setDetailModal(false)}
+  //       />
+  //     )}
 
-      <Grid.Row columns={1}>
-        <Grid.Column>
-          <Divider hidden />
-          <Orders />
-        </Grid.Column>
-      </Grid.Row>
-    </div>
-  );
+  //     <>
+  //       <Container>
+  //         <Grid
+  //           columns="equal"
+  //           verticalAlign="middle"
+  //           style={{ width: "100%" }}
+  //         >
+  //           <Grid.Row>
+  //             <Grid.Column textAlign="left">
+  //               <h2>Subscripciones</h2>
+  //             </Grid.Column>
+  //             <Grid.Column floated="right">
+  //               <h4>
+  //                 Crear nueva{" "}
+  //                 <Button
+  //                   color="blue"
+  //                   circular
+  //                   icon="plus"
+  //                   onClick={() => setCreationModalOpen(true)}
+  //                 />
+  //               </h4>
+  //             </Grid.Column>
+  //           </Grid.Row>
+  //         </Grid>
+  //       </Container>
+
+  //       <FilterInput
+  //         tagOptions={[
+  //           {
+  //             key: PayState.DEBT,
+  //             text: PayState.DEBT,
+  //             value: PayState.DEBT,
+  //             label: { color: "orange", empty: true, circular: true },
+  //           },
+  //           {
+  //             key: PayState.ON_DAY,
+  //             text: PayState.ON_DAY,
+  //             value: PayState.ON_DAY,
+  //             label: { color: "green", empty: true, circular: true },
+  //           },
+  //         ]}
+  //         onTagFilterChange={setFilterByTag}
+  //         onCustomFilterChange={setFilterByContent}
+  //       />
+  //       <PaginatedGridPage
+  //         step={step}
+  //         elements={subscriptionElements}
+  //         onPageChange={setPage}
+  //         fetchCountOfItems={getSubscriptionConfig}
+  //         maxHeight="35vh"
+  //       />
+  //     </>
+
+  //     <Grid.Row columns={1}>
+  //       <Grid.Column>
+  //         <Divider hidden />
+  //         <Orders />
+  //       </Grid.Column>
+  //     </Grid.Row>
+  //   </div>
+  // );
 };
 
 export default Subscriptions;

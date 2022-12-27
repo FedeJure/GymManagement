@@ -1,5 +1,6 @@
 import { utils, write } from "xlsx"
-import { Button, ButtonProps } from "semantic-ui-react";
+import { IconButton, Tooltip } from "@chakra-ui/react";
+import { IoIosDownload } from "react-icons/io";
 
 function s2ab(s: string) {
     var buf = new ArrayBuffer(s.length);
@@ -8,7 +9,7 @@ function s2ab(s: string) {
     return buf;
   }
 
-export const ExcelDownloader = ({ floated, data, name }: ButtonProps & { data: any, name: string }) => {
+export const ExcelDownloader = ({ data, name }: {data: any, name: string }) => {
 
     const handleClick = () => {
         var wb = utils.book_new();
@@ -28,6 +29,14 @@ export const ExcelDownloader = ({ floated, data, name }: ButtonProps & { data: a
         tempLink.setAttribute('download', `${name}.xlsx`);
         tempLink.click();
     }
+    return (
+      <Tooltip label="Descargar usuarios a excel">
+        <IconButton
+          aria-label="Descargar excel"
+          icon={<IoIosDownload />}
+          onClick={handleClick}
+        />
+      </Tooltip>
+    );
 
-    return (<Button floated={floated} icon="download" primary onClick={handleClick} />);
 }

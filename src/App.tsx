@@ -1,10 +1,10 @@
 import { ErrorBoundary } from "react-error-boundary";
+import { ChakraProvider } from "@chakra-ui/react";
 import AlertTemplate from "react-alert-template-basic";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import "./App.css";
-import "semantic-ui-css/semantic.min.css";
 import Home from "./screens/home/Home";
-import { Button, Header, Icon, Segment } from "semantic-ui-react";
+import {Button, Icon, Container} from "@chakra-ui/react"
 import { UserProvider } from "./hooks/useUsers";
 import { OrderProvider } from "./hooks/useOrders";
 import { SubscriptionProvider } from "./hooks/useSubscriptions";
@@ -17,15 +17,15 @@ const OurFallbackComponent = ({
   resetErrorBoundary,
 }: any) => {
   return (
-    <Segment placeholder style={{ minHeight: "100vh" }}>
-      <Header icon>
+    <Container style={{ minHeight: "100vh" }}>
+      <Container>
         <Icon name="bug" />
         Ocurrio un error inesperado! Vuelva a intentar
-      </Header>
-      <Button primary onClick={resetErrorBoundary}>
+      </Container>
+      <Button onClick={resetErrorBoundary}>
         Recargar
       </Button>
-    </Segment>
+    </Container>
   );
 };
 
@@ -40,8 +40,9 @@ const options = {
 
 function App() {
   return (
-    <ErrorBoundary FallbackComponent={OurFallbackComponent}>
-      <AlertProvider template={AlertTemplate} {...options}>
+    <ChakraProvider>
+      <ErrorBoundary FallbackComponent={OurFallbackComponent}>
+        <AlertProvider template={AlertTemplate} {...options}>
           <NavigationProvider>
             <UserProvider>
               <OrderProvider>
@@ -55,8 +56,9 @@ function App() {
               </OrderProvider>
             </UserProvider>
           </NavigationProvider>
-      </AlertProvider>
-    </ErrorBoundary>
+        </AlertProvider>
+      </ErrorBoundary>
+    </ChakraProvider>
   );
 }
 

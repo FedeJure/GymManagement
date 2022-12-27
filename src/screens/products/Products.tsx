@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAlert } from "react-alert";
 import { ProductCard } from "../../components/productCard/ProductCard";
-import { Divider, Button, Grid, Container } from "semantic-ui-react";
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import { ProductPayload } from "../../domain/product/ProductPayload";
@@ -74,62 +73,65 @@ const Products = ({}: {}) => {
     />
   ));
 
-  return (
-    <div>
-      {deleteModal && (
-        <ConfirmationModal
-          open={deleteModal}
-          onCancel={() => setDeleteModal(false)}
-          onAccept={() => selectedProduct && handleDelete(selectedProduct.id)}
-          message="Confirma eliminación de este producto? Esta acción no puede deshacerse."
-        />
-      )}
-      {creationModalOpen && (
-        <CreateProductModal
-          initialOwners={[]}
-          onClose={() => setCreationModalOpen(false)}
-          onSubmit={handleCreation}
-        />
-      )}
-      {editModalOpen && (
-        <CreateProductModal
-          initialOwners={selectedProduct?.owners}
-          onClose={() => setEditModalOpen(false)}
-          onSubmit={handleEdit}
-          initialData={selectedProduct}
-        />
-      )}
-      <Container>
-        <Grid>
-          <Grid.Row columns="equal">
-            <Grid.Column textAlign="left">
-              <h2>Productos</h2>
-            </Grid.Column>
-            <Grid.Column floated="right">
-              <h4>
-                Crear nuevo{" "}
-                <Button
-                  color="blue"
-                  circular
-                  icon="plus"
-                  onClick={() => setCreationModalOpen(true)}
-                />
-              </h4>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
+    return <></>;
 
-      <Divider />
 
-      <PaginatedGridPage
-        step={step}
-        elements={productElements}
-        fetchCountOfItems={getProductConfig}
-        onPageChange={setPage}
-      />
-    </div>
-  );
+  // return (
+  //   <div>
+  //     {deleteModal && (
+  //       <ConfirmationModal
+  //         open={deleteModal}
+  //         onCancel={() => setDeleteModal(false)}
+  //         onAccept={() => selectedProduct && handleDelete(selectedProduct.id)}
+  //         message="Confirma eliminación de este producto? Esta acción no puede deshacerse."
+  //       />
+  //     )}
+  //     {creationModalOpen && (
+  //       <CreateProductModal
+  //         initialOwners={[]}
+  //         onClose={() => setCreationModalOpen(false)}
+  //         onSubmit={handleCreation}
+  //       />
+  //     )}
+  //     {editModalOpen && (
+  //       <CreateProductModal
+  //         initialOwners={selectedProduct?.owners}
+  //         onClose={() => setEditModalOpen(false)}
+  //         onSubmit={handleEdit}
+  //         initialData={selectedProduct}
+  //       />
+  //     )}
+  //     <Container>
+  //       <Grid>
+  //         <Grid.Row columns="equal">
+  //           <Grid.Column textAlign="left">
+  //             <h2>Productos</h2>
+  //           </Grid.Column>
+  //           <Grid.Column floated="right">
+  //             <h4>
+  //               Crear nuevo{" "}
+  //               <Button
+  //                 color="blue"
+  //                 circular
+  //                 icon="plus"
+  //                 onClick={() => setCreationModalOpen(true)}
+  //               />
+  //             </h4>
+  //           </Grid.Column>
+  //         </Grid.Row>
+  //       </Grid>
+  //     </Container>
+
+  //     <Divider />
+
+  //     <PaginatedGridPage
+  //       step={step}
+  //       elements={productElements}
+  //       fetchCountOfItems={getProductConfig}
+  //       onPageChange={setPage}
+  //     />
+  //   </div>
+  // );
 };
 
 export default Products;

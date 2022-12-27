@@ -1,10 +1,11 @@
 import { ChangeEvent, useRef } from "react"
 import { utils, read } from "xlsx"
-import { Button, ButtonProps } from "semantic-ui-react";
+import {IconButton, Tooltip} from "@chakra-ui/react"
+import { AiFillFileExcel } from "react-icons/ai";
 
 const allowedTypes = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-exce"]
 
-export const ExcelUploader = ({floated, onLoad}: ButtonProps & {onLoad: Function}) => {
+export const ExcelUploader = ({onLoad}: {onLoad: Function}) => {
     const fileRef = useRef<HTMLInputElement>(null)
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,13 +32,22 @@ export const ExcelUploader = ({floated, onLoad}: ButtonProps & {onLoad: Function
         event.currentTarget.value = ""
     }
 
-    return (<>
-        <Button floated={floated} icon="file excel outline" primary onClick={() => {
-            var ref = fileRef.current
-            if (ref !== null) {
-                ref.click()
-            }
-        }} />
+    return (
+      <>
+        <Tooltip label="Subir usuarios desde excel">
+          <IconButton
+            aria-label="Subir excel"
+            icon={<AiFillFileExcel />}
+            onClick={() => {
+              var ref = fileRef.current;
+              if (ref !== null) {
+                ref.click();
+              }
+            }}
+          />
+        </Tooltip>
+
         <input ref={fileRef} type="file" hidden onChange={handleImageChange} />
-    </>);
+      </>
+    );
 }

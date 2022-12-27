@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { Dropdown, SemanticShorthandItem, LabelProps, Icon, Menu } from 'semantic-ui-react'
 
 export const FilterInput = ({ onTagFilterChange, onCustomFilterChange, tagOptions, defaultTagFilters=[] }
     : { onTagFilterChange: Function, onCustomFilterChange: Function, tagOptions: any[], defaultTagFilters?: string[] }) => {
     const [selections, setSelections] = useState<string[]>([])
-    const [options, setOptions] = useState<{ key: string, value: string, text: string, label: SemanticShorthandItem<LabelProps> }[]>(tagOptions)
+    const [options, setOptions] = useState<{ key: string, value: string, text: string, label: string  | null }[]>(tagOptions)
 
     const handleAddition = (value: string) => {
         setSelections([...selections, value])
@@ -18,21 +17,22 @@ export const FilterInput = ({ onTagFilterChange, onCustomFilterChange, tagOption
         onCustomFilterChange(customSelections)
         onTagFilterChange(userTypesSelections)
     }
-    return (<Menu fluid>
-        <Menu.Item><Icon name="filter" /></Menu.Item>
+    return <></>
+    // return (<Menu fluid>
+    //     <Menu.Item><Icon name="filter" /></Menu.Item>
 
-        <Dropdown
-            options={options}
-            placeholder="Filtro"
-            search
-            selection
-            fluid
-            multiple
-            allowAdditions
-            defaultValue={defaultTagFilters}
-            additionLabel="Personalizado: "
-            onAddItem={(e, d) => handleAddition(d.value as string)}
-            onChange={(e, d) => handleChange(d.value as string[])}
-        /></Menu>
-    )
+    //     <Dropdown
+    //         options={options}
+    //         placeholder="Filtro"
+    //         search
+    //         selection
+    //         fluid
+    //         multiple
+    //         allowAdditions
+    //         defaultValue={defaultTagFilters}
+    //         additionLabel="Personalizado: "
+    //         onAddItem={(e, d) => handleAddition(d.value as string)}
+    //         onChange={(e, d) => handleChange(d.value as string[])}
+    //     /></Menu>
+    // )
 }

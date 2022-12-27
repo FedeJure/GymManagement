@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CardGroup, Divider, Pagination } from "semantic-ui-react";
+import useSWR from "swr";
 import { EntityConfigResponse } from "../../domain/EntityConfig";
 
 interface IPaginatedGridPage {
@@ -23,29 +23,30 @@ export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
       setMaxPages(Math.ceil(config.totalCount / step));
     });
   }, [elements]);
+    return <></>;
 
-  return (
-    <div >
-      <div style={{ height: maxHeight ?? "80vh", overflowY: "auto", overflowX: "hidden" }}>
-        {elements.length > 0 && (
-          <CardGroup centered>{elements}</CardGroup>
-        )}
-        <Divider />
-      </div>
+  // return (
+  //   <div >
+  //     <div style={{ height: maxHeight ?? "80vh", overflowY: "auto", overflowX: "hidden" }}>
+  //       {elements.length > 0 && (
+  //         <CardGroup centered>{elements}</CardGroup>
+  //       )}
+  //       <Divider />
+  //     </div>
 
-      <div
-        style={{
-          width: "90%",
-          justifyContent: "center",
-        }}
-      >
-        {maxPages > 1 && (
-          <Pagination
-            totalPages={maxPages}
-            onPageChange={(_, d) => onPageChange(Number(d.activePage))}
-          />
-        )}
-      </div>
-    </div>
-  );
+  //     <div
+  //       style={{
+  //         width: "90%",
+  //         justifyContent: "center",
+  //       }}
+  //     >
+  //       {maxPages > 1 && (
+  //         <Pagination
+  //           totalPages={maxPages}
+  //           onPageChange={(_, d) => onPageChange(Number(d.activePage))}
+  //         />
+  //       )}
+  //     </div>
+  //   </div>
+  // );
 };
