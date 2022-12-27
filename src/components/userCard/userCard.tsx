@@ -16,7 +16,17 @@ import {
   Flex,
   Avatar,
   useColorModeValue,
+  ButtonGroup,
+  IconButton,
+  Popover,
+  PopoverContent,
+  PopoverBody,
+  PopoverTrigger,
+  PopoverArrow,
 } from "@chakra-ui/react";
+import {FiEdit} from "react-icons/fi"
+import { AiFillDelete } from "react-icons/ai";
+import { BsThreeDots } from "react-icons/bs";
 
 const UserCard = ({
   user,
@@ -34,13 +44,47 @@ const UserCard = ({
     w={"full"}
     bg={useColorModeValue("white", "gray.800")}
     rounded={"md"}
-    
   >
+    <Box pos="absolute" left={2} top={1}>
+      <UserTypeLabel user={getUserPayload(user)} />
+    </Box>
+    <Flex justifyContent="center" position="absolute" right={2} top={1}>
+      <Popover placement="bottom" isLazy>
+        <PopoverTrigger>
+          <IconButton
+            aria-label="More server options"
+            icon={<BsThreeDots />}
+            variant="ghost"
+            w="fit-content"
+          />
+        </PopoverTrigger>
+        <PopoverContent w="fit-content" _focus={{ boxShadow: "none" }}>
+          <PopoverArrow />
+          <PopoverBody>
+            <Stack>
+              <Button
+                w="194px"
+                variant="ghost"
+                rightIcon={<AiFillDelete />}
+                justifyContent="space-between"
+                fontWeight="normal"
+                colorScheme="red"
+                fontSize="sm"
+                onClick={onDelete}
+              >
+                Eliminar
+              </Button>
+            </Stack>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </Flex>
     <Flex justify={"center"} mt={5}>
       <Avatar
         size={"xl"}
         src={
-          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+          user.profilePicture ||
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YhceWoUKbK2wMeimcB0NgVEqYlpd6ccl411nf7jlx4sV5e8y5b8CdsEjPFtmbHoKhb0&usqp=CAU"
         }
         css={{
           border: "2px solid white",
@@ -51,9 +95,9 @@ const UserCard = ({
     <Box p={6}>
       <Stack spacing={0} align={"center"} mb={5}>
         <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-          John Doe
+          {user.lastname}, {user.name}
         </Heading>
-        <Text color={"gray.500"}>Frontend Developer</Text>
+        <Text color={"gray.500"}>DNI: {user.dni}</Text>
       </Stack>
 
       <Stack direction={"row"} justify={"center"} spacing={6}>
@@ -63,27 +107,33 @@ const UserCard = ({
             Followers
           </Text>
         </Stack>
-        <Stack spacing={0} align={"center"}>
-          <Text fontWeight={600}>23k</Text>
-          <Text fontSize={"sm"} color={"gray.500"}>
-            Followers
-          </Text>
-        </Stack>
+        <Stack spacing={0} align={"center"}></Stack>
       </Stack>
-
-      <Button
-        w={"full"}
-        mt={8}
-        bg={useColorModeValue("#151f21", "gray.900")}
-        color={"white"}
-        rounded={"md"}
-        _hover={{
-          transform: "translateY(-2px)",
-          boxShadow: "lg",
-        }}
-      >
-        Follow
-      </Button>
+      <ButtonGroup>
+        <Button
+          w={"full"}
+          mt={8}
+          rounded={"md"}
+          _hover={{
+            transform: "translateY(-1px)",
+            boxShadow: "lg",
+          }}
+          onClick={onInfo}
+        >
+          Detalles
+        </Button>
+        <IconButton
+          icon={<FiEdit />}
+          aria-label="Editar"
+          mt={8}
+          rounded={"md"}
+          _hover={{
+            transform: "translateY(-1px)",
+            boxShadow: "lg",
+          }}
+          onClick={onEdit}
+        ></IconButton>
+      </ButtonGroup>
     </Box>
   </Card>
   // <Card style={{ height: "auto" }} color="teal">

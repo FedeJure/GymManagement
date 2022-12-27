@@ -129,7 +129,7 @@ const Users = ({}) => {
       <Wrap justify={{ base: "center", sm: "center" }}>
         <Spacer maxW={{ sm: "full", base: 0 }} />
         <WrapItem>
-          <Heading size="md">Alumnos y Profesores</Heading>
+          <Heading alignSelf={"center"} size="md">Alumnos y Profesores</Heading>
         </WrapItem>
         <Spacer maxW={{ sm: "full", base: 0 }} />
         <WrapItem>
