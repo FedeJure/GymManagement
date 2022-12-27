@@ -126,28 +126,29 @@ const Users = ({}) => {
 
   return (
     <Container maxWidth="none" p="3">
-      <Flex minWidth="max-content" alignItems="center" gap="2">
-        <Spacer />
-
-        <Box p="2">
+      <Wrap justify={{ base: "center", sm: "center" }}>
+        <Spacer maxW={{ sm: "full", base: 0 }} />
+        <WrapItem>
           <Heading size="md">Alumnos y Profesores</Heading>
-        </Box>
-        <Spacer />
-        <ButtonGroup gap="2">
-          <Tooltip label="Agregar usuario manualmente">
-            <IconButton
-              aria-label="agregar usuario manualmente"
-              icon={<AddIcon />}
-            />
-          </Tooltip>
+        </WrapItem>
+        <Spacer maxW={{ sm: "full", base: 0 }} />
+        <WrapItem>
+          <ButtonGroup gap="2">
+            <Tooltip label="Agregar usuario manualmente">
+              <IconButton
+                aria-label="agregar usuario manualmente"
+                icon={<AddIcon />}
+              />
+            </Tooltip>
 
-          <ExcelUploader onLoad={handleExcelLoad} />
-          <ExcelDownloader
-            data={users.map((u) => mapToExcel(u))}
-            name="Users Database"
-          />
-        </ButtonGroup>
-      </Flex>
+            <ExcelUploader onLoad={handleExcelLoad} />
+            <ExcelDownloader
+              data={users.map((u) => mapToExcel(u))}
+              name="Users Database"
+            />
+          </ButtonGroup>
+        </WrapItem>
+      </Wrap>
       <FilterInput
         tagOptions={[
           {
