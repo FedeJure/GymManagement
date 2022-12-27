@@ -24,6 +24,9 @@ import {
   IconButton,
   Wrap,
   WrapItem,
+  useDisclosure,
+  Modal,
+  ModalContent,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
@@ -33,13 +36,25 @@ import {
   updateUser,
 } from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
-import { Grid } from "semantic-ui-react";
 
 const Users = ({}) => {
   const alert = useAlert();
+  const {
+    isOpen: creationOpen,
+    onOpen: onCreationOpen,
+    onClose: onCreationClose,
+  } = useDisclosure();
+  const {
+    isOpen: editOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: deleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const {
     items: users,
@@ -73,7 +88,7 @@ const Users = ({}) => {
     } catch (error) {
       alert.error("Ocurrio un error");
     }
-    setDeleteModal(false);
+    onDeleteClose();
     refresh();
   };
 
@@ -85,7 +100,7 @@ const Users = ({}) => {
     } catch (error) {
       alert.error("Ocurrio un error");
     }
-    setEditModalOpen(false);
+    onEditClose();
     refresh();
   };
 
@@ -108,80 +123,96 @@ const Users = ({}) => {
     .filter((u) => mustShowUser(u))
     .map((user: User) => {
       return (
-          <UserCard
-            key={user.id}
-            user={user}
-            onDelete={() => {
-              setSelectedUser(user);
-              setDeleteModal(true);
-            }}
-            onEdit={() => {
-              setSelectedUser(user);
-              setEditModalOpen(true);
-            }}
-            onInfo={() => {}}
-          />
+        <UserCard
+          key={user.id}
+          user={user}
+          onDelete={() => {
+            setSelectedUser(user);
+            onDeleteOpen();
+          }}
+          onEdit={() => {
+            setSelectedUser(user);
+            onEditOpen();
+          }}
+          onInfo={() => {}}
+        />
       );
     });
 
   return (
-    <Container maxWidth="none" p="3">
-      <Wrap justify={{ base: "center", sm: "center" }}>
-        <Spacer maxW={{ sm: "full", base: 0 }} />
-        <WrapItem>
-          <Heading alignSelf={"center"} size="md">Alumnos y Profesores</Heading>
-        </WrapItem>
-        <Spacer maxW={{ sm: "full", base: 0 }} />
-        <WrapItem>
-          <ButtonGroup gap="2">
-            <Tooltip label="Agregar usuario manualmente">
-              <IconButton
-                aria-label="agregar usuario manualmente"
-                icon={<AddIcon />}
-              />
-            </Tooltip>
+    <>
+      <ConfirmationModal
+        open={deleteOpen}
+        onCancel={onDeleteClose}
+        onAccept={handleDelete}
+        message="Confirma eliminación de este usuario? Esta acción no puede deshacerse."
+      />
 
-            <ExcelUploader onLoad={handleExcelLoad} />
-            <ExcelDownloader
-              data={users.map((u) => mapToExcel(u))}
-              name="Users Database"
-            />
-          </ButtonGroup>
-        </WrapItem>
-      </Wrap>
-      <FilterInput
-        tagOptions={[
-          {
-            key: UserType.ADMIN,
-            text: UserType.ADMIN,
-            value: UserType.ADMIN,
-            label: { color: "green", empty: true, circular: true },
-          },
-          {
-            key: UserType.STUDENT,
-            text: UserType.STUDENT,
-            value: UserType.STUDENT,
-            label: { color: "yellow", empty: true, circular: true },
-          },
-          {
-            key: UserType.TRAINER,
-            text: UserType.TRAINER,
-            value: UserType.TRAINER,
-            label: { color: "orange", empty: true, circular: true },
-          },
-        ]}
-        onCustomFilterChange={(f: string[]) =>
-          setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
-        }
-        onTagFilterChange={(v: string[]) => setFilterByTag(v)}
-      />
-      <PaginatedGridPage
-        fetchCountOfItems={getUserConfig}
-        step={step}
-        onPageChange={(newPage) => setPage(newPage)}
-        elements={usersMapped}
-      />
-    </Container>
+      {/* <CreateUserModal
+        onClose={() => setEditModalOpen(false)}
+        onSubmit={handleEdit}
+        initialData={selectedUser}
+      /> */}
+      <Container maxWidth="none" p="3">
+        <Wrap justify={{ base: "center", sm: "center" }}>
+          <Spacer maxW={{ sm: "full", base: 0 }} />
+          <WrapItem>
+            <Heading alignSelf={"center"} size="md">
+              Alumnos y Profesores
+            </Heading>
+          </WrapItem>
+          <Spacer maxW={{ sm: "full", base: 0 }} />
+          <WrapItem>
+            <ButtonGroup gap="2">
+              <Tooltip label="Agregar usuario manualmente">
+                <IconButton
+                  aria-label="agregar usuario manualmente"
+                  icon={<AddIcon />}
+                />
+              </Tooltip>
+
+              <ExcelUploader onLoad={handleExcelLoad} />
+              <ExcelDownloader
+                data={users.map((u) => mapToExcel(u))}
+                name="Users Database"
+              />
+            </ButtonGroup>
+          </WrapItem>
+        </Wrap>
+        <FilterInput
+          tagOptions={[
+            {
+              key: UserType.ADMIN,
+              text: UserType.ADMIN,
+              value: UserType.ADMIN,
+              label: { color: "green", empty: true, circular: true },
+            },
+            {
+              key: UserType.STUDENT,
+              text: UserType.STUDENT,
+              value: UserType.STUDENT,
+              label: { color: "yellow", empty: true, circular: true },
+            },
+            {
+              key: UserType.TRAINER,
+              text: UserType.TRAINER,
+              value: UserType.TRAINER,
+              label: { color: "orange", empty: true, circular: true },
+            },
+          ]}
+          onCustomFilterChange={(f: string[]) =>
+            setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
+          }
+          onTagFilterChange={(v: string[]) => setFilterByTag(v)}
+        />
+        <PaginatedGridPage
+          fetchCountOfItems={getUserConfig}
+          step={step}
+          onPageChange={(newPage) => setPage(newPage)}
+          elements={usersMapped}
+        />
+      </Container>
+    </>
   );
 
   // return (
