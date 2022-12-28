@@ -24,7 +24,7 @@ export const ConfirmationModal = ({ open, message, onAccept, onCancel }) => {
           <Button colorScheme="blue" mr={3} onClick={onCancel}>
             No
           </Button>
-          <Button variant="ghost" onClick={onAccept}>
+          <Button variant="ghost" color={"red"} onClick={onAccept}>
             Si, eliminar
           </Button>
         </ModalFooter>

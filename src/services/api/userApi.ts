@@ -48,7 +48,7 @@ export const createUser = async (
 export const updateUser = async (
   userId: string,
   user: Partial<UserPayload>,
-  image: File | null
+  image?: File
 ): Promise<User> => {
   const options = getOptionsWithBody({ user, userId }, "PUT");
 

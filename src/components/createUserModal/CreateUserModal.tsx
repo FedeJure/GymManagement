@@ -1,26 +1,62 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  forwardRef,
+  LegacyRef,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Modal,
+  Wrap,
+  WrapItem,
+  Select,
+  FormControl,
+  VStack,
+  Input,
+  Textarea,
+  Box,
+  FormLabel,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@chakra-ui/react";
 import { User } from "../../domain/users/User";
 import { UserPayload } from "../../domain/users/UserPayload";
 import { UserType } from "../../domain/users/UserType";
 import { UserProvider, useUsers } from "../../hooks/useUsers";
+import DatePicker, { CalendarContainer } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const defaultDate = new Date(0);
 
 interface ICreateUserModal {
-  onClose: any;
-  onSubmit: any;
-  initialData?: User | null;
+  onClose: () => void;
+  onSubmit: (
+    userPayload: UserPayload,
+    image: File | undefined
+  ) => Promise<void>;
+  initialData?: User;
+  open: boolean;
 }
 
-export const _CreateUserModal: React.FC<ICreateUserModal> = ({
+export const _CreateUserModal = ({
+  open,
   onClose,
   onSubmit,
   initialData,
-}) => {
+}: ICreateUserModal) => {
   const allowedTypes = ["image/png", "image/jpeg"];
   const fileRef = useRef<HTMLInputElement>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | undefined>(undefined);
   const [base64Image, setBase64Image] = useState<string | null>("");
   const { items: familiars, setFilterByContent } = useUsers();
 
@@ -33,18 +69,34 @@ export const _CreateUserModal: React.FC<ICreateUserModal> = ({
     };
   }, [image]);
 
+  useEffect(() => {
+    setFormData({
+      name: initialData?.name ?? "",
+      lastname: initialData?.lastname ?? "",
+      birthDate: initialData?.birthDate ?? defaultDate,
+      address: initialData?.address ?? "",
+      contactEmail: initialData?.contactEmail ?? "",
+      comment: initialData?.comment ?? "",
+      contactPhone: initialData?.contactPhone ?? "",
+      familiarIds: initialData?.familiars.map((f) => f.id) ?? [],
+      profilePicture: initialData?.profilePicture ?? "",
+      type: initialData?.type ?? UserType.STUDENT,
+      dni: initialData?.dni ?? "",
+    });
+  }, [initialData]);
+
   const [formData, setFormData] = useState<UserPayload>({
-    name: initialData?.name ?? "",
-    lastname: initialData?.lastname ?? "",
-    birthDate: initialData?.birthDate ?? defaultDate,
-    address: initialData?.address ?? "",
-    contactEmail: initialData?.contactEmail ?? "",
-    comment: initialData?.comment ?? "",
-    contactPhone: initialData?.contactPhone ?? "",
-    familiarIds: initialData?.familiars.map((f) => f.id) ?? [],
-    profilePicture: initialData?.profilePicture ?? "",
-    type: initialData?.type ?? UserType.STUDENT,
-    dni: initialData?.dni ?? "",
+    name: "",
+    lastname: "",
+    birthDate: defaultDate,
+    address: "",
+    contactEmail: "",
+    comment: "",
+    contactPhone: "",
+    familiarIds: [],
+    profilePicture: "",
+    type: UserType.STUDENT,
+    dni: "",
   });
   const handleSubmit = () => {
     setSubmitted(true);
@@ -75,7 +127,144 @@ export const _CreateUserModal: React.FC<ICreateUserModal> = ({
     }
     setImage(file);
   };
-    return <></>;
+
+  const CustomDatepickerInput = forwardRef(
+    ({ value, onClick }: any, ref: LegacyRef<HTMLInputElement>) => (
+      <Input value={value} onClick={onClick} ref={ref}></Input>
+    )
+  );
+  return open ? (
+    <Modal size={"3xl"} isOpen={open} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>
+          {initialData ? "Edición de persona" : "Creación de persona"}
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Wrap justify={"center"}>
+            <WrapItem flexDirection={"column"}>
+              <VStack>
+                <FormControl>
+                  <FormLabel>Tipo de usuario</FormLabel>
+                  <Select
+                    value={formData.type}
+                    placeholder="Tipo de usuario"
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "type")
+                    }
+                  >
+                    {[UserType.ADMIN, UserType.STUDENT, UserType.TRAINER].map(
+                      (type) => (
+                        <option value={type}>{type}</option>
+                      )
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Nombre</FormLabel>
+                  <Input
+                    placeholder="Nombre"
+                    value={formData.name}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "name")
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Apellido</FormLabel>
+                  <Input
+                    placeholder="Apellido"
+                    value={formData.lastname}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "lastname")
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Dni</FormLabel>
+                  <Input
+                    placeholder="DNI"
+                    value={formData.dni}
+                    onChange={(e) => handleChange(e.currentTarget.value, "dni")}
+                  />
+                </FormControl>
+                <FormControl zIndex={1} flexDirection={"row"}>
+                  <FormLabel>Fecha de nacimiento</FormLabel>
+                  <DatePicker
+                    popperPlacement="top-end"
+                    showYearDropdown
+                    withPortal
+                    customInput={<CustomDatepickerInput />}
+                    selected={
+                      formData.birthDate === defaultDate
+                        ? undefined
+                        : formData.birthDate
+                    }
+                    onChange={(date: Date) => handleChange(date, "birthDate")}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Telefono de contacto</FormLabel>
+                  <Input
+                    placeholder="Telefono"
+                    value={formData.contactPhone}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "contactPhone")
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    placeholder="Email"
+                    value={formData.contactEmail}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "contactEmail")
+                    }
+                  />
+                </FormControl>
+              </VStack>
+            </WrapItem>
+            <WrapItem flexDirection={"column"}>
+              <VStack>
+                <FormControl>
+                  <FormLabel>Direccion fisica</FormLabel>
+                  <Input
+                    placeholder="Direccion"
+                    value={formData.address}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "address")
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Comentario</FormLabel>
+                  <Textarea
+                    placeholder="Comentario"
+                    value={formData.comment}
+                    onChange={(e) =>
+                      handleChange(e.currentTarget.value, "comment")
+                    }
+                  />
+                </FormControl>
+              </VStack>
+            </WrapItem>
+          </Wrap>
+        </ModalBody>
+        <ModalFooter>
+          <Button mr={3} onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button colorScheme="blue" onClick={handleSubmit}>
+            {initialData ? "Editar" : "Crear"}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  ) : (
+    <></>
+  );
 
   // return (
   //   <Modal onClose={onClose} open>

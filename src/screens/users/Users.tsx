@@ -15,18 +15,13 @@ import { useUsers } from "../../hooks/useUsers";
 import {
   Container,
   Tooltip,
-  Flex,
-  Box,
   Heading,
-  Button,
   ButtonGroup,
   Spacer,
   IconButton,
   Wrap,
   WrapItem,
   useDisclosure,
-  Modal,
-  ModalContent,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
@@ -54,8 +49,7 @@ const Users = ({}) => {
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
-  const [creationModalOpen, setCreationModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const {
     items: users,
     setPage,
@@ -77,11 +71,11 @@ const Users = ({}) => {
     } catch (error) {
       alert.error("Ocurrio un error");
     }
-    setCreationModalOpen(false);
+    onCreationClose()
     refresh();
   };
   const handleDelete = async () => {
-    if (selectedUser === null) return;
+    if (!selectedUser) return;
     try {
       await deleteUser(selectedUser.id);
       alert.success("Usuario eliminado");
@@ -92,8 +86,8 @@ const Users = ({}) => {
     refresh();
   };
 
-  const handleEdit = async (editData: UserPayload, image: File | null) => {
-    if (selectedUser === null) return;
+  const handleEdit = async (editData: UserPayload, image: File | undefined) => {
+    if (!selectedUser) return;
     try {
       await updateUser(selectedUser.id, editData, image);
       alert.success("Usuario editado");
@@ -148,11 +142,19 @@ const Users = ({}) => {
         message="Confirma eliminación de este usuario? Esta acción no puede deshacerse."
       />
 
-      {/* <CreateUserModal
-        onClose={() => setEditModalOpen(false)}
+      <CreateUserModal
+        open={creationOpen}
+        onClose={onCreationClose}
+        onSubmit={handleCreation}
+      />
+
+      <CreateUserModal
+        open={editOpen}
+        onClose={onEditClose}
         onSubmit={handleEdit}
         initialData={selectedUser}
-      /> */}
+      />
+
       <Container maxWidth="none" p="3">
         <Wrap justify={{ base: "center", sm: "center" }}>
           <Spacer maxW={{ sm: "full", base: 0 }} />
@@ -168,6 +170,7 @@ const Users = ({}) => {
                 <IconButton
                   aria-label="agregar usuario manualmente"
                   icon={<AddIcon />}
+                  onClick={onCreationOpen}
                 />
               </Tooltip>
 
