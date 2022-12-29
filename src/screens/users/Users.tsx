@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { useAlert } from "react-alert";
-import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
 import "./Users.css";
 import { CreateUserModal } from "../../components/createUserModal/CreateUserModal";
 import { UserCard } from "../../components/userCard/userCard";
@@ -22,34 +19,22 @@ import {
   Wrap,
   WrapItem,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   createUser,
-  deleteUser,
   getUserConfig,
-  updateUser,
 } from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
-const Users = ({}) => {
-  const alert = useAlert();
+const Users = () => {
+  const toast = useToast();
   const {
     isOpen: creationOpen,
     onOpen: onCreationOpen,
     onClose: onCreationClose,
   } = useDisclosure();
-  const {
-    isOpen: editOpen,
-    onOpen: onEditOpen,
-    onClose: onEditClose,
-  } = useDisclosure();
-  const {
-    isOpen: deleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const {
     items: users,
     setPage,
@@ -67,34 +52,21 @@ const Users = ({}) => {
   ) => {
     try {
       await createUser(creationData, image);
-      alert.success("Usuario creado");
+      toast({
+        title: "Usuario creado",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un error");
+      toast({
+        title: "No se pudo crear el usuario",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     onCreationClose()
-    refresh();
-  };
-  const handleDelete = async () => {
-    if (!selectedUser) return;
-    try {
-      await deleteUser(selectedUser.id);
-      alert.success("Usuario eliminado");
-    } catch (error) {
-      alert.error("Ocurrio un error");
-    }
-    onDeleteClose();
-    refresh();
-  };
-
-  const handleEdit = async (editData: UserPayload, image: File | undefined) => {
-    if (!selectedUser) return;
-    try {
-      await updateUser(selectedUser.id, editData, image);
-      alert.success("Usuario editado");
-    } catch (error) {
-      alert.error("Ocurrio un error");
-    }
-    onEditClose();
     refresh();
   };
 
@@ -120,14 +92,8 @@ const Users = ({}) => {
         <UserCard
           key={user.id}
           user={user}
-          onDelete={() => {
-            setSelectedUser(user);
-            onDeleteOpen();
-          }}
-          onEdit={() => {
-            setSelectedUser(user);
-            onEditOpen();
-          }}
+          onDelete={refresh}
+          onEdit={refresh}
           onInfo={() => {}}
         />
       );
@@ -135,24 +101,10 @@ const Users = ({}) => {
 
   return (
     <>
-      <ConfirmationModal
-        open={deleteOpen}
-        onCancel={onDeleteClose}
-        onAccept={handleDelete}
-        message="Confirma eliminación de este usuario? Esta acción no puede deshacerse."
-      />
-
       <CreateUserModal
         open={creationOpen}
         onClose={onCreationClose}
         onSubmit={handleCreation}
-      />
-
-      <CreateUserModal
-        open={editOpen}
-        onClose={onEditClose}
-        onSubmit={handleEdit}
-        initialData={selectedUser}
       />
 
       <Container maxWidth="none" p="3">

@@ -106,7 +106,7 @@ export const InnerCreateUserModal = ({
     type: UserType.STUDENT,
     dni: "",
   });
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSubmitted(true);
     if (
       formData.name !== "" &&
@@ -117,7 +117,8 @@ export const InnerCreateUserModal = ({
       formData.birthDate !== defaultDate &&
       formData.dni !== ""
     )
-      onSubmit(formData, image);
+      await onSubmit(formData, image);
+      setSubmitted(false);
   };
 
   const handleChange = (value: any, tag: string) => {
@@ -281,10 +282,11 @@ export const InnerCreateUserModal = ({
                     }
                   />
                 </FormControl>
-                <FormControl>
+                <FormControl maxW={"15em"}>
                   <FormLabel>Familiares</FormLabel>
                   <AsyncSelect
                     isMulti
+                    cacheOptions
                     options={familiars.map((f, i) => ({
                       value: f.id,
                       label: `${f.lastname}, ${f.name}, ${f.dni}`,
@@ -295,6 +297,8 @@ export const InnerCreateUserModal = ({
                         "familiarIds"
                       );
                     }}
+                    noOptionsMessage={() => "No hay opciones"}
+                    loadingMessage={() => "Cargando..."}
                     loadOptions={loadFamiliarOptions}
                     isSearchable
                     defaultValue={
