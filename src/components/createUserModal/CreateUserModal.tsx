@@ -27,6 +27,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Image,
+  Heading,
+  Divider,
+  Icon,
+  Center,
 } from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
 import { User } from "../../domain/users/User";
@@ -36,12 +41,13 @@ import { UserProvider, useUsers } from "../../hooks/useUsers";
 import DatePicker, { CalendarContainer } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fetchUsers } from "../../services/api";
+import { Header } from "semantic-ui-react";
 
 const defaultDate = new Date(0);
 type Option = {
-  value: string,
-  label: string
-}
+  value: string;
+  label: string;
+};
 interface ICreateUserModal {
   onClose: () => void;
   onSubmit: (
@@ -51,7 +57,6 @@ interface ICreateUserModal {
   initialData?: User;
   open: boolean;
 }
-
 
 export const _CreateUserModal = ({
   open,
@@ -141,19 +146,23 @@ export const _CreateUserModal = ({
   );
 
   const loadFamiliarOptions = (
-  inputValue: string,
-  callback: (options: Option[]) => void
-) => {
-  setFilterByContent([inputValue])
-  fetchUsers({page: 0, step: 10, filterByContent: [inputValue]}).then(users => {
-    callback(
-      users.filter((user) => user.id !== initialData?.id).map((u) => ({
-        value: u.id,
-        label: `${u.lastname}, ${u.name}, ${u.dni}`,
-      }))
+    inputValue: string,
+    callback: (options: Option[]) => void
+  ) => {
+    setFilterByContent([inputValue]);
+    fetchUsers({ page: 0, step: 10, filterByContent: [inputValue] }).then(
+      (users) => {
+        callback(
+          users
+            .filter((user) => user.id !== initialData?.id)
+            .map((u) => ({
+              value: u.id,
+              label: `${u.lastname}, ${u.name}, ${u.dni}`,
+            }))
+        );
+      }
     );
-  })
-};
+  };
   return open ? (
     <Modal size={"3xl"} isOpen={open} onClose={onClose}>
       <ModalOverlay />
@@ -164,8 +173,11 @@ export const _CreateUserModal = ({
         <ModalCloseButton />
         <ModalBody>
           <Wrap justify={"center"}>
-            <WrapItem flexDirection={"column"}>
-              <VStack>
+            <WrapItem
+              flexDirection={"column"}
+              width={{ base: "full", md: "auto" }}
+            >
+              <VStack width={{ base: "full", md: "auto" }}>
                 <FormControl>
                   <FormLabel>Tipo de usuario</FormLabel>
                   <ChakraSelect
@@ -247,8 +259,11 @@ export const _CreateUserModal = ({
                 </FormControl>
               </VStack>
             </WrapItem>
-            <WrapItem flexDirection={"column"}>
-              <VStack>
+            <WrapItem
+              flexDirection={"column"}
+              width={{ base: "full", md: "auto" }}
+            >
+              <VStack width={{ base: "full", md: "auto" }}>
                 <FormControl>
                   <FormLabel>Direccion fisica</FormLabel>
                   <Input
@@ -294,6 +309,47 @@ export const _CreateUserModal = ({
                         : []
                     }
                   />
+                </FormControl>
+                <FormControl>
+                  <Center>
+                    <Box maxW={"25em"}>
+                      {base64Image || formData.profilePicture ? (
+                        <Center>
+                          <Image
+                            src={
+                              base64Image
+                                ? base64Image
+                                : formData.profilePicture
+                            }
+                          />{" "}
+                        </Center>
+                      ) : (
+                        <Heading>
+                          <Icon name="file image outline" />
+                          Imagen de perfil
+                        </Heading>
+                      )}
+                      <Divider />
+                      <Center>
+                        <Button
+                          onClick={() => {
+                            var ref = fileRef.current;
+                            if (ref !== null) {
+                              ref.click();
+                            }
+                          }}
+                        >
+                          Subir Imagen
+                        </Button>
+                        <input
+                          ref={fileRef}
+                          type="file"
+                          hidden
+                          onChange={handleImageChange}
+                        />
+                      </Center>
+                    </Box>
+                  </Center>
                 </FormControl>
               </VStack>
             </WrapItem>
