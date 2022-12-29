@@ -17,7 +17,7 @@ import {
   Modal,
   Wrap,
   WrapItem,
-  Select,
+  Select as ChakraSelect,
   FormControl,
   VStack,
   Input,
@@ -28,15 +28,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@chakra-ui/react";
+import AsyncSelect from "react-select/async";
 import { User } from "../../domain/users/User";
 import { UserPayload } from "../../domain/users/UserPayload";
 import { UserType } from "../../domain/users/UserType";
 import { UserProvider, useUsers } from "../../hooks/useUsers";
 import DatePicker, { CalendarContainer } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { fetchUsers } from "../../services/api";
 
 const defaultDate = new Date(0);
-
+type Option = {
+  value: string,
+  label: string
+}
 interface ICreateUserModal {
   onClose: () => void;
   onSubmit: (
@@ -46,6 +51,7 @@ interface ICreateUserModal {
   initialData?: User;
   open: boolean;
 }
+
 
 export const _CreateUserModal = ({
   open,
@@ -133,6 +139,21 @@ export const _CreateUserModal = ({
       <Input value={value} onClick={onClick} ref={ref}></Input>
     )
   );
+
+  const loadFamiliarOptions = (
+  inputValue: string,
+  callback: (options: Option[]) => void
+) => {
+  setFilterByContent([inputValue])
+  fetchUsers({page: 0, step: 10, filterByContent: [inputValue]}).then(users => {
+    callback(
+      users.filter((user) => user.id !== initialData?.id).map((u) => ({
+        value: u.id,
+        label: `${u.lastname}, ${u.name}, ${u.dni}`,
+      }))
+    );
+  })
+};
   return open ? (
     <Modal size={"3xl"} isOpen={open} onClose={onClose}>
       <ModalOverlay />
@@ -147,7 +168,7 @@ export const _CreateUserModal = ({
               <VStack>
                 <FormControl>
                   <FormLabel>Tipo de usuario</FormLabel>
-                  <Select
+                  <ChakraSelect
                     value={formData.type}
                     placeholder="Tipo de usuario"
                     onChange={(e) =>
@@ -159,7 +180,7 @@ export const _CreateUserModal = ({
                         <option value={type}>{type}</option>
                       )
                     )}
-                  </Select>
+                  </ChakraSelect>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Nombre</FormLabel>
@@ -245,6 +266,32 @@ export const _CreateUserModal = ({
                     value={formData.comment}
                     onChange={(e) =>
                       handleChange(e.currentTarget.value, "comment")
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Familiares</FormLabel>
+                  <AsyncSelect
+                    isMulti
+                    options={familiars.map((f, i) => ({
+                      value: f.id,
+                      label: `${f.lastname}, ${f.name}, ${f.dni}`,
+                    }))}
+                    onChange={(newValue) => {
+                      handleChange(
+                        newValue.map((f) => f.value),
+                        "familiarIds"
+                      );
+                    }}
+                    loadOptions={loadFamiliarOptions}
+                    isSearchable
+                    defaultValue={
+                      initialData
+                        ? initialData.familiars.map((f) => ({
+                            value: f.id,
+                            label: `${f.lastname}, ${f.name}, ${f.dni}`,
+                          }))
+                        : []
                     }
                   />
                 </FormControl>
