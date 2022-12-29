@@ -15,13 +15,24 @@ import {
   createSubscription,
   deleteSubscription,
   getSubscriptionConfig,
+  getUserConfig,
 } from "../../services/api";
 import { createOrder } from "../../services/api/orderApi";
 import { useOrders } from "../../hooks/useOrders";
-import { useToast } from "@chakra-ui/react";
+import {
+  Container,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useBreakpointValue,
+  useToast,
+} from "@chakra-ui/react";
+import { UserType } from "../../domain/users/UserType";
 
 const Subscriptions = () => {
-  const toast = useToast()
+  const toast = useToast();
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [detailModal, setDetailModal] = useState(false);
@@ -39,14 +50,14 @@ const Subscriptions = () => {
     refresh,
   } = useSubscriptions();
 
-  const {refresh: refreshOrders} = useOrders()
+  const { refresh: refreshOrders } = useOrders();
 
   const handleSubmit = async (data: SubscriptionPayload) => {
     try {
       await createSubscription(data);
 
       refresh();
-      refreshOrders()
+      refreshOrders();
       toast({
         title: "Suscripcion creada",
         status: "success",
@@ -91,7 +102,7 @@ const Subscriptions = () => {
     try {
       await createOrder(selectedSubscription.id);
       refresh();
-      refreshOrders()
+      refreshOrders();
       toast({
         title: "Orden creada",
         status: "success",
@@ -127,8 +138,53 @@ const Subscriptions = () => {
     />
   ));
 
-    return <></>;
+  const fitted = useBreakpointValue({
+    base: true,
+    md: false,
+  });
 
+  return (
+    <Tabs isFitted={fitted} align="end" variant="enclosed">
+      <TabList>
+        <Tab>Suscripciones</Tab>
+        <Tab>Ordenes de cobro</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel>
+          <Container maxWidth="none" p="3">
+            <FilterInput
+              tagOptions={[
+                {
+                  key: PayState.DEBT,
+                  text: PayState.DEBT,
+                  value: PayState.DEBT,
+                  label: { color: "orange", empty: true, circular: true },
+                },
+                {
+                  key: PayState.ON_DAY,
+                  text: PayState.ON_DAY,
+                  value: PayState.ON_DAY,
+                  label: { color: "green", empty: true, circular: true },
+                },
+              ]}
+              onTagFilterChange={setFilterByTag}
+              onCustomFilterChange={setFilterByContent}
+            />
+            <PaginatedGridPage
+              justify={"start"}
+              fetchCountOfItems={getUserConfig}
+              step={step}
+              onPageChange={(newPage) => setPage(newPage)}
+              elements={subscriptionElements}
+            />
+          </Container>
+        </TabPanel>
+        <TabPanel>
+          <p>two!</p>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
+  );
 
   // return (
   //   <div>

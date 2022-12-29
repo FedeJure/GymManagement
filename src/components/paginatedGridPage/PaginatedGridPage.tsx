@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Wrap, WrapItem, Center} from "@chakra-ui/react"
+import {Wrap, WrapItem, Center, WrapProps} from "@chakra-ui/react"
 import useSWR from "swr";
 import { EntityConfigResponse } from "../../domain/EntityConfig";
 
@@ -8,15 +8,14 @@ interface IPaginatedGridPage {
   step: number
   onPageChange: (page: number) => void
   elements: JSX.Element[]
-  maxHeight?: string 
 }
 
-export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
+export const PaginatedGridPage: React.FC<IPaginatedGridPage & WrapProps> = ({
   fetchCountOfItems,
   step,
   onPageChange,
   elements,
-  maxHeight
+  ...props
 }) => {
   const [maxPages, setMaxPages] = useState(0);
   useEffect(() => {
@@ -32,18 +31,11 @@ export const PaginatedGridPage: React.FC<IPaginatedGridPage> = ({
           align="center"
           placeContent={"center"}
           justify={"center"}
+          {...props}
         >
           {elements.length > 0 &&
-            elements.map((element) => <WrapItem>{element}</WrapItem>)}
+            elements.map((element, i) => <WrapItem key={`element-${i}`}>{element}</WrapItem>)}
         </Wrap>
-        {/* <Center>
-          {maxPages > 1 && (
-            <Pagination
-              totalPages={maxPages}
-              onPageChange={(_, d) => onPageChange(Number(d.activePage))}
-            />
-          )}
-        </Center> */}
       </>
     );
 };

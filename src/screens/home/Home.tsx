@@ -1,10 +1,8 @@
 import "./Home.css"
-import { Screens } from "../../domain/navigation/screens"
 import Users from "../users/Users"
 import Products from "../products/Products"
 import { Reports } from "../reports/Reports"
 import Subscriptions from '../subscriptions/Subscriptions'
-import { useNavigation } from '../../hooks/useNavigation'
 import { ReactNode } from "react";
 import {
   Box,
@@ -24,7 +22,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { HashRouter, Route, Routes, Link as RouteLink } from "react-router-dom";
+import { HashRouter, Route, Routes  } from "react-router-dom";
 
 
 interface LinkType {
@@ -35,25 +33,12 @@ interface LinkType {
 
 const Home = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {currentScreen, navigateTo} = useNavigation()
-    const getCurrentScreenElement = () => {
-        switch (currentScreen) {
-            case Screens.Users:
-                return <Users />
-            case Screens.Products:
-                return <Products />
-            case Screens.Reports:
-                return <Reports />
-            case Screens.Subscriptions:
-                return <Subscriptions />
-            default:
-                return <></>
-        }
-    }
 
     const Links: LinkType[] = [
       { key: "users", value: "Personas" },
       { key: "products", value: "Clases" },
+      { key: "subscriptions", value: "Suscripciones" },
+      { key: "reports", value: "Reportes" },
     ];
 
     const NavLink = ({ children, value }: { children: ReactNode, value: LinkType }) => (
@@ -138,8 +123,11 @@ const Home = () => {
 
         <HashRouter>
           <Routes>
+            <Route path="/" element={<Users />} />
             <Route path="/users" element={<Users />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/reports" element={<Reports />} />
           </Routes>
         </HashRouter>
       </>
