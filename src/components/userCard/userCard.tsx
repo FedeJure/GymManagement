@@ -1,7 +1,6 @@
 import { MouseEventHandler } from "react";
 import { User } from "../../domain/users/User";
 import { getUserPayload, UserPayload } from "../../domain/users/UserPayload";
-import { useAlert } from "react-alert";
 import { UserTypeLabel } from "../userTypeLabel/UserTypeLabel";
 import {
   Card,
