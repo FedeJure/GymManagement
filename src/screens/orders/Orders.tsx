@@ -1,4 +1,3 @@
-import { useAlert } from "react-alert";
 import { useEffect, useState } from "react";
 import { Order } from "../../domain/order/Order";
 import { FilterInput } from "../../components/filterInput/FilterInput";
@@ -13,12 +12,13 @@ import {
 import { GeneratePayModal } from "../../components/generatePayModal/generatePayModal";
 import { useOrders } from "../../hooks/useOrders";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
+import { useToast } from "@chakra-ui/react";
 
 const Orders = () => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [generateModal, setGenerateModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const alert = useAlert();
+  const toast = useToast()
   const {
     items: orders,
     setPage,
@@ -38,10 +38,20 @@ const Orders = () => {
     setGenerateModal(false);
     try {
       await generatePayment(selectedOrder.id, value);
-      alert.success("Pago guardado");
+      toast({
+        title: "Pago guardado",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
       refresh();
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo guardar el pago",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
@@ -49,10 +59,20 @@ const Orders = () => {
     if (!selectedOrder) return setConfirmModal(false);
     try {
       await cancelOrder(selectedOrder.id);
-      alert.success("Orden eliminada");
+      toast({
+        title: "Orden eliminada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
       refresh();
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo eliminar la orden",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     setConfirmModal(false);
   };

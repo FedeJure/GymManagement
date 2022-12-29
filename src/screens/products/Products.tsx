@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAlert } from "react-alert";
 import { ProductCard } from "../../components/productCard/ProductCard";
 import { CreateProductModal } from "../../components/createProductModal/CreateProductModal";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
@@ -13,9 +12,10 @@ import {
   getProductConfig,
   updateProduct,
 } from "../../services/api";
+import { useToast } from "@chakra-ui/react";
 
-const Products = ({}: {}) => {
-  const alert = useAlert();
+const Products = () => {
+  const toast = useToast()
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -27,9 +27,19 @@ const Products = ({}: {}) => {
     try {
       await createProduct(creationData);
       refresh();
-      alert.success("Producto creado");
+      toast({
+        title: "Clase creada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo crear la clase",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     setCreationModalOpen(false);
   };
@@ -37,9 +47,19 @@ const Products = ({}: {}) => {
     try {
       await deleteProduct(productId);
       refresh();
-      alert.success("Producto eliminado");
+      toast({
+        title: "Clase eliminada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un error");
+      toast({
+        title: "No se pudo eliminar la clase",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     setDeleteModal(false);
   };
@@ -49,9 +69,19 @@ const Products = ({}: {}) => {
     try {
       await updateProduct({ ...selectedProduct, ...editData });
       refresh();
-      alert.success("Producto editado");
+      toast({
+        title: "Clase editada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo editar la clase",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
 
     setEditModalOpen(false);

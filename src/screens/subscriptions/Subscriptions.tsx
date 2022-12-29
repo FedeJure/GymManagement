@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAlert } from "react-alert";
 import { CreateSubscriptionModal } from "../../components/createSubscriptionModal/CreateSubscriptionModal";
 import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPayload";
 
@@ -19,9 +18,10 @@ import {
 } from "../../services/api";
 import { createOrder } from "../../services/api/orderApi";
 import { useOrders } from "../../hooks/useOrders";
+import { useToast } from "@chakra-ui/react";
 
-const Subscriptions = ({}) => {
-  const alert = useAlert();
+const Subscriptions = () => {
+  const toast = useToast()
   const [creationModalOpen, setCreationModalOpen] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [detailModal, setDetailModal] = useState(false);
@@ -47,9 +47,19 @@ const Subscriptions = ({}) => {
 
       refresh();
       refreshOrders()
-      alert.success("Suscripcion creada");
+      toast({
+        title: "Suscripcion creada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo crear la suscripcion",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     setCreationModalOpen(false);
   };
@@ -59,9 +69,19 @@ const Subscriptions = ({}) => {
     try {
       await deleteSubscription({ subscriptionId: selectedSubscription.id });
       refresh();
-      alert.success("Suscripcion eliminada");
+      toast({
+        title: "Suscripcion eliminada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo eliminar la suscripcion",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
     setConfirmModal(false);
   };
@@ -72,9 +92,19 @@ const Subscriptions = ({}) => {
       await createOrder(selectedSubscription.id);
       refresh();
       refreshOrders()
-      alert.success("Orden creada");
+      toast({
+        title: "Orden creada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert.error("Ocurrio un problema");
+      toast({
+        title: "No se pudo crear la orden",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 

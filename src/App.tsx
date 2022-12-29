@@ -1,7 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { ChakraProvider } from "@chakra-ui/react";
-import AlertTemplate from "react-alert-template-basic";
-import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import "./App.css";
 import Home from "./screens/home/Home";
 import {Button, Icon, Container} from "@chakra-ui/react"
@@ -29,20 +27,10 @@ const OurFallbackComponent = ({
   );
 };
 
-const options = {
-  // you can also just use 'bottom center'
-  position: positions.BOTTOM_RIGHT,
-  timeout: 3000,
-  offset: "30px",
-  // you can also just use 'scale'
-  transition: transitions.SCALE,
-};
-
 function App() {
   return (
     <ChakraProvider>
       <ErrorBoundary FallbackComponent={OurFallbackComponent}>
-        <AlertProvider template={AlertTemplate} {...options}>
           <NavigationProvider>
             <UserProvider>
               <OrderProvider>
@@ -56,7 +44,6 @@ function App() {
               </OrderProvider>
             </UserProvider>
           </NavigationProvider>
-        </AlertProvider>
       </ErrorBoundary>
     </ChakraProvider>
   );
