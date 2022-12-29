@@ -56,7 +56,7 @@ export const updateUser = async (
     .then((response) => response.json())
     .then((response) => response.user)
     .then(mapToUser);
-  if (image != null) {
+  if (image) {
     await sendImage(image, userId);
   }
 

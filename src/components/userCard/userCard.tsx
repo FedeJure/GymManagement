@@ -4,14 +4,10 @@ import { getUserPayload } from "../../domain/users/UserPayload";
 import { UserTypeLabel } from "../userTypeLabel/UserTypeLabel";
 import {
   Card,
-  Image,
   Stack,
-  CardBody,
   Button,
-  CardFooter,
   Text,
   Heading,
-  Center,
   Box,
   Flex,
   Avatar,
@@ -27,6 +23,7 @@ import {
 import {FiEdit} from "react-icons/fi"
 import { AiFillDelete } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
+import {FaUser} from "react-icons/fa"
 
 const UserCard = ({
   user,
@@ -81,11 +78,10 @@ const UserCard = ({
     </Flex>
     <Flex justify={"center"} mt={5}>
       <Avatar
+        
         size={"xl"}
-        src={
-          user.profilePicture ||
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9YhceWoUKbK2wMeimcB0NgVEqYlpd6ccl411nf7jlx4sV5e8y5b8CdsEjPFtmbHoKhb0&usqp=CAU"
-        }
+        icon={!user.profilePicture ? <FaUser fontSize={"1.5em"}/> : undefined}
+        src={user.profilePicture}
         css={{
           border: "2px solid white",
         }}
