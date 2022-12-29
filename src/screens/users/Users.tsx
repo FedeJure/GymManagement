@@ -20,12 +20,10 @@ import {
   WrapItem,
   useDisclosure,
   useToast,
+  Box,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  createUser,
-  getUserConfig,
-} from "../../services/api";
+import { createUser, getUserConfig } from "../../services/api";
 import { PaginatedGridPage } from "../../components/paginatedGridPage/PaginatedGridPage";
 
 const Users = () => {
@@ -66,7 +64,7 @@ const Users = () => {
         isClosable: true,
       });
     }
-    onCreationClose()
+    onCreationClose();
     refresh();
   };
 
@@ -134,32 +132,32 @@ const Users = () => {
             </ButtonGroup>
           </WrapItem>
         </Wrap>
-        <FilterInput
-          tagOptions={[
-            {
-              key: UserType.ADMIN,
-              text: UserType.ADMIN,
-              value: UserType.ADMIN,
-              label: { color: "green", empty: true, circular: true },
-            },
-            {
-              key: UserType.STUDENT,
-              text: UserType.STUDENT,
-              value: UserType.STUDENT,
-              label: { color: "yellow", empty: true, circular: true },
-            },
-            {
-              key: UserType.TRAINER,
-              text: UserType.TRAINER,
-              value: UserType.TRAINER,
-              label: { color: "orange", empty: true, circular: true },
-            },
-          ]}
-          onCustomFilterChange={(f: string[]) =>
-            setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
-          }
-          onTagFilterChange={(v: string[]) => setFilterByTag(v)}
-        />
+        <Box width={{ base: "full", md: "md" }}>
+          <FilterInput
+            tagOptions={[
+              {
+                value: UserType.ADMIN,
+                label: UserType.ADMIN,
+                isFixed: true,
+              },
+              {
+                value: UserType.STUDENT,
+                label: UserType.STUDENT,
+                isFixed: true,
+              },
+              {
+                value: UserType.TRAINER,
+                label: UserType.TRAINER,
+                isFixed: true,
+              },
+            ]}
+            onCustomFilterChange={(f: string[]) =>
+              setFilterByContent(f.map((v) => v.toLocaleLowerCase()))
+            }
+            onTagFilterChange={(v: string[]) => setFilterByTag(v)}
+          />
+        </Box>
+
         <PaginatedGridPage
           fetchCountOfItems={getUserConfig}
           step={step}

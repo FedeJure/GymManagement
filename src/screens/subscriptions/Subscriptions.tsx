@@ -20,16 +20,29 @@ import {
 import { createOrder } from "../../services/api/orderApi";
 import { useOrders } from "../../hooks/useOrders";
 import {
+  Box,
+  ButtonGroup,
   Container,
+  Heading,
+  HStack,
+  IconButton,
+  Spacer,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Tooltip,
   useBreakpointValue,
   useToast,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { UserType } from "../../domain/users/UserType";
+import { AddIcon } from "@chakra-ui/icons";
+import { ExcelDownloader } from "../../components/excelDownloader/excelDownloader";
+import { ExcelUploader } from "../../components/excelUploader/excelUploader";
+import { mapToExcel } from "../../domain/users/UserMapper";
 
 const Subscriptions = () => {
   const toast = useToast();
@@ -144,46 +157,95 @@ const Subscriptions = () => {
   });
 
   return (
-    <Tabs isFitted={fitted} align="end" variant="enclosed">
-      <TabList>
-        <Tab>Suscripciones</Tab>
-        <Tab>Ordenes de cobro</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <Container maxWidth="none" p="3">
-            <FilterInput
-              tagOptions={[
-                {
-                  key: PayState.DEBT,
-                  text: PayState.DEBT,
-                  value: PayState.DEBT,
-                  label: { color: "orange", empty: true, circular: true },
-                },
-                {
-                  key: PayState.ON_DAY,
-                  text: PayState.ON_DAY,
-                  value: PayState.ON_DAY,
-                  label: { color: "green", empty: true, circular: true },
-                },
-              ]}
-              onTagFilterChange={setFilterByTag}
-              onCustomFilterChange={setFilterByContent}
-            />
-            <PaginatedGridPage
-              justify={"start"}
-              fetchCountOfItems={getUserConfig}
-              step={step}
-              onPageChange={(newPage) => setPage(newPage)}
-              elements={subscriptionElements}
-            />
-          </Container>
-        </TabPanel>
-        <TabPanel>
-          <p>two!</p>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <>
+      {confirmModal && (
+        <ConfirmationModal
+          open={confirmModal}
+          onCancel={() => setConfirmModal(false)}
+          onAccept={() => handleDelete()}
+          message="Confirma eliminación? Esta acción no puede deshacerse."
+        />
+      )}
+      {confirmOrderModal && (
+        <ConfirmationModal
+          open={confirmOrderModal}
+          onCancel={() => setConfirmOrderModal(false)}
+          onAccept={() => {
+            setConfirmOrderModal(false);
+            handleCreateOrder();
+          }}
+          message={
+            <>
+              <h2>Crear orden de cobro?</h2>
+              <br /> Tenga en cuenta que las ordenes de cobro son generadas
+              automaticamente cuando es requerido
+            </>
+          }
+        />
+      )}
+      {creationModalOpen && (
+        <CreateSubscriptionModal
+          onClose={() => setCreationModalOpen(false)}
+          onSubmit={handleSubmit}
+        />
+      )}
+      {detailModal && selectedSubscription && (
+        <SubscriptionDetailModal
+          subscription={selectedSubscription}
+          onClose={() => setDetailModal(false)}
+        />
+      )}
+      <Tabs isFitted={fitted} align="end" variant="enclosed">
+        <TabList>
+          <Tab>Suscripciones</Tab>
+          <Tab>Ordenes de cobro</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Container maxWidth="none" p="3">
+              <HStack>
+                <Box width={{ base: "full", md: "md" }}>
+                  <FilterInput
+                    tagOptions={[
+                      {
+                        value: PayState.DEBT,
+                        label: PayState.DEBT,
+                        isFixed: true,
+                      },
+                      {
+                        label: PayState.ON_DAY,
+                        value: PayState.ON_DAY,
+                        isFixed: true,
+                      },
+                    ]}
+                    onTagFilterChange={setFilterByTag}
+                    onCustomFilterChange={setFilterByContent}
+                  />
+                </Box>
+
+                <Tooltip label="Crear suscripcion">
+                  <IconButton
+                    aria-label="agregar suscripcion manualmente"
+                    icon={<AddIcon />}
+                  />
+                </Tooltip>
+              </HStack>
+
+              <PaginatedGridPage
+                justify={"start"}
+                fetchCountOfItems={getUserConfig}
+                step={step}
+                onPageChange={(newPage) => setPage(newPage)}
+                elements={subscriptionElements}
+              />
+            </Container>
+          </TabPanel>
+          <TabPanel>
+            <p>two!</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </>
   );
 
   // return (

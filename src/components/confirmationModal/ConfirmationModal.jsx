@@ -25,23 +25,10 @@ export const ConfirmationModal = ({ open, message, onAccept, onCancel }) => {
             No
           </Button>
           <Button variant="ghost" color={"red"} onClick={onAccept}>
-            Si, eliminar
+            Confirmar
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-    // <Modal
-    //     open={open}
-    // >
-    //     <Header icon='trash' content={message} />
-    //     <Modal.Actions><></>
-    //         <Button color='red' onClick={onCancel}>
-    //             <Icon name='remove' /> No
-    //         </Button>
-    //         <Button color='green' onClick={onAccept}>
-    //             <Icon name='checkmark' /> Yes
-    //         </Button>
-    //     </Modal.Actions>
-    // </Modal>
   );
 };
