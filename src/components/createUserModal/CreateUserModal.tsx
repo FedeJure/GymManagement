@@ -53,7 +53,7 @@ interface ICreateUserModal {
   open: boolean;
 }
 
-export const _CreateUserModal = ({
+export const InnerCreateUserModal = ({
   open,
   onClose,
   onSubmit,
@@ -389,6 +389,6 @@ export const _CreateUserModal = ({
 
 export const CreateUserModal: React.FC<ICreateUserModal> = (props) => (
   <UserProvider>
-    <_CreateUserModal {...props} />
+    <InnerCreateUserModal {...props} />
   </UserProvider>
 );
