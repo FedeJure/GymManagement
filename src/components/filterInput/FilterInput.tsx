@@ -38,7 +38,7 @@ export const FilterInput = ({
       placeholder="Fitlro"
       isMulti
       isSearchable
-      value={defaultTagFilters}
+      defaultValue={defaultTagFilters}
       formatCreateLabel={(input) => (
         <Text>
           Filtro personalizado: <b>{input}</b>

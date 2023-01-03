@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Order } from "../../domain/order/Order";
 import { FilterInput } from "../../components/filterInput/FilterInput";
 import { ConfirmationModal } from "../../components/confirmationModal/ConfirmationModal";
@@ -28,6 +28,7 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Tfoot,
   Th,
   Thead,
@@ -40,7 +41,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { BiDetail } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { AddIcon } from "@chakra-ui/icons";
-import {MdOutlinePayments} from "react-icons/md"
+import { MdOutlinePayments } from "react-icons/md";
 
 function getColor(state: OrderStateEnum): string {
   switch (state) {
@@ -78,7 +79,7 @@ const OrderRow = ({
         duration: 2000,
         isClosable: true,
       });
-      onPay()
+      onPay();
     } catch (error) {
       toast({
         title: "No se pudo guardar el pago",
@@ -98,7 +99,7 @@ const OrderRow = ({
         duration: 2000,
         isClosable: true,
       });
-      onDelete()
+      onDelete();
     } catch (error) {
       toast({
         title: "No se pudo eliminar la orden",
@@ -127,17 +128,21 @@ const OrderRow = ({
         />
       )}
       <Tr>
-        <Td maxW="3" overflow="hidden" textOverflow="ellipsis">
-          # {order.id}
-        </Td>
+        <Tooltip label={order.id}>
+          <Td width={"1"} minWidth={"fit-content"}>
+            <Text maxW="20" overflow="hidden" textOverflow="ellipsis">
+              # {order.id}
+            </Text>
+          </Td>
+        </Tooltip>
+
         <Td>
           <Badge colorScheme={getColor(order.state)}>{order.state}</Badge>
         </Td>
         <Td>{order.userName}</Td>
         <Td>{order.productName}</Td>
         <Td>
-          {getMonth(order.periodPayed.getMonth())}
-          <br />
+          {getMonth(order.periodPayed.getMonth())} -{" "}
           {order.periodPayed.getFullYear()}
         </Td>
         <Td width="1">
@@ -212,13 +217,13 @@ const Orders = () => {
     step,
     refresh,
   } = useOrders();
-  const defaultFilter = [
+  const defaultFilter = useMemo(() => [
     { label: OrderStateEnum.AVAILABLE, value: OrderStateEnum.AVAILABLE },
-  ];
+  ], []);
 
   useEffect(() => {
-    setFilterByTag(defaultFilter.map(f => f.value));
-  }, []);
+    setFilterByTag(defaultFilter.map((f) => f.value));
+  }, [defaultFilter, setFilterByTag]);
 
   const handlePay = () => {
     refresh();
@@ -284,6 +289,7 @@ const Orders = () => {
           </Tbody>
           <Tfoot>
             <Tr>
+              <Th>ID</Th>
               <Th>Estado</Th>
               <Th>Alumno</Th>
               <Th>Clase</Th>
