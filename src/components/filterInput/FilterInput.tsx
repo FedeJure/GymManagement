@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import { Box, BoxProps, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
 type FilterOption = {
   value: string;
@@ -13,14 +13,13 @@ export const FilterInput = ({
   onCustomFilterChange,
   tagOptions,
   defaultTagFilters = [],
-  ...props
 }: {
   onTagFilterChange: Function;
   onCustomFilterChange: Function;
   tagOptions: FilterOption[];
   defaultTagFilters?: FilterOption[];
-} & BoxProps) => {
-  const [selections, setSelections] = useState<string[]>([]);
+}) => {
+  const [selections] = useState<string[]>([]);
   const [options, setOptions] = useState<FilterOption[]>(tagOptions);
 
   const handleChange = (value: string[]) => {

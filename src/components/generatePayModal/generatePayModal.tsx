@@ -7,7 +7,6 @@ import {
   Modal,
   ModalContent,
   ModalHeader,
-  Text,
   FormControl,
   FormHelperText,
   FormLabel,
