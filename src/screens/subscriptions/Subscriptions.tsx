@@ -183,12 +183,12 @@ const Subscriptions = () => {
           }
         />
       )}
-      {creationModalOpen && (
-        <CreateSubscriptionModal
-          onClose={() => setCreationModalOpen(false)}
-          onSubmit={handleSubmit}
-        />
-      )}
+
+      <CreateSubscriptionModal
+        onClose={() => setCreationModalOpen(false)}
+        onSubmit={handleSubmit}
+      />
+
       {detailModal && selectedSubscription && (
         <SubscriptionDetailModal
           subscription={selectedSubscription}
@@ -223,10 +223,14 @@ const Subscriptions = () => {
                   />
                 </Box>
 
-                <Tooltip label="Crear suscripcion">
+                <Tooltip
+                  label="Crear suscripcion"
+                  onClick={() => setCreationModalOpen(true)}
+                >
                   <IconButton
                     aria-label="agregar suscripcion manualmente"
                     icon={<AddIcon />}
+                    onClick={() => setCreationModalOpen(true)}
                   />
                 </Tooltip>
               </HStack>
@@ -241,7 +245,7 @@ const Subscriptions = () => {
             </Container>
           </TabPanel>
           <TabPanel>
-            <p>two!</p>
+            <Orders />  
           </TabPanel>
         </TabPanels>
       </Tabs>

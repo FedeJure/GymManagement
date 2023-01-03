@@ -4,6 +4,14 @@ import { SubscriptionPayload } from "../../domain/subscription/SubscriptionPaylo
 import { fetchProducts, fetchUsers } from "../../services/api";
 import { Product } from "../../domain/product/Product";
 import { DateInput } from "../inputComponent/DateInputComponent";
+import {
+  ModalOverlay,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Text,
+} from "@chakra-ui/react";
+import { Modal, ModalContent, ModalHeader, Button } from "semantic-ui-react";
 
 const defaultDate = new Date(0);
 
@@ -76,8 +84,23 @@ export const CreateSubscriptionModal = ({
     setFormData((form) => ({ ...form, [key]: newValue }));
   };
 
-    return <></>;
+  return (
+    <Modal isOpen={true} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Modal Title</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>xfsdf</ModalBody>
 
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button variant="ghost">Crear suscripcion</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 
   // return (
   //   <Modal onClose={onClose} open>

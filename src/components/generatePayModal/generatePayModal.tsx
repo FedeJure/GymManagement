@@ -1,3 +1,18 @@
+import {
+  ModalOverlay,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  Text,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Order } from "../../domain/order/Order";
 
@@ -17,9 +32,47 @@ export const GeneratePayModal: React.FC<IGeneratePayModal> = ({
   const debt = order.amount - order.amountPayed;
 
   const handleSubmit = () => {
-    onSubmit(value)
+    onSubmit(value);
   };
-    return <></>;
+  return (
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Confirmacion</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl onSubmit={handleSubmit}>
+            <FormLabel>
+              Valor restante por pagar: <b>${debt}</b> del total ${order.amount}
+            </FormLabel>
+            <Input
+              value={value}
+              max={debt}
+              type="number"
+              onChange={(e) => {
+                setValue(
+                  Math.max(0, Math.min(debt, e.currentTarget.valueAsNumber))
+                );
+              }}
+            />
+            <FormHelperText>
+              Ingrese el monto abonado (puede ser un monto parcial que no cubra
+              la deuda completa)
+            </FormHelperText>
+          </FormControl>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            No
+          </Button>
+          <Button variant="ghost" color={"red"} onClick={handleSubmit}>
+            Confirmar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 
   // return (
   //   <Modal size={"mini"} onClose={onClose} open>

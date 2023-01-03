@@ -18,7 +18,7 @@ export const FilterInput = ({
   onTagFilterChange: Function;
   onCustomFilterChange: Function;
   tagOptions: FilterOption[];
-  defaultTagFilters?: string[];
+  defaultTagFilters?: FilterOption[];
 } & BoxProps) => {
   const [selections, setSelections] = useState<string[]>([]);
   const [options, setOptions] = useState<FilterOption[]>(tagOptions);
@@ -33,19 +33,20 @@ export const FilterInput = ({
     onTagFilterChange(userTypesSelections);
   };
   return (
-      <CreatableSelect
-        options={tagOptions}
-        placeholder="Fitlro"
-        isMulti
-        isSearchable
-        formatCreateLabel={(input) => (
-          <Text>
-            Filtro personalizado: <b>{input}</b>
-          </Text>
-        )}
-        createOptionPosition="first"
-        onChange={(option) => handleChange(option.map((o) => o.value))}
-      ></CreatableSelect>
+    <CreatableSelect
+      options={tagOptions}
+      placeholder="Fitlro"
+      isMulti
+      isSearchable
+      value={defaultTagFilters}
+      formatCreateLabel={(input) => (
+        <Text>
+          Filtro personalizado: <b>{input}</b>
+        </Text>
+      )}
+      createOptionPosition="first"
+      onChange={(option) => handleChange(option.map((o) => o.value))}
+    ></CreatableSelect>
   );
   // return (<Menu fluid>
   //     <Menu.Item><Icon name="filter" /></Menu.Item>
