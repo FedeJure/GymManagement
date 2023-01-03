@@ -184,7 +184,7 @@ const OrderRow = ({
                       fontSize="sm"
                       onClick={() => setGenerateModal(true)}
                     >
-                      Marcar como pagada
+                      Registrar pago
                     </Button>
                   )}
                   <Button

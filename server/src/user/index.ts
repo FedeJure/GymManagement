@@ -4,7 +4,6 @@ import { User } from "../../../src/domain/users/User";
 import { promisify } from "util";
 import { unlink } from "fs";
 import { STATIC_DIR } from "../configs";
-import { Model } from "mongoose";
 
 export const getUsers = async ({
   page,
@@ -40,7 +39,7 @@ export const getUsers = async ({
     });
   }
 
-  const withQueries = tagFilter != undefined || contentFilter != undefined;
+  const withQueries = tagFilter !== undefined || contentFilter !== undefined;
   return userModel
     .find(withQueries ? { $or: queries } : {}, null, {
       skip: step * page,

@@ -50,7 +50,7 @@ export const GeneratePayModal: React.FC<IGeneratePayModal> = ({
               type="number"
               onChange={(e) => {
                 setValue(
-                  Math.max(0, Math.min(debt, e.currentTarget.valueAsNumber))
+                  Math.max(0, Math.min(debt, e.currentTarget.valueAsNumber || 0))
                 );
               }}
             />
@@ -65,7 +65,12 @@ export const GeneratePayModal: React.FC<IGeneratePayModal> = ({
           <Button colorScheme="blue" mr={3} onClick={onClose}>
             No
           </Button>
-          <Button variant="ghost" color={"red"} onClick={handleSubmit}>
+          <Button
+            disabled={value === 0}
+            variant="ghost"
+            color={"red"}
+            onClick={handleSubmit}
+          >
             Confirmar
           </Button>
         </ModalFooter>
